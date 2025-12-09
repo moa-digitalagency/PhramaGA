@@ -697,6 +697,15 @@ function switchTab(tab) {
         btn.classList.remove('text-gray-400');
     });
     
+    const searchSection = document.getElementById('searchSection');
+    if (searchSection) {
+        if (tab === 'pharmacies') {
+            searchSection.style.display = 'block';
+        } else {
+            searchSection.style.display = 'none';
+        }
+    }
+    
     if (tab === 'map') {
         setTimeout(() => {
             initMap();

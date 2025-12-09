@@ -48,7 +48,7 @@
                         </div>
                         <div>
                             <h1 class="text-lg font-bold">Pharmacies Gabon</h1>
-                            <p class="text-xs text-primary-100">87 établissements</p>
+                            <p class="text-xs text-primary-100">{{ total_pharmacies }} établissements</p>
                         </div>
                     </div>
                     <a href="/admin/login" class="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition">
@@ -59,23 +59,25 @@
                     </a>
                 </div>
                 
-                <div class="mt-4 relative">
-                    <input type="text" id="searchInput" placeholder="Rechercher une pharmacie..." 
-                           class="w-full px-4 py-3 pl-11 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/30">
-                    <svg class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                </div>
-                
-                <div class="mt-3 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-                    <button onclick="filterByCity('')" class="city-filter active px-4 py-2 bg-white text-primary-700 rounded-full text-sm font-medium whitespace-nowrap" data-city="">
-                        Toutes
-                    </button>
-                    {% for ville in villes %}
-                    <button onclick="filterByCity('{{ ville }}')" class="city-filter px-4 py-2 bg-white/10 text-white rounded-full text-sm font-medium whitespace-nowrap hover:bg-white/20" data-city="{{ ville }}">
-                        {{ ville }}
-                    </button>
-                    {% endfor %}
+                <div id="searchSection" class="search-section">
+                    <div class="mt-4 relative">
+                        <input type="text" id="searchInput" placeholder="Rechercher une pharmacie..." 
+                               class="w-full px-4 py-3 pl-11 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/30">
+                        <svg class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    
+                    <div class="mt-3 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                        <button onclick="filterByCity('')" class="city-filter active px-4 py-2 bg-white text-primary-700 rounded-full text-sm font-medium whitespace-nowrap" data-city="">
+                            Toutes
+                        </button>
+                        {% for ville in villes %}
+                        <button onclick="filterByCity('{{ ville }}')" class="city-filter px-4 py-2 bg-white/10 text-white rounded-full text-sm font-medium whitespace-nowrap hover:bg-white/20" data-city="{{ ville }}">
+                            {{ ville }}
+                        </button>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </header>

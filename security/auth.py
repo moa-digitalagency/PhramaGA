@@ -1,3 +1,4 @@
+import os
 from extensions import login_manager, db
 from models.admin import Admin
 
@@ -12,8 +13,17 @@ def load_user(user_id):
 
 
 def create_default_admin():
-    if Admin.query.count() == 0:
-        admin = Admin(username='admin')
-        admin.set_password('admin123')
-        db.session.add(admin)
-        db.session.commit()
+    admin_username = os.environ.get('ADMIN_USERNAME')
+    admin_password = os.environ.get('ADMIN_PASSWORD')
+    
+    if not admin_username or not admin_password:
+        return
+    
+    existing_admin = Admin.query.filter_by(username=admin_username).first()
+    if existing_admin:
+        return
+    
+    admin = Admin(username=admin_username)
+    admin.set_password(admin_password)
+    db.session.add(admin)
+    db.session.commit()

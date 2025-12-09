@@ -10,7 +10,8 @@ public_bp = Blueprint('public', __name__)
 @public_bp.route('/')
 def index():
     villes = PharmacyService.get_distinct_cities()
-    return render_template('index.html', villes=villes)
+    total_pharmacies = Pharmacy.query.count()
+    return render_template('index.html', villes=villes, total_pharmacies=total_pharmacies)
 
 
 @public_bp.route('/api/pharmacies')
