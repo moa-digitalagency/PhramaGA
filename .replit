@@ -1,9 +1,10 @@
-modules = ["python-3.11"]
+modules = ["web", "nodejs-20", "python-3.11"]
 [agent]
 expertMode = true
 
 [nix]
 channel = "stable-25_05"
+packages = ["openssl", "postgresql"]
 
 [workflows]
 runButton = "Project"
@@ -15,15 +16,15 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Pharmacies Gabon"
+args = "Start application"
 
 [[workflows.workflow]]
-name = "Pharmacies Gabon"
+name = "Start application"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python app.py"
+args = "gunicorn --bind 0.0.0.0:5000 --reuse-port --reload main:app"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
@@ -34,5 +35,9 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 40003
+localPort = 46163
 externalPort = 3000
+
+[deployment]
+deploymentTarget = "autoscale"
+run = ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
