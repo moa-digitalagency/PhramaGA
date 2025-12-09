@@ -2,8 +2,12 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_user, logout_user, login_required, current_user
 from models.admin import Admin
 from models.pharmacy import Pharmacy
+from models.submission import LocationSubmission, InfoSubmission, PharmacyView
 from services.pharmacy_service import PharmacyService
 from utils.helpers import safe_float, CITY_COORDINATES
+from extensions import db
+from datetime import datetime, timedelta
+from sqlalchemy import func
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -37,7 +41,27 @@ def admin_logout():
 @login_required
 def admin_dashboard():
     pharmacies = Pharmacy.query.order_by(Pharmacy.ville, Pharmacy.nom).all()
-    return render_template('admin/dashboard.html', pharmacies=pharmacies)
+    
+    pending_locations = LocationSubmission.query.filter_by(status='pending').order_by(LocationSubmission.created_at.desc()).all()
+    pending_infos = InfoSubmission.query.filter_by(status='pending').order_by(InfoSubmission.created_at.desc()).all()
+    
+    top_pharmacies = db.session.query(
+        Pharmacy.id, Pharmacy.nom, Pharmacy.ville,
+        func.count(PharmacyView.id).label('view_count')
+    ).outerjoin(PharmacyView).group_by(Pharmacy.id).order_by(func.count(PharmacyView.id).desc()).limit(10).all()
+    
+    recent_pharmacies = Pharmacy.query.order_by(Pharmacy.updated_at.desc()).limit(5).all()
+    
+    total_views = db.session.query(func.count(PharmacyView.id)).scalar() or 0
+    
+    return render_template('admin/dashboard.html', 
+        pharmacies=pharmacies,
+        pending_locations=pending_locations,
+        pending_infos=pending_infos,
+        top_pharmacies=top_pharmacies,
+        recent_pharmacies=recent_pharmacies,
+        total_views=total_views
+    )
 
 
 @admin_bp.route('/pharmacy/add', methods=['GET', 'POST'])
@@ -143,3 +167,98 @@ def admin_update_coordinates(id):
         return jsonify({'success': True})
     
     return jsonify({'success': False, 'error': 'Coordonnées invalides'}), 400
+
+
+@admin_bp.route('/pharmacy/<int:id>/set-garde', methods=['POST'])
+@login_required
+def admin_set_garde(id):
+    pharmacy = PharmacyService.get_pharmacy_by_id(id)
+    data = request.get_json()
+    
+    start_date_str = data.get('start_date')
+    if start_date_str:
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+        end_date = start_date + timedelta(days=7)
+        
+        pharmacy.is_garde = True
+        pharmacy.garde_start_date = start_date
+        pharmacy.garde_end_date = end_date
+    else:
+        pharmacy.is_garde = False
+        pharmacy.garde_start_date = None
+        pharmacy.garde_end_date = None
+    
+    db.session.commit()
+    
+    return jsonify({
+        'success': True, 
+        'is_garde': pharmacy.is_garde,
+        'garde_end_date': pharmacy.garde_end_date.isoformat() if pharmacy.garde_end_date else None
+    })
+
+
+@admin_bp.route('/location-submission/<int:id>/approve', methods=['POST'])
+@login_required
+def approve_location_submission(id):
+    submission = LocationSubmission.query.get_or_404(id)
+    pharmacy = submission.pharmacy
+    
+    pharmacy.latitude = submission.latitude
+    pharmacy.longitude = submission.longitude
+    pharmacy.location_validated = True
+    pharmacy.validated_at = datetime.utcnow()
+    pharmacy.validated_by_admin_id = current_user.id
+    
+    submission.status = 'approved'
+    submission.reviewed_at = datetime.utcnow()
+    submission.reviewed_by_admin_id = current_user.id
+    
+    db.session.commit()
+    
+    return jsonify({'success': True})
+
+
+@admin_bp.route('/location-submission/<int:id>/reject', methods=['POST'])
+@login_required
+def reject_location_submission(id):
+    submission = LocationSubmission.query.get_or_404(id)
+    
+    submission.status = 'rejected'
+    submission.reviewed_at = datetime.utcnow()
+    submission.reviewed_by_admin_id = current_user.id
+    
+    db.session.commit()
+    
+    return jsonify({'success': True})
+
+
+@admin_bp.route('/info-submission/<int:id>/approve', methods=['POST'])
+@login_required
+def approve_info_submission(id):
+    submission = InfoSubmission.query.get_or_404(id)
+    pharmacy = submission.pharmacy
+    
+    if hasattr(pharmacy, submission.field_name):
+        setattr(pharmacy, submission.field_name, submission.proposed_value)
+    
+    submission.status = 'approved'
+    submission.reviewed_at = datetime.utcnow()
+    submission.reviewed_by_admin_id = current_user.id
+    
+    db.session.commit()
+    
+    return jsonify({'success': True})
+
+
+@admin_bp.route('/info-submission/<int:id>/reject', methods=['POST'])
+@login_required
+def reject_info_submission(id):
+    submission = InfoSubmission.query.get_or_404(id)
+    
+    submission.status = 'rejected'
+    submission.reviewed_at = datetime.utcnow()
+    submission.reviewed_by_admin_id = current_user.id
+    
+    db.session.commit()
+    
+    return jsonify({'success': True})
