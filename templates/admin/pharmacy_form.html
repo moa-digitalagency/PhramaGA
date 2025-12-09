@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if pharmacy %}Modifier{% else %}Ajouter{% endif %} une pharmacie - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        #locationMap { height: 300px; border-radius: 0.75rem; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <header class="bg-white border-b shadow-sm sticky top-0 z-50">
+        <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-4">
+            <a href="{{ url_for('admin_dashboard') }}" class="p-2 hover:bg-gray-100 rounded-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </a>
+            <h1 class="text-lg font-bold text-gray-800">
+                {% if pharmacy %}Modifier{% else %}Ajouter{% endif %} une pharmacie
+            </h1>
+        </div>
+    </header>
+    
+    <main class="max-w-3xl mx-auto px-4 py-6">
+        <form method="POST" class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Code *</label>
+                        <input type="text" name="code" value="{{ pharmacy.code if pharmacy else '' }}" required
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
+                        <input type="text" name="nom" value="{{ pharmacy.nom if pharmacy else '' }}" required
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Ville *</label>
+                        <select name="ville" required id="villeSelect"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                            {% for city in cities %}
+                            <option value="{{ city }}" {% if pharmacy and pharmacy.ville == city %}selected{% endif %}>{{ city }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Quartier</label>
+                        <input type="text" name="quartier" value="{{ pharmacy.quartier if pharmacy else '' }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                        <input type="text" name="telephone" value="{{ pharmacy.telephone if pharmacy else '' }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Boîte Postale</label>
+                        <input type="text" name="bp" value="{{ pharmacy.bp if pharmacy else '' }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Horaires</label>
+                    <input type="text" name="horaires" value="{{ pharmacy.horaires if pharmacy else '' }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Services</label>
+                    <textarea name="services" rows="2"
+                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">{{ pharmacy.services if pharmacy else '' }}</textarea>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Propriétaire</label>
+                        <input type="text" name="proprietaire" value="{{ pharmacy.proprietaire if pharmacy else '' }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Type d'établissement</label>
+                        <select name="type_etablissement"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                            <option value="Pharmacie générale" {% if pharmacy and pharmacy.type_etablissement == 'Pharmacie générale' %}selected{% endif %}>Pharmacie générale</option>
+                            <option value="Pharmacie de garde 24h/24" {% if pharmacy and pharmacy.type_etablissement == 'Pharmacie de garde 24h/24' %}selected{% endif %}>Pharmacie de garde 24h/24</option>
+                            <option value="Pharmacie de garde principal" {% if pharmacy and pharmacy.type_etablissement == 'Pharmacie de garde principal' %}selected{% endif %}>Pharmacie de garde principal</option>
+                            <option value="Pharmacie générale 24h/24" {% if pharmacy and pharmacy.type_etablissement == 'Pharmacie générale 24h/24' %}selected{% endif %}>Pharmacie générale 24h/24</option>
+                            <option value="Dépôt pharmaceutique" {% if pharmacy and pharmacy.type_etablissement == 'Dépôt pharmaceutique' %}selected{% endif %}>Dépôt pharmaceutique</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex gap-6">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="is_garde" class="w-5 h-5 text-emerald-600 rounded focus:ring-emerald-500"
+                               {% if pharmacy and pharmacy.is_garde %}checked{% endif %}>
+                        <span class="text-sm text-gray-700">Pharmacie de garde (24h/24)</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="is_gare" class="w-5 h-5 text-emerald-600 rounded focus:ring-emerald-500"
+                               {% if pharmacy and pharmacy.is_gare %}checked{% endif %}>
+                        <span class="text-sm text-gray-700">Proche gare</span>
+                    </label>
+                </div>
+                
+                <div class="border-t pt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Coordonnées GPS</h3>
+                    <p class="text-sm text-gray-500 mb-4">Cliquez sur la carte pour définir la position exacte de la pharmacie</p>
+                    
+                    <div id="locationMap" class="mb-4"></div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
+                            <input type="number" step="any" name="latitude" id="latitudeInput" 
+                                   value="{{ pharmacy.latitude if pharmacy and pharmacy.latitude else '' }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
+                            <input type="number" step="any" name="longitude" id="longitudeInput"
+                                   value="{{ pharmacy.longitude if pharmacy and pharmacy.longitude else '' }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="px-6 py-4 bg-gray-50 border-t flex justify-end gap-3">
+                <a href="{{ url_for('admin_dashboard') }}" 
+                   class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition">
+                    Annuler
+                </a>
+                <button type="submit" 
+                        class="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition font-medium">
+                    {% if pharmacy %}Enregistrer{% else %}Ajouter{% endif %}
+                </button>
+            </div>
+        </form>
+    </main>
+    
+    <script>
+        const CITY_COORDS = {
+            "Libreville": [0.4162, 9.4673],
+            "Port-Gentil": [-0.7193, 8.7815],
+            "Franceville": [-1.6333, 13.5833],
+            "Moanda": [-1.5333, 13.2000],
+            "Makokou": [0.5667, 12.8500],
+            "Oyem": [1.6000, 11.5833],
+            "Mouila": [-1.8667, 11.0500],
+            "Koulamoutou": [-1.1333, 12.4667],
+            "Ntom": [0.3667, 9.7667]
+        };
+        
+        const latInput = document.getElementById('latitudeInput');
+        const lngInput = document.getElementById('longitudeInput');
+        const villeSelect = document.getElementById('villeSelect');
+        
+        let initLat = {{ pharmacy.latitude if pharmacy and pharmacy.latitude else 0.4162 }};
+        let initLng = {{ pharmacy.longitude if pharmacy and pharmacy.longitude else 9.4673 }};
+        
+        const map = L.map('locationMap').setView([initLat, initLng], 14);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+        
+        let marker = null;
+        
+        if (latInput.value && lngInput.value) {
+            marker = L.marker([parseFloat(latInput.value), parseFloat(lngInput.value)]).addTo(map);
+        }
+        
+        map.on('click', function(e) {
+            const { lat, lng } = e.latlng;
+            latInput.value = lat.toFixed(6);
+            lngInput.value = lng.toFixed(6);
+            
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng).addTo(map);
+            }
+        });
+        
+        villeSelect.addEventListener('change', function() {
+            const city = this.value;
+            if (CITY_COORDS[city]) {
+                map.setView(CITY_COORDS[city], 14);
+            }
+        });
+    </script>
+</body>
+</html>
