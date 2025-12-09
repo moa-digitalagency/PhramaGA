@@ -1,0 +1,94 @@
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+}
+
+.leaflet-popup-content {
+    margin: 12px;
+}
+
+.pharmacy-popup {
+    min-width: 200px;
+}
+
+.pharmacy-popup h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.pharmacy-popup p {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin: 4px 0;
+}
+
+.pharmacy-popup .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-top: 8px;
+}
+
+.pharmacy-popup .badge-garde {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+
+.pharmacy-popup .badge-general {
+    background-color: #f0fdf4;
+    color: #16a34a;
+}
+
+.pharmacy-card {
+    transition: all 0.2s ease;
+}
+
+.pharmacy-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.marker-cluster-small {
+    background-color: rgba(22, 163, 74, 0.6);
+}
+
+.marker-cluster-small div {
+    background-color: rgba(22, 163, 74, 0.8);
+}
+
+.marker-cluster-medium {
+    background-color: rgba(234, 179, 8, 0.6);
+}
+
+.marker-cluster-medium div {
+    background-color: rgba(234, 179, 8, 0.8);
+}
+
+.marker-cluster-large {
+    background-color: rgba(220, 38, 38, 0.6);
+}
+
+.marker-cluster-large div {
+    background-color: rgba(220, 38, 38, 0.8);
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
