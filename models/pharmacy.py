@@ -1,4 +1,5 @@
 from extensions import db
+from datetime import datetime, timedelta
 
 
 class Pharmacy(db.Model):
@@ -14,12 +15,24 @@ class Pharmacy(db.Model):
     proprietaire = db.Column(db.String(200))
     type_etablissement = db.Column(db.String(100))
     is_garde = db.Column(db.Boolean, default=False)
+    garde_start_date = db.Column(db.DateTime)
+    garde_end_date = db.Column(db.DateTime)
     is_gare = db.Column(db.Boolean, default=False)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     location_validated = db.Column(db.Boolean, default=False)
     validated_at = db.Column(db.DateTime)
     validated_by_admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    @property
+    def is_currently_garde(self):
+        if not self.is_garde:
+            return False
+        if self.garde_end_date is None:
+            return True
+        return datetime.utcnow() <= self.garde_end_date
     
     def to_dict(self):
         return {
@@ -34,9 +47,10 @@ class Pharmacy(db.Model):
             'services': self.services or '',
             'proprietaire': self.proprietaire or '',
             'type_etablissement': self.type_etablissement or '',
-            'is_garde': self.is_garde,
+            'is_garde': self.is_currently_garde,
             'is_gare': self.is_gare,
             'lat': self.latitude,
             'lng': self.longitude,
-            'location_validated': self.location_validated
+            'location_validated': self.location_validated,
+            'garde_end_date': self.garde_end_date.isoformat() if self.garde_end_date else None
         }

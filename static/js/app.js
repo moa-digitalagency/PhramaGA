@@ -130,9 +130,11 @@ function getTypeBadge(pharmacy) {
 
 function createPharmacyCard(pharmacy) {
     const cityBadgeClass = getCityBadgeClass(pharmacy.ville);
+    const borderColor = pharmacy.is_garde ? 'border-l-red-500' : 
+                       pharmacy.is_gare ? 'border-l-blue-500' : 'border-l-emerald-500';
     
     return `
-        <div class="pharmacy-card bg-white rounded-xl p-4 shadow-sm border border-gray-100 active:scale-[0.98] transition cursor-pointer hover:shadow-md"
+        <div class="pharmacy-card bg-white rounded-xl p-4 shadow-sm border-l-4 ${borderColor} border border-gray-100 active:scale-[0.98] transition cursor-pointer hover:shadow-md"
              onclick="showPharmacyDetail(${JSON.stringify(pharmacy).replace(/"/g, '&quot;')})">
             <div class="flex items-start justify-between">
                 <div class="flex-1 min-w-0">

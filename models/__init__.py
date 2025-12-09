@@ -1,4 +1,5 @@
 from models.pharmacy import Pharmacy
 from models.admin import Admin
+from models.submission import LocationSubmission, InfoSubmission, PharmacyView
 
-__all__ = ['Pharmacy', 'Admin']
+__all__ = ['Pharmacy', 'Admin', 'LocationSubmission', 'InfoSubmission', 'PharmacyView']
