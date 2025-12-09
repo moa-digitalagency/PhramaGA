@@ -5,6 +5,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import csv
 
+def safe_float(value):
+    """Safely convert a value to float, returning None for empty/invalid values."""
+    if value is None or value == '':
+        return None
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return None
+
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
@@ -175,8 +184,8 @@ def admin_add_pharmacy():
             type_etablissement=request.form.get('type_etablissement'),
             is_garde=request.form.get('is_garde') == 'on',
             is_gare=request.form.get('is_gare') == 'on',
-            latitude=float(request.form.get('latitude')) if request.form.get('latitude') else None,
-            longitude=float(request.form.get('longitude')) if request.form.get('longitude') else None
+            latitude=safe_float(request.form.get('latitude')),
+            longitude=safe_float(request.form.get('longitude'))
         )
         db.session.add(pharmacy)
         db.session.commit()
@@ -203,8 +212,8 @@ def admin_edit_pharmacy(id):
         pharmacy.type_etablissement = request.form.get('type_etablissement')
         pharmacy.is_garde = request.form.get('is_garde') == 'on'
         pharmacy.is_gare = request.form.get('is_gare') == 'on'
-        pharmacy.latitude = float(request.form.get('latitude')) if request.form.get('latitude') else None
-        pharmacy.longitude = float(request.form.get('longitude')) if request.form.get('longitude') else None
+        pharmacy.latitude = safe_float(request.form.get('latitude'))
+        pharmacy.longitude = safe_float(request.form.get('longitude'))
         
         db.session.commit()
         flash('Pharmacie mise à jour avec succès', 'success')
