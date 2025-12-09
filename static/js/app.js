@@ -771,6 +771,48 @@ function debounce(func, delay) {
     debounceTimer = setTimeout(func, delay);
 }
 
+function resetSuggestionForm() {
+    document.getElementById('suggestionForm').reset();
+    document.getElementById('suggestionForm').classList.remove('hidden');
+    document.getElementById('suggestionSuccess').classList.add('hidden');
+}
+
+async function submitSuggestion(e) {
+    e.preventDefault();
+    
+    const category = document.getElementById('suggestionCategory').value;
+    const subject = document.getElementById('suggestionSubject').value;
+    const message = document.getElementById('suggestionMessage').value;
+    const name = document.getElementById('suggestionName').value;
+    const phone = document.getElementById('suggestionPhone').value;
+    const email = document.getElementById('suggestionEmail').value;
+    
+    if (!category || !subject || !message) {
+        alert('Veuillez remplir tous les champs obligatoires');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/suggestions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ category, subject, message, name, phone, email })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            document.getElementById('suggestionForm').classList.add('hidden');
+            document.getElementById('suggestionSuccess').classList.remove('hidden');
+        } else {
+            alert(result.error || 'Une erreur est survenue');
+        }
+    } catch (error) {
+        console.error('Error submitting suggestion:', error);
+        alert('Erreur de connexion. Veuillez réessayer.');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     fetchPharmacies();
     
@@ -783,4 +825,9 @@ document.addEventListener('DOMContentLoaded', () => {
             closeModal();
         }
     });
+    
+    const suggestionForm = document.getElementById('suggestionForm');
+    if (suggestionForm) {
+        suggestionForm.addEventListener('submit', submitSuggestion);
+    }
 });

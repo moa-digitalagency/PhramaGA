@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_user, logout_user, login_required, current_user
 from models.admin import Admin
 from models.pharmacy import Pharmacy
-from models.submission import LocationSubmission, InfoSubmission, PharmacyView
+from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion
 from services.pharmacy_service import PharmacyService
 from utils.helpers import safe_float, CITY_COORDINATES
 from extensions import db
@@ -44,6 +44,7 @@ def admin_dashboard():
     
     pending_locations = LocationSubmission.query.filter_by(status='pending').order_by(LocationSubmission.created_at.desc()).all()
     pending_infos = InfoSubmission.query.filter_by(status='pending').order_by(InfoSubmission.created_at.desc()).all()
+    pending_suggestions = Suggestion.query.filter_by(status='pending').order_by(Suggestion.created_at.desc()).all()
     
     top_pharmacies = db.session.query(
         Pharmacy.id, Pharmacy.nom, Pharmacy.ville,
@@ -58,6 +59,7 @@ def admin_dashboard():
         pharmacies=pharmacies,
         pending_locations=pending_locations,
         pending_infos=pending_infos,
+        pending_suggestions=pending_suggestions,
         top_pharmacies=top_pharmacies,
         recent_pharmacies=recent_pharmacies,
         total_views=total_views
@@ -258,6 +260,36 @@ def reject_info_submission(id):
     submission.status = 'rejected'
     submission.reviewed_at = datetime.utcnow()
     submission.reviewed_by_admin_id = current_user.id
+    
+    db.session.commit()
+    
+    return jsonify({'success': True})
+
+
+@admin_bp.route('/suggestion/<int:id>/respond', methods=['POST'])
+@login_required
+def respond_suggestion(id):
+    suggestion = Suggestion.query.get_or_404(id)
+    data = request.get_json()
+    
+    suggestion.admin_response = data.get('response', '')
+    suggestion.status = 'resolved'
+    suggestion.reviewed_at = datetime.utcnow()
+    suggestion.reviewed_by_admin_id = current_user.id
+    
+    db.session.commit()
+    
+    return jsonify({'success': True})
+
+
+@admin_bp.route('/suggestion/<int:id>/archive', methods=['POST'])
+@login_required
+def archive_suggestion(id):
+    suggestion = Suggestion.query.get_or_404(id)
+    
+    suggestion.status = 'archived'
+    suggestion.reviewed_at = datetime.utcnow()
+    suggestion.reviewed_by_admin_id = current_user.id
     
     db.session.commit()
     

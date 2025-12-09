@@ -72,3 +72,34 @@ class PharmacyView(db.Model):
     viewed_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     pharmacy = db.relationship('Pharmacy', backref='views')
+
+
+class Suggestion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(50), nullable=False)
+    subject = db.Column(db.String(200), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    submitted_by_name = db.Column(db.String(100))
+    submitted_by_email = db.Column(db.String(120))
+    submitted_by_phone = db.Column(db.String(50))
+    status = db.Column(db.String(20), default='pending')
+    admin_response = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    reviewed_at = db.Column(db.DateTime)
+    reviewed_by_admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    
+    reviewed_by = db.relationship('Admin', foreign_keys=[reviewed_by_admin_id])
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'category': self.category,
+            'subject': self.subject,
+            'message': self.message,
+            'submitted_by_name': self.submitted_by_name or 'Anonyme',
+            'submitted_by_email': self.submitted_by_email or '',
+            'submitted_by_phone': self.submitted_by_phone or '',
+            'status': self.status,
+            'admin_response': self.admin_response or '',
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }

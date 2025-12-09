@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request
 from services.pharmacy_service import PharmacyService
-from models.submission import LocationSubmission, InfoSubmission, PharmacyView
+from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion
 from models.pharmacy import Pharmacy
 from extensions import db
 
@@ -95,3 +95,28 @@ def submit_info(id):
     db.session.commit()
     
     return jsonify({'success': True, 'message': 'Information soumise avec succès'})
+
+
+@public_bp.route('/api/suggestions', methods=['POST'])
+def submit_suggestion():
+    data = request.get_json()
+    
+    category = data.get('category')
+    subject = data.get('subject')
+    message = data.get('message')
+    
+    if not category or not subject or not message:
+        return jsonify({'success': False, 'error': 'Veuillez remplir tous les champs obligatoires'}), 400
+    
+    suggestion = Suggestion(
+        category=category,
+        subject=subject,
+        message=message,
+        submitted_by_name=data.get('name', ''),
+        submitted_by_email=data.get('email', ''),
+        submitted_by_phone=data.get('phone', '')
+    )
+    db.session.add(suggestion)
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': 'Suggestion envoyée avec succès'})
