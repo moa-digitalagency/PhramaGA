@@ -111,13 +111,28 @@ function getCityBadgeClass(ville) {
     return CITY_COLORS[ville] || "bg-gray-100 text-gray-700";
 }
 
+function getTypeBadge(pharmacy) {
+    if (pharmacy.is_garde) {
+        return `<span class="flex-shrink-0 px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full flex items-center gap-1">
+            <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+            24h/24
+        </span>`;
+    }
+    if (pharmacy.is_gare) {
+        return `<span class="flex-shrink-0 px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+            Gare
+        </span>`;
+    }
+    return `<span class="flex-shrink-0 px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">
+        Pharmacie
+    </span>`;
+}
+
 function createPharmacyCard(pharmacy) {
-    const borderColor = pharmacy.is_garde ? 'border-l-red-500' : 
-                       pharmacy.is_gare ? 'border-l-blue-500' : 'border-l-emerald-500';
     const cityBadgeClass = getCityBadgeClass(pharmacy.ville);
     
     return `
-        <div class="pharmacy-card bg-white rounded-xl p-4 shadow-sm border-l-4 ${borderColor} active:scale-[0.98] transition cursor-pointer"
+        <div class="pharmacy-card bg-white rounded-xl p-4 shadow-sm border border-gray-100 active:scale-[0.98] transition cursor-pointer hover:shadow-md"
              onclick="showPharmacyDetail(${JSON.stringify(pharmacy).replace(/"/g, '&quot;')})">
             <div class="flex items-start justify-between">
                 <div class="flex-1 min-w-0">
@@ -125,16 +140,17 @@ function createPharmacyCard(pharmacy) {
                     <p class="text-sm text-gray-500 mt-0.5">${pharmacy.quartier || ''}</p>
                     ${pharmacy.telephone ? `<p class="text-sm text-emerald-600 mt-1">${pharmacy.telephone}</p>` : ''}
                 </div>
-                <div class="flex flex-wrap gap-1 ml-2">
-                    <span class="flex-shrink-0 px-2 py-1 ${cityBadgeClass} text-xs font-medium rounded-full">
-                        ${pharmacy.ville}
+            </div>
+            <div class="flex flex-wrap gap-1.5 mt-3">
+                ${getTypeBadge(pharmacy)}
+                <span class="flex-shrink-0 px-2 py-1 ${cityBadgeClass} text-xs font-medium rounded-full">
+                    ${pharmacy.ville}
+                </span>
+                ${pharmacy.location_validated ? `
+                    <span class="flex-shrink-0 px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                        GPS validé
                     </span>
-                    ${pharmacy.is_garde ? `
-                        <span class="flex-shrink-0 px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">
-                            24h/24
-                        </span>
-                    ` : ''}
-                </div>
+                ` : ''}
             </div>
         </div>
     `;
@@ -326,6 +342,14 @@ function showPharmacyDetail(pharmacy) {
                         Se rendre (non validée)
                     </button>
                 `}
+                
+                <button onclick="showComplementInfo(${pharmacy.id})"
+                   class="w-full py-3 bg-amber-500 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:bg-amber-600 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    Compléter Info
+                </button>
             </div>
         </div>
     `;
@@ -338,6 +362,47 @@ function closeModal() {
     const modal = document.getElementById('pharmacyModal');
     modal.classList.add('hidden');
     modal.classList.remove('flex');
+}
+
+function showComplementInfo(pharmacyId) {
+    const modal = document.getElementById('pharmacyModal');
+    const title = document.getElementById('modalTitle');
+    const content = document.getElementById('modalContent');
+    
+    title.textContent = 'Compléter les informations';
+    
+    content.innerHTML = `
+        <div class="space-y-4">
+            <div class="p-4 bg-amber-50 rounded-xl border border-amber-200">
+                <div class="flex items-start gap-3">
+                    <svg class="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <div>
+                        <h4 class="font-semibold text-amber-800">Fonctionnalité en cours de développement</h4>
+                        <p class="text-sm text-amber-700 mt-1">
+                            Cette fonctionnalité vous permettra bientôt de proposer des corrections ou des informations complémentaires sur cette pharmacie.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center py-4">
+                <svg class="w-16 h-16 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                </svg>
+                <p class="text-gray-500">Bientôt disponible</p>
+            </div>
+            
+            <button onclick="closeModal()"
+               class="w-full py-3 bg-gray-200 text-gray-700 font-semibold rounded-xl flex items-center justify-center gap-2 hover:bg-gray-300 transition">
+                Fermer
+            </button>
+        </div>
+    `;
+    
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
 }
 
 function switchTab(tab) {

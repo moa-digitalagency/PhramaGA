@@ -92,6 +92,12 @@
                     <button onclick="switchTab('map')" class="tab-btn px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="map">
                         Carte
                     </button>
+                    <button onclick="switchTab('medicaments')" class="tab-btn px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="medicaments">
+                        Liste Médicaments
+                    </button>
+                    <button onclick="switchTab('suggestions')" class="tab-btn px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="suggestions">
+                        Boîte à suggestions
+                    </button>
                 </nav>
             </div>
         </div>
@@ -125,27 +131,129 @@
             <div id="tab-map" class="tab-content hidden">
                 <div id="map" class="h-[calc(100vh-280px)] lg:h-[600px]"></div>
             </div>
+            
+            <div id="tab-medicaments" class="tab-content hidden">
+                <div class="px-4 py-8">
+                    <div class="max-w-md mx-auto text-center">
+                        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-800 mb-2">Liste des Médicaments</h2>
+                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-800 rounded-full text-sm font-medium mb-4">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            En cours de construction
+                        </div>
+                        <p class="text-gray-600 mb-6">
+                            Cette section vous permettra bientôt de rechercher des médicaments et de trouver les pharmacies qui les proposent.
+                        </p>
+                        <div class="p-4 bg-gray-50 rounded-xl border border-gray-200">
+                            <h3 class="font-semibold text-gray-700 mb-2">Fonctionnalités à venir :</h3>
+                            <ul class="text-left text-sm text-gray-600 space-y-2">
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Recherche de médicaments par nom
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Disponibilité en temps réel
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Comparaison des prix
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="tab-suggestions" class="tab-content hidden">
+                <div class="px-4 py-8">
+                    <div class="max-w-md mx-auto text-center">
+                        <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-800 mb-2">Boîte à Suggestions</h2>
+                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-800 rounded-full text-sm font-medium mb-4">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            En cours de construction
+                        </div>
+                        <p class="text-gray-600 mb-6">
+                            Cette section vous permettra bientôt de soumettre vos suggestions pour améliorer notre service.
+                        </p>
+                        <div class="p-4 bg-gray-50 rounded-xl border border-gray-200">
+                            <h3 class="font-semibold text-gray-700 mb-2">Fonctionnalités à venir :</h3>
+                            <ul class="text-left text-sm text-gray-600 space-y-2">
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Soumettre des suggestions
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Signaler des erreurs
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Proposer de nouvelles pharmacies
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
         
         <nav class="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg lg:hidden z-50">
             <div class="flex justify-around py-2">
-                <button onclick="switchTab('pharmacies')" class="mobile-tab-btn active flex flex-col items-center py-2 px-4" data-tab="pharmacies">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button onclick="switchTab('pharmacies')" class="mobile-tab-btn active flex flex-col items-center py-1 px-2" data-tab="pharmacies">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                     </svg>
-                    <span class="text-xs mt-1">Pharmacies</span>
+                    <span class="text-[10px] mt-0.5">Pharmacies</span>
                 </button>
-                <button onclick="switchTab('garde')" class="mobile-tab-btn flex flex-col items-center py-2 px-4" data-tab="garde">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button onclick="switchTab('garde')" class="mobile-tab-btn flex flex-col items-center py-1 px-2" data-tab="garde">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <span class="text-xs mt-1">24h/24</span>
+                    <span class="text-[10px] mt-0.5">24h/24</span>
                 </button>
-                <button onclick="switchTab('map')" class="mobile-tab-btn flex flex-col items-center py-2 px-4" data-tab="map">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button onclick="switchTab('map')" class="mobile-tab-btn flex flex-col items-center py-1 px-2" data-tab="map">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
                     </svg>
-                    <span class="text-xs mt-1">Carte</span>
+                    <span class="text-[10px] mt-0.5">Carte</span>
+                </button>
+                <button onclick="switchTab('medicaments')" class="mobile-tab-btn flex flex-col items-center py-1 px-2" data-tab="medicaments">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                    </svg>
+                    <span class="text-[10px] mt-0.5">Médic.</span>
+                </button>
+                <button onclick="switchTab('suggestions')" class="mobile-tab-btn flex flex-col items-center py-1 px-2" data-tab="suggestions">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                    </svg>
+                    <span class="text-[10px] mt-0.5">Suggest.</span>
                 </button>
             </div>
         </nav>
