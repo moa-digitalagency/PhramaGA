@@ -82,14 +82,7 @@ function displayOnMap(data) {
         const color = getMarkerColor(pharmacy);
         const icon = createMarkerIcon(color);
         
-        const popupContent = `
-            <div class="p-2">
-                <h4 class="font-semibold text-gray-800">${pharmacy.nom}</h4>
-                <p class="text-sm text-gray-600">${pharmacy.quartier}, ${pharmacy.ville}</p>
-                ${pharmacy.telephone ? `<p class="text-sm text-emerald-600 mt-1">${pharmacy.telephone}</p>` : ''}
-                ${pharmacy.is_garde ? '<span class="inline-block mt-2 px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full">24h/24</span>' : ''}
-            </div>
-        `;
+        const popupContent = createMapPopup(pharmacy);
         
         const marker = L.marker([pharmacy.lat, pharmacy.lng], { icon })
             .bindPopup(popupContent)
@@ -111,11 +104,155 @@ function getCityBadgeClass(ville) {
     return CITY_COLORS[ville] || "bg-gray-100 text-gray-700";
 }
 
+function createMapPopup(pharmacy) {
+    const cityBadgeClass = getCityBadgeClass(pharmacy.ville);
+    return `
+        <div style="min-width: 220px; max-width: 280px;">
+            <div style="padding: 12px;">
+                <h4 style="font-weight: 600; color: #1f2937; font-size: 14px; margin: 0 0 8px 0;">${pharmacy.nom}</h4>
+                <p style="font-size: 12px; color: #6b7280; margin: 0 0 8px 0;">${pharmacy.quartier || ''}, ${pharmacy.ville}</p>
+                ${pharmacy.telephone ? `<p style="font-size: 13px; color: #059669; margin: 0 0 8px 0; font-weight: 500;">${pharmacy.telephone}</p>` : ''}
+                <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;">
+                    ${pharmacy.is_garde ? '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: #fef2f2; color: #b91c1c; font-size: 11px; border-radius: 20px; font-weight: 500;"><span style="width: 6px; height: 6px; background: #ef4444; border-radius: 50%;"></span>Garde</span>' : ''}
+                    <span style="padding: 2px 8px; background: #ecfdf5; color: #047857; font-size: 11px; border-radius: 20px; font-weight: 500;">${pharmacy.ville}</span>
+                </div>
+                <button onclick="showPharmacyDetail(${JSON.stringify(pharmacy).replace(/"/g, '&quot;')})" 
+                        style="width: 100%; padding: 8px; background: #059669; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;">
+                    Voir détails
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function locateNearestGardePharmacy() {
+    const btn = document.getElementById('gpsLocateBtn');
+    btn.innerHTML = '<svg class="w-6 h-6 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+    
+    if (!navigator.geolocation) {
+        alert('La géolocalisation n\'est pas supportée par votre navigateur');
+        btn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
+        return;
+    }
+    
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+            
+            // Find nearest city
+            let nearestCity = '';
+            let minDistance = Infinity;
+            
+            for (const [city, coords] of Object.entries(CITY_CENTERS)) {
+                const distance = Math.sqrt(Math.pow(coords[0] - userLat, 2) + Math.pow(coords[1] - userLng, 2));
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nearestCity = city;
+                }
+            }
+            
+            // Filter garde pharmacies in that city
+            const gardeInCity = pharmacies.filter(p => p.is_garde && p.ville === nearestCity && p.lat !== null && p.lng !== null);
+            
+            if (gardeInCity.length === 0) {
+                // No garde in nearest city, show all garde pharmacies
+                const allGarde = pharmacies.filter(p => p.is_garde && p.lat !== null && p.lng !== null);
+                if (allGarde.length === 0) {
+                    alert('Aucune pharmacie de garde trouvée');
+                    btn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
+                    return;
+                }
+                showNearestPharmaciesOnMap(userLat, userLng, allGarde, 'Garde les plus proches');
+            } else {
+                showNearestPharmaciesOnMap(userLat, userLng, gardeInCity, `Garde à ${nearestCity}`);
+            }
+            
+            btn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
+        },
+        (error) => {
+            let message = 'Impossible d\'obtenir votre position';
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    message = 'Vous avez refusé l\'accès à votre position';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message = 'Position indisponible';
+                    break;
+                case error.TIMEOUT:
+                    message = 'Délai d\'attente dépassé';
+                    break;
+            }
+            alert(message);
+            btn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+    );
+}
+
+function showNearestPharmaciesOnMap(userLat, userLng, pharmacyList, title) {
+    // Switch to map tab
+    switchTab('map');
+    
+    setTimeout(() => {
+        if (!map) initMap();
+        clearMarkers();
+        
+        // Add user marker
+        const userMarker = L.marker([userLat, userLng], {
+            icon: L.divIcon({
+                className: 'user-marker',
+                html: `<div style="
+                    background-color: #3b82f6;
+                    width: 24px;
+                    height: 24px;
+                    border-radius: 50%;
+                    border: 4px solid white;
+                    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.5);
+                "></div>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            })
+        }).addTo(map).bindPopup('<b>Votre position</b>');
+        markers.push(userMarker);
+        
+        // Sort by distance and show pharmacies
+        const sortedPharmacies = pharmacyList.map(p => ({
+            ...p,
+            distance: Math.sqrt(Math.pow(p.lat - userLat, 2) + Math.pow(p.lng - userLng, 2))
+        })).sort((a, b) => a.distance - b.distance);
+        
+        sortedPharmacies.forEach((pharmacy, index) => {
+            const color = '#ef4444'; // Red for garde
+            const icon = createMarkerIcon(color);
+            
+            const popupContent = createMapPopup(pharmacy);
+            
+            const marker = L.marker([pharmacy.lat, pharmacy.lng], { icon })
+                .bindPopup(popupContent, { maxWidth: 300 })
+                .addTo(map);
+            
+            markers.push(marker);
+            
+            // Open popup for nearest pharmacy
+            if (index === 0) {
+                marker.openPopup();
+            }
+        });
+        
+        // Fit bounds to show user and pharmacies
+        const allPoints = [[userLat, userLng], ...sortedPharmacies.map(p => [p.lat, p.lng])];
+        const bounds = L.latLngBounds(allPoints);
+        map.fitBounds(bounds, { padding: [50, 50] });
+        
+    }, 200);
+}
+
 function getTypeBadge(pharmacy) {
     if (pharmacy.is_garde) {
         return `<span class="flex-shrink-0 px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full flex items-center gap-1">
             <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-            24h/24
+            Garde
         </span>`;
     }
     if (pharmacy.is_gare) {
@@ -231,7 +368,7 @@ function showPharmacyDetail(pharmacy) {
                 </span>
                 ${pharmacy.is_garde ? `
                     <span class="px-3 py-1 bg-red-100 text-red-700 text-sm font-medium rounded-full">
-                        24h/24
+                        Garde
                     </span>
                 ` : ''}
                 ${pharmacy.location_validated ? `
@@ -244,7 +381,7 @@ function showPharmacyDetail(pharmacy) {
             ${pharmacy.is_garde ? `
                 <div class="flex items-center gap-2 p-3 bg-red-50 rounded-xl">
                     <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                    <span class="text-sm font-medium text-red-700">Pharmacie de garde - Ouvert 24h/24</span>
+                    <span class="text-sm font-medium text-red-700">Pharmacie de garde</span>
                 </div>
             ` : ''}
             

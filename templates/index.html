@@ -122,7 +122,7 @@
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
                         <h2 class="text-lg font-semibold text-gray-800">
-                            Pharmacies de garde 24h/24 <span id="countGarde" class="text-red-600">(0)</span>
+                            Pharmacies de garde <span id="countGarde" class="text-red-600">(0)</span>
                         </h2>
                     </div>
                     <div id="gardeList" class="space-y-3">
@@ -131,7 +131,7 @@
             </div>
             
             <div id="tab-map" class="tab-content hidden">
-                <div id="map" class="h-[calc(100vh-280px)] lg:h-[600px]"></div>
+                <div id="map" class="h-[calc(100vh-140px)] lg:h-[calc(100vh-220px)]"></div>
             </div>
             
             <div id="tab-medicaments" class="tab-content hidden">
@@ -266,7 +266,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <span class="text-[10px] mt-0.5">24h/24</span>
+                    <span class="text-[10px] mt-0.5">Garde</span>
                 </button>
                 <button onclick="switchTab('map')" class="mobile-tab-btn flex flex-col items-center py-1 px-2" data-tab="map">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -289,6 +289,14 @@
             </div>
         </nav>
     </div>
+
+    <button id="gpsLocateBtn" onclick="locateNearestGardePharmacy()" 
+            class="fixed bottom-24 right-4 lg:bottom-8 lg:right-8 z-50 w-14 h-14 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+    </button>
 
     <div id="pharmacyModal" class="fixed inset-0 bg-black/50 z-[100] hidden items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-md max-h-[80vh] overflow-y-auto">
