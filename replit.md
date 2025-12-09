@@ -37,7 +37,7 @@ Preferred communication style: Simple, everyday language (French).
 
 #### Admin
 - id, username, password_hash
-- Default credentials: admin / admin123
+- Credentials configured via environment variables (ADMIN_USERNAME, ADMIN_PASSWORD)
 
 #### Pharmacy
 - id, code, nom, ville, quartier
@@ -91,3 +91,27 @@ Preferred communication style: Simple, everyday language (French).
 - Toggle garde status with one click
 - Interactive map for setting GPS coordinates
 - Search and filter in table view
+
+## Initialization Scripts
+
+### init_db.py
+Creates all database tables (pharmacy, admin, location_submission, info_submission, pharmacy_view, suggestion).
+
+```bash
+python init_db.py
+```
+
+### init_demo.py
+Loads pharmacy demo data from CSV file. Does NOT create admin user (admin is created from environment variables on app startup).
+
+```bash
+python init_demo.py
+```
+
+## Environment Variables
+
+Required secrets:
+- `ADMIN_USERNAME` - Admin login username
+- `ADMIN_PASSWORD` - Admin login password
+- `DATABASE_URL` - PostgreSQL connection string (auto-configured by Replit)
+- `SESSION_SECRET` - Flask session secret key
