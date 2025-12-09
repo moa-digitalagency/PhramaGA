@@ -8,3 +8,14 @@ wheels/
 
 # Virtual environments
 .venv
+.pythonlibs/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Misc
+.DS_Store
+*.log
