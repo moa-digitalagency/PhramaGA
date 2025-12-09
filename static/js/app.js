@@ -16,6 +16,18 @@ const CITY_CENTERS = {
     "Ntom": [0.3667, 9.7667]
 };
 
+const CITY_COLORS = {
+    "Libreville": "bg-blue-100 text-blue-700",
+    "Port-Gentil": "bg-purple-100 text-purple-700",
+    "Franceville": "bg-orange-100 text-orange-700",
+    "Moanda": "bg-pink-100 text-pink-700",
+    "Makokou": "bg-cyan-100 text-cyan-700",
+    "Oyem": "bg-amber-100 text-amber-700",
+    "Mouila": "bg-lime-100 text-lime-700",
+    "Koulamoutou": "bg-rose-100 text-rose-700",
+    "Ntom": "bg-teal-100 text-teal-700"
+};
+
 function initMap() {
     if (map) return;
     map = L.map('map').setView([0.4162, 9.4673], 7);
@@ -65,7 +77,7 @@ function displayOnMap(data) {
     clearMarkers();
     
     data.forEach(pharmacy => {
-        if (!pharmacy.lat || !pharmacy.lng) return;
+        if (pharmacy.lat === null || pharmacy.lat === undefined || pharmacy.lng === null || pharmacy.lng === undefined) return;
         
         const color = getMarkerColor(pharmacy);
         const icon = createMarkerIcon(color);
@@ -87,7 +99,7 @@ function displayOnMap(data) {
     });
     
     if (data.length > 0) {
-        const validData = data.filter(p => p.lat && p.lng);
+        const validData = data.filter(p => p.lat !== null && p.lat !== undefined && p.lng !== null && p.lng !== undefined);
         if (validData.length > 0) {
             const bounds = L.latLngBounds(validData.map(p => [p.lat, p.lng]));
             map.fitBounds(bounds, { padding: [30, 30] });
@@ -95,37 +107,132 @@ function displayOnMap(data) {
     }
 }
 
+function getCityBadgeClass(ville) {
+    return CITY_COLORS[ville] || "bg-gray-100 text-gray-700";
+}
+
 function createPharmacyCard(pharmacy) {
     const borderColor = pharmacy.is_garde ? 'border-l-red-500' : 
                        pharmacy.is_gare ? 'border-l-blue-500' : 'border-l-emerald-500';
+    const cityBadgeClass = getCityBadgeClass(pharmacy.ville);
     
     return `
         <div class="pharmacy-card bg-white rounded-xl p-4 shadow-sm border-l-4 ${borderColor} active:scale-[0.98] transition cursor-pointer"
              onclick="showPharmacyDetail(${JSON.stringify(pharmacy).replace(/"/g, '&quot;')})">
-            <div class="flex items-start justify-between">
+            <div class="flex items-start justify-between mb-2">
                 <div class="flex-1 min-w-0">
                     <h3 class="font-semibold text-gray-800 truncate">${pharmacy.nom}</h3>
                     <p class="text-sm text-gray-500 mt-0.5">${pharmacy.quartier || ''}</p>
-                    <p class="text-xs text-gray-400">${pharmacy.ville}</p>
                 </div>
-                ${pharmacy.is_garde ? `
-                    <span class="flex-shrink-0 ml-2 px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">
-                        24h/24
+                <div class="flex flex-wrap gap-1 ml-2">
+                    <span class="flex-shrink-0 px-2 py-1 ${cityBadgeClass} text-xs font-medium rounded-full">
+                        ${pharmacy.ville}
                     </span>
-                ` : ''}
+                    ${pharmacy.is_garde ? `
+                        <span class="flex-shrink-0 px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">
+                            24h/24
+                        </span>
+                    ` : ''}
+                </div>
             </div>
-            ${pharmacy.telephone ? `
-                <a href="tel:${pharmacy.telephone.split('/')[0].trim()}" 
-                   onclick="event.stopPropagation()"
-                   class="mt-3 flex items-center gap-2 text-sm text-emerald-600 font-medium">
+            <div class="flex flex-wrap gap-2 mt-3">
+                ${pharmacy.telephone ? `
+                    <a href="tel:${pharmacy.telephone.split('/')[0].trim()}" 
+                       onclick="event.stopPropagation()"
+                       class="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        </svg>
+                        Appeler
+                    </a>
+                ` : ''}
+                <button onclick="event.stopPropagation(); locatePharmacy(${pharmacy.id}, ${pharmacy.lat}, ${pharmacy.lng})"
+                   class="flex items-center gap-1.5 px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
-                    ${pharmacy.telephone.split('/')[0].trim()}
-                </a>
-            ` : ''}
+                    Localiser
+                </button>
+                ${pharmacy.location_validated && pharmacy.lat !== null && pharmacy.lat !== undefined && pharmacy.lng !== null && pharmacy.lng !== undefined ? `
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=${pharmacy.lat},${pharmacy.lng}" 
+                       target="_blank"
+                       onclick="event.stopPropagation()"
+                       class="flex items-center gap-1.5 px-3 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+                        </svg>
+                        Se rendre
+                    </a>
+                ` : `
+                    <button disabled
+                       class="flex items-center gap-1.5 px-3 py-2 bg-gray-300 text-gray-500 text-sm font-medium rounded-lg cursor-not-allowed">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+                        </svg>
+                        Se rendre
+                    </button>
+                `}
+            </div>
         </div>
     `;
+}
+
+function locatePharmacy(pharmacyId, lat, lng) {
+    if (!navigator.geolocation) {
+        alert('La géolocalisation n\'est pas supportée par votre navigateur');
+        return;
+    }
+    
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+            
+            if (lat !== null && lat !== undefined && lng !== null && lng !== undefined) {
+                switchTab('map');
+                setTimeout(() => {
+                    if (map) {
+                        const bounds = L.latLngBounds([[userLat, userLng], [lat, lng]]);
+                        map.fitBounds(bounds, { padding: [50, 50] });
+                        
+                        L.marker([userLat, userLng], {
+                            icon: L.divIcon({
+                                className: 'user-marker',
+                                html: `<div style="
+                                    background-color: #3b82f6;
+                                    width: 20px;
+                                    height: 20px;
+                                    border-radius: 50%;
+                                    border: 3px solid white;
+                                    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                                "></div>`,
+                                iconSize: [20, 20],
+                                iconAnchor: [10, 10]
+                            })
+                        }).addTo(map).bindPopup('Votre position').openPopup();
+                    }
+                }, 200);
+            } else {
+                alert('Les coordonnées de cette pharmacie ne sont pas disponibles');
+            }
+        },
+        (error) => {
+            let message = 'Impossible d\'obtenir votre position';
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    message = 'Vous avez refusé l\'accès à votre position';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message = 'Position indisponible';
+                    break;
+                case error.TIMEOUT:
+                    message = 'Délai d\'attente dépassé';
+                    break;
+            }
+            alert(message);
+        }
+    );
 }
 
 function showPharmacyDetail(pharmacy) {
@@ -134,9 +241,26 @@ function showPharmacyDetail(pharmacy) {
     const content = document.getElementById('modalContent');
     
     title.textContent = pharmacy.nom;
+    const cityBadgeClass = getCityBadgeClass(pharmacy.ville);
     
     content.innerHTML = `
         <div class="space-y-4">
+            <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1 ${cityBadgeClass} text-sm font-medium rounded-full">
+                    ${pharmacy.ville}
+                </span>
+                ${pharmacy.is_garde ? `
+                    <span class="px-3 py-1 bg-red-100 text-red-700 text-sm font-medium rounded-full">
+                        24h/24
+                    </span>
+                ` : ''}
+                ${pharmacy.location_validated ? `
+                    <span class="px-3 py-1 bg-green-100 text-green-700 text-sm font-medium rounded-full">
+                        Position vérifiée
+                    </span>
+                ` : ''}
+            </div>
+            
             ${pharmacy.is_garde ? `
                 <div class="flex items-center gap-2 p-3 bg-red-50 rounded-xl">
                     <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
@@ -202,15 +326,45 @@ function showPharmacyDetail(pharmacy) {
                 ` : ''}
             </div>
             
-            ${pharmacy.telephone ? `
-                <a href="tel:${pharmacy.telephone.split('/')[0].trim()}" 
-                   class="mt-4 w-full py-3 bg-emerald-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:bg-emerald-700 transition">
+            <div class="flex flex-col gap-2 mt-4">
+                ${pharmacy.telephone ? `
+                    <a href="tel:${pharmacy.telephone.split('/')[0].trim()}" 
+                       class="w-full py-3 bg-emerald-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:bg-emerald-700 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        </svg>
+                        Appeler
+                    </a>
+                ` : ''}
+                
+                <button onclick="closeModal(); locatePharmacy(${pharmacy.id}, ${pharmacy.lat}, ${pharmacy.lng})"
+                   class="w-full py-3 bg-blue-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:bg-blue-700 transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
-                    Appeler
-                </a>
-            ` : ''}
+                    Localiser
+                </button>
+                
+                ${pharmacy.location_validated && pharmacy.lat !== null && pharmacy.lat !== undefined && pharmacy.lng !== null && pharmacy.lng !== undefined ? `
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=${pharmacy.lat},${pharmacy.lng}" 
+                       target="_blank"
+                       class="w-full py-3 bg-purple-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:bg-purple-700 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+                        </svg>
+                        Se rendre
+                    </a>
+                ` : `
+                    <button disabled
+                       class="w-full py-3 bg-gray-300 text-gray-500 font-semibold rounded-xl flex items-center justify-center gap-2 cursor-not-allowed">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+                        </svg>
+                        Se rendre (non validée)
+                    </button>
+                `}
+            </div>
         </div>
     `;
     

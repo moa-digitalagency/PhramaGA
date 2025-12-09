@@ -28,7 +28,7 @@
                 <a href="/" class="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm font-medium">
                     Voir le site
                 </a>
-                <a href="{{ url_for('admin_logout') }}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium text-gray-700">
+                <a href="{{ url_for('admin.admin_logout') }}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium text-gray-700">
                     Déconnexion
                 </a>
             </div>
@@ -46,7 +46,7 @@
             {% endif %}
         {% endwith %}
         
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
             <div class="bg-white rounded-xl p-4 shadow-sm">
                 <p class="text-sm text-gray-500">Total pharmacies</p>
                 <p class="text-2xl font-bold text-gray-800">{{ pharmacies|length }}</p>
@@ -63,6 +63,10 @@
                 <p class="text-sm text-gray-500">Avec coordonnées GPS</p>
                 <p class="text-2xl font-bold text-green-600">{{ pharmacies|selectattr('latitude')|list|length }}</p>
             </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <p class="text-sm text-gray-500">Positions validées</p>
+                <p class="text-2xl font-bold text-purple-600">{{ pharmacies|selectattr('location_validated')|list|length }}</p>
+            </div>
         </div>
         
         <div class="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -72,7 +76,7 @@
                     <input type="text" id="searchAdmin" placeholder="Rechercher..." 
                            class="px-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                            onkeyup="filterTable()">
-                    <a href="{{ url_for('admin_add_pharmacy') }}" 
+                    <a href="{{ url_for('admin.admin_add_pharmacy') }}" 
                        class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -91,6 +95,7 @@
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quartier</th>
                             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Garde</th>
                             <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">GPS</th>
+                            <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Validé</th>
                             <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
                         </tr>
                     </thead>
@@ -120,15 +125,27 @@
                                 <span class="text-gray-400 text-xs">Non défini</span>
                                 {% endif %}
                             </td>
+                            <td class="px-4 py-3 text-center">
+                                {% if pharmacy.latitude and pharmacy.longitude %}
+                                <button onclick="toggleValidation({{ pharmacy.id }}, this, {{ 'true' if pharmacy.location_validated else 'false' }})" 
+                                        class="validation-toggle p-1.5 rounded-lg transition {% if pharmacy.location_validated %}bg-purple-100 text-purple-600{% else %}bg-gray-100 text-gray-400{% endif %}">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </button>
+                                {% else %}
+                                <span class="text-gray-400 text-xs">-</span>
+                                {% endif %}
+                            </td>
                             <td class="px-4 py-3 text-right">
                                 <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ url_for('admin_edit_pharmacy', id=pharmacy.id) }}" 
+                                    <a href="{{ url_for('admin.admin_edit_pharmacy', id=pharmacy.id) }}" 
                                        class="p-2 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                         </svg>
                                     </a>
-                                    <form action="{{ url_for('admin_delete_pharmacy', id=pharmacy.id) }}" method="POST" 
+                                    <form action="{{ url_for('admin.admin_delete_pharmacy', id=pharmacy.id) }}" method="POST" 
                                           onsubmit="return confirm('Supprimer cette pharmacie ?')">
                                         <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -173,6 +190,31 @@
                 }
             } catch (error) {
                 console.error('Error toggling garde:', error);
+            }
+        }
+        
+        async function toggleValidation(id, btn, currentState) {
+            try {
+                const endpoint = currentState ? 
+                    `/admin/pharmacy/${id}/invalidate-location` : 
+                    `/admin/pharmacy/${id}/validate-location`;
+                    
+                const response = await fetch(endpoint, { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (data.location_validated) {
+                        btn.classList.remove('bg-gray-100', 'text-gray-400');
+                        btn.classList.add('bg-purple-100', 'text-purple-600');
+                        btn.setAttribute('onclick', `toggleValidation(${id}, this, true)`);
+                    } else {
+                        btn.classList.remove('bg-purple-100', 'text-purple-600');
+                        btn.classList.add('bg-gray-100', 'text-gray-400');
+                        btn.setAttribute('onclick', `toggleValidation(${id}, this, false)`);
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling validation:', error);
             }
         }
     </script>
