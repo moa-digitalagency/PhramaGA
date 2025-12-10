@@ -266,6 +266,32 @@ def admin_delete_pharmacy(id):
     return redirect(url_for('admin.admin_dashboard'))
 
 
+@admin_bp.route('/pharmacy/<int:id>/garde', methods=['GET', 'POST'])
+@login_required
+def admin_pharmacy_garde(id):
+    pharmacy = PharmacyService.get_pharmacy_by_id(id)
+    
+    if request.method == 'POST':
+        start_date_str = request.form.get('start_date')
+        if start_date_str:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+            end_date = start_date + timedelta(days=7)
+            
+            pharmacy.is_garde = True
+            pharmacy.garde_start_date = start_date
+            pharmacy.garde_end_date = end_date
+        else:
+            pharmacy.is_garde = False
+            pharmacy.garde_start_date = None
+            pharmacy.garde_end_date = None
+        
+        db.session.commit()
+        flash('Statut de garde mis à jour avec succès', 'success')
+        return redirect(url_for('admin.admin_dashboard'))
+    
+    return render_template('admin/pharmacy_garde.html', pharmacy=pharmacy)
+
+
 @admin_bp.route('/pharmacy/<int:id>/toggle-garde', methods=['POST'])
 @login_required
 def admin_toggle_garde(id):
