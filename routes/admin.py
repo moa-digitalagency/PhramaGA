@@ -8,6 +8,7 @@ from models.pharmacy import Pharmacy
 from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal
 from models.emergency_contact import EmergencyContact, EMERGENCY_SERVICE_TYPES
 from models.site_settings import SiteSettings, PopupMessage
+from models.advertisement import Advertisement, AdSettings
 from services.pharmacy_service import PharmacyService
 from utils.helpers import safe_float, CITY_COORDINATES
 from extensions import db
@@ -780,3 +781,167 @@ def delete_popup(id):
     db.session.commit()
     flash('Popup supprimé', 'success')
     return redirect(url_for('admin.list_popups'))
+
+
+def get_ads_upload_path():
+    upload_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'ads')
+    os.makedirs(upload_dir, exist_ok=True)
+    return upload_dir
+
+
+def safe_delete_ad_upload(filename):
+    if not filename or '..' in filename or '/' in filename or '\\' in filename:
+        return
+    upload_dir = get_ads_upload_path()
+    file_path = os.path.join(upload_dir, filename)
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        os.remove(file_path)
+
+
+@admin_bp.route('/ads')
+@login_required
+def list_ads():
+    ads = Advertisement.query.order_by(Advertisement.priority.desc(), Advertisement.created_at.desc()).all()
+    return render_template('admin/ads.html', ads=ads)
+
+
+@admin_bp.route('/ad/add', methods=['GET', 'POST'])
+@login_required
+def add_ad():
+    if request.method == 'POST':
+        image_filename = None
+        if request.form.get('media_type') == 'image' and 'image_file' in request.files:
+            file = request.files['image_file']
+            if file and file.filename and allowed_file(file.filename):
+                original_filename = secure_filename(file.filename)
+                ext = original_filename.rsplit('.', 1)[1].lower() if '.' in original_filename else 'jpg'
+                image_filename = f"{uuid.uuid4().hex}.{ext}"
+                upload_dir = get_ads_upload_path()
+                file.save(os.path.join(upload_dir, image_filename))
+        
+        start_date = None
+        end_date = None
+        if request.form.get('start_date'):
+            start_date = datetime.strptime(request.form.get('start_date'), '%Y-%m-%dT%H:%M')
+        if request.form.get('end_date'):
+            end_date = datetime.strptime(request.form.get('end_date'), '%Y-%m-%dT%H:%M')
+        
+        ad = Advertisement(
+            title=request.form.get('title'),
+            description=request.form.get('description', ''),
+            media_type=request.form.get('media_type', 'image'),
+            image_filename=image_filename,
+            video_url=request.form.get('video_url', ''),
+            cta_text=request.form.get('cta_text', 'En savoir plus'),
+            cta_url=request.form.get('cta_url', ''),
+            skip_delay=int(request.form.get('skip_delay', 5)) or 5,
+            priority=int(request.form.get('priority', 0)),
+            start_date=start_date,
+            end_date=end_date,
+            is_active=request.form.get('is_active') == 'on'
+        )
+        db.session.add(ad)
+        db.session.commit()
+        flash('Publicité ajoutée avec succès', 'success')
+        return redirect(url_for('admin.list_ads'))
+    
+    return render_template('admin/ad_form.html', ad=None)
+
+
+@admin_bp.route('/ad/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_ad(id):
+    ad = Advertisement.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        if request.form.get('media_type') == 'image':
+            if 'image_file' in request.files:
+                file = request.files['image_file']
+                if file and file.filename and allowed_file(file.filename):
+                    if ad.image_filename:
+                        safe_delete_ad_upload(ad.image_filename)
+                    
+                    original_filename = secure_filename(file.filename)
+                    ext = original_filename.rsplit('.', 1)[1].lower() if '.' in original_filename else 'jpg'
+                    ad.image_filename = f"{uuid.uuid4().hex}.{ext}"
+                    upload_dir = get_ads_upload_path()
+                    file.save(os.path.join(upload_dir, ad.image_filename))
+            
+            if request.form.get('remove_image') == 'on':
+                if ad.image_filename:
+                    safe_delete_ad_upload(ad.image_filename)
+                    ad.image_filename = None
+        
+        start_date = None
+        end_date = None
+        if request.form.get('start_date'):
+            start_date = datetime.strptime(request.form.get('start_date'), '%Y-%m-%dT%H:%M')
+        if request.form.get('end_date'):
+            end_date = datetime.strptime(request.form.get('end_date'), '%Y-%m-%dT%H:%M')
+        
+        ad.title = request.form.get('title')
+        ad.description = request.form.get('description', '')
+        ad.media_type = request.form.get('media_type', 'image')
+        ad.video_url = request.form.get('video_url', '')
+        ad.cta_text = request.form.get('cta_text', 'En savoir plus')
+        ad.cta_url = request.form.get('cta_url', '')
+        ad.skip_delay = int(request.form.get('skip_delay', 5)) or 5
+        ad.priority = int(request.form.get('priority', 0))
+        ad.start_date = start_date
+        ad.end_date = end_date
+        ad.is_active = request.form.get('is_active') == 'on'
+        
+        db.session.commit()
+        flash('Publicité mise à jour', 'success')
+        return redirect(url_for('admin.list_ads'))
+    
+    return render_template('admin/ad_form.html', ad=ad)
+
+
+@admin_bp.route('/ad/<int:id>/toggle', methods=['POST'])
+@login_required
+def toggle_ad(id):
+    ad = Advertisement.query.get_or_404(id)
+    ad.is_active = not ad.is_active
+    db.session.commit()
+    return jsonify({'success': True, 'is_active': ad.is_active})
+
+
+@admin_bp.route('/ad/<int:id>/delete', methods=['POST'])
+@login_required
+def delete_ad(id):
+    ad = Advertisement.query.get_or_404(id)
+    if ad.image_filename:
+        safe_delete_ad_upload(ad.image_filename)
+    db.session.delete(ad)
+    db.session.commit()
+    flash('Publicité supprimée', 'success')
+    return redirect(url_for('admin.list_ads'))
+
+
+@admin_bp.route('/ads/settings', methods=['GET', 'POST'])
+@login_required
+def ad_settings():
+    settings = AdSettings.get_settings()
+    
+    if request.method == 'POST':
+        settings.ads_enabled = request.form.get('ads_enabled') == 'on'
+        settings.trigger_type = request.form.get('trigger_type', 'time')
+        settings.time_delay = int(request.form.get('time_delay', 60))
+        settings.time_repeat = request.form.get('time_repeat') == 'on'
+        settings.time_interval = int(request.form.get('time_interval', 300))
+        settings.page_count = int(request.form.get('page_count', 3))
+        settings.refresh_show = request.form.get('refresh_show') == 'on'
+        settings.refresh_count = int(request.form.get('refresh_count', 1))
+        settings.default_skip_delay = int(request.form.get('default_skip_delay', 5))
+        settings.max_ads_per_session = int(request.form.get('max_ads_per_session', 10))
+        settings.cooldown_after_skip = int(request.form.get('cooldown_after_skip', 60))
+        settings.cooldown_after_click = int(request.form.get('cooldown_after_click', 300))
+        settings.show_on_mobile = request.form.get('show_on_mobile') == 'on'
+        settings.show_on_desktop = request.form.get('show_on_desktop') == 'on'
+        
+        db.session.commit()
+        flash('Paramètres enregistrés avec succès', 'success')
+        return redirect(url_for('admin.ad_settings'))
+    
+    return render_template('admin/ad_settings.html', settings=settings)

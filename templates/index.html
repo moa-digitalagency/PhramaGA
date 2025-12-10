@@ -515,6 +515,27 @@
         </svg>
     </button>
 
+    <div id="adModal" class="fixed inset-0 bg-black/70 z-[2000] hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-hidden shadow-2xl">
+            <div id="adMediaContainer" class="w-full bg-gray-100">
+            </div>
+            <div class="p-5">
+                <h3 id="adTitle" class="text-xl font-bold text-gray-800 mb-2"></h3>
+                <p id="adDescription" class="text-gray-600 text-sm mb-4"></p>
+                <div class="flex flex-col gap-3">
+                    <a id="adCtaBtn" href="#" target="_blank" onclick="handleAdClick()" 
+                       class="w-full py-3 bg-emerald-600 text-white font-semibold rounded-xl text-center hover:bg-emerald-700 transition">
+                        En savoir plus
+                    </a>
+                    <button id="adSkipBtn" onclick="closeAdModal()" disabled
+                            class="w-full py-2.5 bg-gray-200 text-gray-500 font-medium rounded-xl transition cursor-not-allowed">
+                        Passer la pub (<span id="adCountdown">5</span>s)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="pharmacyModal" class="fixed inset-0 bg-black/50 z-[1500] hidden items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-md max-h-[80vh] overflow-y-auto">
             <div class="p-4 border-b sticky top-0 bg-white flex items-center justify-between">

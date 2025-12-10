@@ -5,6 +5,7 @@ from models.submission import LocationSubmission, InfoSubmission, PharmacyView, 
 from models.pharmacy import Pharmacy
 from models.emergency_contact import EmergencyContact
 from models.site_settings import PopupMessage, SiteSettings
+from models.advertisement import Advertisement, AdSettings
 from extensions import db
 
 public_bp = Blueprint('public', __name__)
@@ -194,3 +195,56 @@ def submit_pharmacy_proposal():
 def get_active_popups():
     popups = PopupMessage.query.filter_by(is_active=True).order_by(PopupMessage.ordering).all()
     return jsonify([p.to_dict() for p in popups])
+
+
+@public_bp.route('/api/ads/settings')
+def get_ad_settings():
+    settings = AdSettings.get_settings()
+    return jsonify(settings.to_dict())
+
+
+@public_bp.route('/api/ads/random')
+def get_random_ad():
+    import random
+    from datetime import datetime
+    
+    now = datetime.utcnow()
+    active_ads = Advertisement.query.filter(
+        Advertisement.is_active == True,
+        db.or_(Advertisement.start_date == None, Advertisement.start_date <= now),
+        db.or_(Advertisement.end_date == None, Advertisement.end_date >= now)
+    ).all()
+    
+    if not active_ads:
+        return jsonify(None)
+    
+    weighted_ads = []
+    for ad in active_ads:
+        weight = max(1, ad.priority + 1)
+        weighted_ads.extend([ad] * weight)
+    
+    selected_ad = random.choice(weighted_ads)
+    
+    settings = AdSettings.get_settings()
+    skip_delay = selected_ad.skip_delay if selected_ad.skip_delay > 0 else settings.default_skip_delay
+    
+    ad_data = selected_ad.to_dict()
+    ad_data['skip_delay'] = skip_delay
+    
+    return jsonify(ad_data)
+
+
+@public_bp.route('/api/ads/<int:id>/view', methods=['POST'])
+def record_ad_view(id):
+    ad = Advertisement.query.get_or_404(id)
+    ad.view_count = (ad.view_count or 0) + 1
+    db.session.commit()
+    return jsonify({'success': True})
+
+
+@public_bp.route('/api/ads/<int:id>/click', methods=['POST'])
+def record_ad_click(id):
+    ad = Advertisement.query.get_or_404(id)
+    ad.click_count = (ad.click_count or 0) + 1
+    db.session.commit()
+    return jsonify({'success': True})

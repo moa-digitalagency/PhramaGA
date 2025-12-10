@@ -4,6 +4,19 @@ let pharmacies = [];
 let currentTab = 'pharmacies';
 let currentCity = '';
 
+// Ad system variables
+let adSettings = null;
+let adState = {
+    adsShown: 0,
+    pageChanges: 0,
+    refreshCount: parseInt(sessionStorage.getItem('adRefreshCount') || '0'),
+    lastAdTime: 0,
+    cooldownUntil: 0,
+    currentAdId: null,
+    countdownTimer: null,
+    timeTimer: null
+};
+
 // Phone number click handler
 function handlePhoneClick(phoneString, event) {
     if (event) {
@@ -1361,9 +1374,218 @@ function closeWelcomePopup(popupId) {
     if (popup) popup.remove();
 }
 
+// ============ AD SYSTEM ============
+
+async function initAdSystem() {
+    try {
+        const response = await fetch('/api/ads/settings');
+        adSettings = await response.json();
+        
+        if (!adSettings.ads_enabled) return;
+        
+        // Check device type
+        const isMobile = window.innerWidth < 768;
+        if (isMobile && !adSettings.show_on_mobile) return;
+        if (!isMobile && !adSettings.show_on_desktop) return;
+        
+        // Handle refresh-based trigger
+        if (adSettings.trigger_type === 'refresh' || adSettings.trigger_type === 'combined') {
+            adState.refreshCount++;
+            sessionStorage.setItem('adRefreshCount', adState.refreshCount.toString());
+            
+            if (adSettings.refresh_show && adState.refreshCount >= adSettings.refresh_count) {
+                sessionStorage.setItem('adRefreshCount', '0');
+                setTimeout(() => showRandomAd(), 1000);
+                return;
+            }
+        }
+        
+        // Handle time-based trigger
+        if (adSettings.trigger_type === 'time' || adSettings.trigger_type === 'combined') {
+            adState.timeTimer = setTimeout(() => {
+                showRandomAd();
+                if (adSettings.time_repeat) {
+                    startAdInterval();
+                }
+            }, adSettings.time_delay * 1000);
+        }
+        
+    } catch (error) {
+        console.log('Ad system not available');
+    }
+}
+
+function startAdInterval() {
+    if (adState.timeTimer) clearInterval(adState.timeTimer);
+    adState.timeTimer = setInterval(() => {
+        if (canShowAd()) {
+            showRandomAd();
+        }
+    }, adSettings.time_interval * 1000);
+}
+
+function canShowAd() {
+    if (!adSettings || !adSettings.ads_enabled) return false;
+    if (adState.adsShown >= adSettings.max_ads_per_session) return false;
+    if (Date.now() < adState.cooldownUntil) return false;
+    
+    const adModal = document.getElementById('adModal');
+    if (adModal && adModal.classList.contains('flex')) return false;
+    
+    return true;
+}
+
+function trackPageChange() {
+    if (!adSettings) return;
+    if (adSettings.trigger_type !== 'page' && adSettings.trigger_type !== 'combined') return;
+    
+    adState.pageChanges++;
+    
+    if (adState.pageChanges >= adSettings.page_count && canShowAd()) {
+        adState.pageChanges = 0;
+        showRandomAd();
+    }
+}
+
+async function showRandomAd() {
+    if (!canShowAd()) return;
+    
+    try {
+        const response = await fetch('/api/ads/random');
+        const ad = await response.json();
+        
+        if (!ad) return;
+        
+        adState.currentAdId = ad.id;
+        displayAd(ad);
+        
+        // Record view
+        fetch(`/api/ads/${ad.id}/view`, { method: 'POST' });
+        
+    } catch (error) {
+        console.log('Failed to load ad');
+    }
+}
+
+function displayAd(ad) {
+    const modal = document.getElementById('adModal');
+    const mediaContainer = document.getElementById('adMediaContainer');
+    const title = document.getElementById('adTitle');
+    const description = document.getElementById('adDescription');
+    const ctaBtn = document.getElementById('adCtaBtn');
+    const skipBtn = document.getElementById('adSkipBtn');
+    const countdown = document.getElementById('adCountdown');
+    
+    // Set content
+    title.textContent = ad.title;
+    description.textContent = ad.description || '';
+    ctaBtn.textContent = ad.cta_text || 'En savoir plus';
+    ctaBtn.href = ad.cta_url || '#';
+    
+    if (!ad.cta_url) {
+        ctaBtn.classList.add('hidden');
+    } else {
+        ctaBtn.classList.remove('hidden');
+    }
+    
+    // Set media
+    mediaContainer.innerHTML = '';
+    if (ad.media_type === 'image' && ad.image_url) {
+        mediaContainer.innerHTML = `<img src="${ad.image_url}" alt="${ad.title}" class="w-full h-48 object-cover">`;
+    } else if (ad.media_type === 'video' && ad.video_url) {
+        const embedUrl = getVideoEmbedUrl(ad.video_url);
+        if (embedUrl) {
+            mediaContainer.innerHTML = `<iframe src="${embedUrl}" class="w-full h-56" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
+        }
+    }
+    
+    // Setup countdown
+    let timeLeft = ad.skip_delay || 5;
+    countdown.textContent = timeLeft;
+    skipBtn.disabled = true;
+    skipBtn.classList.add('cursor-not-allowed', 'bg-gray-200', 'text-gray-500');
+    skipBtn.classList.remove('cursor-pointer', 'bg-gray-300', 'text-gray-700', 'hover:bg-gray-400');
+    
+    if (adState.countdownTimer) clearInterval(adState.countdownTimer);
+    
+    adState.countdownTimer = setInterval(() => {
+        timeLeft--;
+        countdown.textContent = timeLeft;
+        
+        if (timeLeft <= 0) {
+            clearInterval(adState.countdownTimer);
+            skipBtn.disabled = false;
+            skipBtn.innerHTML = 'Passer la pub';
+            skipBtn.classList.remove('cursor-not-allowed', 'bg-gray-200', 'text-gray-500');
+            skipBtn.classList.add('cursor-pointer', 'bg-gray-300', 'text-gray-700', 'hover:bg-gray-400');
+        }
+    }, 1000);
+    
+    // Show modal
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    adState.adsShown++;
+    adState.lastAdTime = Date.now();
+}
+
+function getVideoEmbedUrl(url) {
+    // YouTube
+    const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\s]+)/);
+    if (ytMatch) {
+        return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
+    }
+    
+    // Facebook
+    if (url.includes('facebook.com')) {
+        return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&autoplay=true`;
+    }
+    
+    // Vimeo
+    const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+    if (vimeoMatch) {
+        return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
+    }
+    
+    return null;
+}
+
+function closeAdModal() {
+    const modal = document.getElementById('adModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    
+    if (adState.countdownTimer) {
+        clearInterval(adState.countdownTimer);
+    }
+    
+    // Apply cooldown after skip
+    if (adSettings) {
+        adState.cooldownUntil = Date.now() + (adSettings.cooldown_after_skip * 1000);
+    }
+    
+    adState.currentAdId = null;
+}
+
+function handleAdClick() {
+    if (adState.currentAdId) {
+        fetch(`/api/ads/${adState.currentAdId}/click`, { method: 'POST' });
+    }
+    
+    // Apply longer cooldown after click
+    if (adSettings) {
+        adState.cooldownUntil = Date.now() + (adSettings.cooldown_after_click * 1000);
+    }
+    
+    setTimeout(closeAdModal, 100);
+}
+
+// Override switchTab to track page changes
+const originalSwitchTab = typeof switchTab !== 'undefined' ? switchTab : null;
+
 document.addEventListener('DOMContentLoaded', () => {
     fetchPharmacies();
     loadActivePopups();
+    initAdSystem();
     
     document.getElementById('searchInput').addEventListener('input', () => {
         debounce(() => fetchPharmacies(currentTab === 'garde'), 300);
@@ -1380,3 +1602,12 @@ document.addEventListener('DOMContentLoaded', () => {
         suggestionForm.addEventListener('submit', submitSuggestion);
     }
 });
+
+// Wrap switchTab to track page changes for ads
+const _originalSwitchTab = window.switchTab;
+window.switchTab = function(tab) {
+    if (typeof _originalSwitchTab === 'function') {
+        _originalSwitchTab(tab);
+    }
+    trackPageChange();
+};
