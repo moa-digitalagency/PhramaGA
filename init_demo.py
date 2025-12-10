@@ -19,7 +19,7 @@ def init_demo_data(force=False):
             db.session.commit()
             print("Existing pharmacies cleared.")
         
-        csv_path = os.path.join('attached_assets', 'pharmacies_gabon_exhaustive_1765303770607.csv')
+        csv_path = os.path.join('attached_assets', 'pharmacies_gabon_exhaustive_1765368648009.csv')
         if not os.path.exists(csv_path):
             print(f"Error: CSV file not found at {csv_path}")
             return
@@ -50,7 +50,7 @@ def init_demo_data(force=False):
                 horaires = row.get('horaires', '')
                 nom = row.get('nom', '')
                 
-                is_garde = 'garde' in type_etablissement.lower() or '24h' in horaires
+                is_garde = 'garde' in type_etablissement.lower() or '24h' in horaires.lower()
                 is_gare = 'gare' in quartier.lower() or 'gare' in nom.lower()
                 
                 pharmacy = Pharmacy(

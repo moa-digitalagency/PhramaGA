@@ -146,7 +146,7 @@ class PharmacyService:
     
     @staticmethod
     def import_csv_data():
-        csv_path = os.path.join('attached_assets', 'pharmacies_gabon_exhaustive_1765303770607.csv')
+        csv_path = os.path.join('attached_assets', 'pharmacies_gabon_exhaustive_1765368648009.csv')
         if not os.path.exists(csv_path):
             return
         
