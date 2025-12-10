@@ -10,6 +10,8 @@ Preferred communication style: Simple, everyday language (French).
 
 ## Recent Changes (December 2025)
 
+- Added Bowl of Hygieia favicon (pharmacy symbol) across all pages
+- Complete admin section redesign with modern glass-effect login, gradient sidebar, and improved forms
 - Added pharmacy verification system with is_verified field and visual badges
 - Changed pharmacy icon to proper pharmacy cross symbol (circle with cross inside)
 - Added verified pharmacies count in admin dashboard stats
