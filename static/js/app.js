@@ -1249,6 +1249,24 @@ function getPharmacyLocation() {
     );
 }
 
+function selectCity(cityName) {
+    const latInput = document.getElementById('pharmacyLat');
+    const lngInput = document.getElementById('pharmacyLng');
+    const statusEl = document.getElementById('locationStatus');
+    
+    if (!cityName || !CITY_CENTERS[cityName]) {
+        return;
+    }
+    
+    const coords = CITY_CENTERS[cityName];
+    latInput.value = coords[0].toFixed(6);
+    lngInput.value = coords[1].toFixed(6);
+    
+    statusEl.textContent = 'Coordonnees du centre-ville de ' + cityName + ' appliquees';
+    statusEl.classList.remove('hidden', 'text-red-600');
+    statusEl.classList.add('text-green-600');
+}
+
 function loadActivePopups() {
     fetch('/api/popups')
         .then(response => response.json())

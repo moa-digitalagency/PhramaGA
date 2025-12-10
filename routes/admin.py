@@ -287,7 +287,8 @@ def admin_pharmacy_garde(id):
         
         db.session.commit()
         flash('Statut de garde mis à jour avec succès', 'success')
-        return redirect(url_for('admin.admin_dashboard') + '#pharmacies')
+        tab = request.args.get('tab', 'pharmacies')
+        return redirect(url_for('admin.admin_dashboard') + '#' + tab)
     
     return render_template('admin/pharmacy_garde.html', pharmacy=pharmacy)
 
