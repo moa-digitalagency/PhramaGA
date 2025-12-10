@@ -5,7 +5,7 @@ from models.pharmacy import Pharmacy
 
 class PharmacyService:
     @staticmethod
-    def get_all_pharmacies(search=None, ville=None, garde_only=False, categorie=None):
+    def get_all_pharmacies(search=None, ville=None, garde_only=False, gare_only=False, categorie=None):
         query = Pharmacy.query
         
         if search:
@@ -23,6 +23,9 @@ class PharmacyService:
         
         if garde_only:
             query = query.filter(Pharmacy.is_garde == True)
+        
+        if gare_only:
+            query = query.filter(Pharmacy.categorie_emplacement == 'gare')
         
         if categorie:
             query = query.filter(Pharmacy.categorie_emplacement == categorie)
