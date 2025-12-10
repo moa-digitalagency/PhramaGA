@@ -10,6 +10,9 @@ Preferred communication style: Simple, everyday language (French).
 
 ## Recent Changes (December 2025)
 
+- Added pharmacy categorization system (gare, hopital, aeroport, marche, depot, centre_commercial, generale)
+- "De garde" is now a state (checkbox) separate from category
+- Added GPS coordinate capture with geolocation button and manual entry
 - Added Bowl of Hygieia favicon (pharmacy symbol) across all pages
 - Complete admin section redesign with modern glass-effect login, gradient sidebar, and improved forms
 - Added pharmacy verification system with is_verified field and visual badges
@@ -49,7 +52,8 @@ Preferred communication style: Simple, everyday language (French).
 #### Pharmacy
 - id, code, nom, ville, quartier
 - telephone, bp, horaires, services, proprietaire
-- type_etablissement, is_garde, is_gare, is_verified
+- type_etablissement, categorie, is_garde, is_gare, is_verified
+- categorie values: generale, gare, hopital, aeroport, centre_commercial, marche, depot
 - latitude, longitude (GPS coordinates)
 - location_validated, validated_at, validated_by_admin_id
 
