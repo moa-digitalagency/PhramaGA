@@ -83,6 +83,7 @@ def admin_add_pharmacy():
             'type_etablissement': request.form.get('type_etablissement'),
             'is_garde': request.form.get('is_garde') == 'on',
             'is_gare': request.form.get('is_gare') == 'on',
+            'is_verified': request.form.get('is_verified') == 'on',
             'latitude': safe_float(request.form.get('latitude')),
             'longitude': safe_float(request.form.get('longitude')),
             'location_validated': request.form.get('location_validated') == 'on'
@@ -113,6 +114,7 @@ def admin_edit_pharmacy(id):
             'type_etablissement': request.form.get('type_etablissement'),
             'is_garde': request.form.get('is_garde') == 'on',
             'is_gare': request.form.get('is_gare') == 'on',
+            'is_verified': request.form.get('is_verified') == 'on',
             'latitude': safe_float(request.form.get('latitude')),
             'longitude': safe_float(request.form.get('longitude'))
         }

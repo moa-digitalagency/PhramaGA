@@ -21,6 +21,7 @@ class Pharmacy(db.Model):
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     location_validated = db.Column(db.Boolean, default=False)
+    is_verified = db.Column(db.Boolean, default=False)
     validated_at = db.Column(db.DateTime)
     validated_by_admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -52,5 +53,6 @@ class Pharmacy(db.Model):
             'lat': self.latitude,
             'lng': self.longitude,
             'location_validated': self.location_validated,
+            'is_verified': self.is_verified,
             'garde_end_date': self.garde_end_date.isoformat() if self.garde_end_date else None
         }

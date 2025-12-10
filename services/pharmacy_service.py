@@ -73,6 +73,7 @@ class PharmacyService:
             type_etablissement=data.get('type_etablissement'),
             is_garde=data.get('is_garde', False),
             is_gare=data.get('is_gare', False),
+            is_verified=data.get('is_verified', False),
             latitude=data.get('latitude'),
             longitude=data.get('longitude'),
             location_validated=data.get('location_validated', False)
@@ -95,6 +96,7 @@ class PharmacyService:
         pharmacy.type_etablissement = data.get('type_etablissement', pharmacy.type_etablissement)
         pharmacy.is_garde = data.get('is_garde', pharmacy.is_garde)
         pharmacy.is_gare = data.get('is_gare', pharmacy.is_gare)
+        pharmacy.is_verified = data.get('is_verified', pharmacy.is_verified)
         
         if 'latitude' in data:
             pharmacy.latitude = data['latitude']

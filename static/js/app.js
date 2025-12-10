@@ -58,7 +58,7 @@ function createMarkerIcon(color) {
             justify-content: center;
         ">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-4H6v-2h4V7h2v4h4v2h-4v4z"/>
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v4h4v2h-4v4h-2v-4H7v-2h4V7z"/>
             </svg>
         </div>`,
         iconSize: [32, 32],
@@ -295,9 +295,12 @@ function createPharmacyCard(pharmacy) {
                 <span class="flex-shrink-0 px-2 py-1 ${cityBadgeClass} text-xs font-medium rounded-full">
                     ${pharmacy.ville}
                 </span>
-                ${pharmacy.location_validated ? `
-                    <span class="flex-shrink-0 px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                        GPS validé
+                ${pharmacy.is_verified ? `
+                    <span class="flex-shrink-0 px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        Vérifié
                     </span>
                 ` : ''}
             </div>
@@ -381,9 +384,12 @@ function showPharmacyDetail(pharmacy) {
                         Garde
                     </span>
                 ` : ''}
-                ${pharmacy.location_validated ? `
-                    <span class="px-3 py-1 bg-green-100 text-green-700 text-sm font-medium rounded-full">
-                        Position vérifiée
+                ${pharmacy.is_verified ? `
+                    <span class="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded-full flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        Établissement vérifié
                     </span>
                 ` : ''}
             </div>
