@@ -7,15 +7,23 @@ let currentCity = '';
 // Ad system variables
 let adSettings = null;
 let adState = {
-    adsShown: 0,
-    pageChanges: 0,
+    adsShown: parseInt(sessionStorage.getItem('adAdsShown') || '0'),
+    pageChanges: parseInt(sessionStorage.getItem('adPageChanges') || '0'),
     refreshCount: parseInt(sessionStorage.getItem('adRefreshCount') || '0'),
-    lastAdTime: 0,
-    cooldownUntil: 0,
+    lastAdTime: parseInt(sessionStorage.getItem('adLastAdTime') || '0'),
+    cooldownUntil: parseInt(sessionStorage.getItem('adCooldownUntil') || '0'),
     currentAdId: null,
     countdownTimer: null,
     timeTimer: null
 };
+
+function saveAdState() {
+    sessionStorage.setItem('adAdsShown', adState.adsShown.toString());
+    sessionStorage.setItem('adPageChanges', adState.pageChanges.toString());
+    sessionStorage.setItem('adRefreshCount', adState.refreshCount.toString());
+    sessionStorage.setItem('adLastAdTime', adState.lastAdTime.toString());
+    sessionStorage.setItem('adCooldownUntil', adState.cooldownUntil.toString());
+}
 
 // Phone number click handler
 function handlePhoneClick(phoneString, event) {
@@ -1394,11 +1402,14 @@ async function initAdSystem() {
             sessionStorage.setItem('adRefreshCount', adState.refreshCount.toString());
             
             if (adSettings.refresh_show && adState.refreshCount >= adSettings.refresh_count) {
-                sessionStorage.setItem('adRefreshCount', '0');
+                adState.refreshCount = 0;
+                saveAdState();
                 setTimeout(() => showRandomAd(), 1000);
                 return;
             }
         }
+        
+        saveAdState();
         
         // Handle time-based trigger
         if (adSettings.trigger_type === 'time' || adSettings.trigger_type === 'combined') {
@@ -1443,7 +1454,10 @@ function trackPageChange() {
     
     if (adState.pageChanges >= adSettings.page_count && canShowAd()) {
         adState.pageChanges = 0;
+        saveAdState();
         showRandomAd();
+    } else {
+        saveAdState();
     }
 }
 
@@ -1526,6 +1540,7 @@ function displayAd(ad) {
     modal.classList.add('flex');
     adState.adsShown++;
     adState.lastAdTime = Date.now();
+    saveAdState();
 }
 
 function getVideoEmbedUrl(url) {
@@ -1561,6 +1576,7 @@ function closeAdModal() {
     // Apply cooldown after skip
     if (adSettings) {
         adState.cooldownUntil = Date.now() + (adSettings.cooldown_after_skip * 1000);
+        saveAdState();
     }
     
     adState.currentAdId = null;
@@ -1574,6 +1590,7 @@ function handleAdClick() {
     // Apply longer cooldown after click
     if (adSettings) {
         adState.cooldownUntil = Date.now() + (adSettings.cooldown_after_click * 1000);
+        saveAdState();
     }
     
     setTimeout(closeAdModal, 100);
