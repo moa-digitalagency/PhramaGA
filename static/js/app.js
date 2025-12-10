@@ -127,11 +127,12 @@ function createMapPopup(pharmacy) {
 
 function locateNearestGardePharmacy() {
     const btn = document.getElementById('gpsLocateBtn');
-    btn.innerHTML = '<svg class="w-6 h-6 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+    const originalIcon = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
+    btn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
     
     if (!navigator.geolocation) {
         alert('La géolocalisation n\'est pas supportée par votre navigateur');
-        btn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
+        btn.innerHTML = originalIcon;
         return;
     }
     
@@ -140,7 +141,6 @@ function locateNearestGardePharmacy() {
             const userLat = position.coords.latitude;
             const userLng = position.coords.longitude;
             
-            // Find nearest city
             let nearestCity = '';
             let minDistance = Infinity;
             
@@ -152,23 +152,35 @@ function locateNearestGardePharmacy() {
                 }
             }
             
-            // Filter garde pharmacies in that city
-            const gardeInCity = pharmacies.filter(p => p.is_garde && p.ville === nearestCity && p.lat !== null && p.lng !== null);
-            
-            if (gardeInCity.length === 0) {
-                // No garde in nearest city, show all garde pharmacies
-                const allGarde = pharmacies.filter(p => p.is_garde && p.lat !== null && p.lng !== null);
-                if (allGarde.length === 0) {
-                    alert('Aucune pharmacie de garde trouvée');
-                    btn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
-                    return;
-                }
-                showNearestPharmaciesOnMap(userLat, userLng, allGarde, 'Garde les plus proches');
+            if (currentTab === 'garde') {
+                currentCity = nearestCity;
+                document.querySelectorAll('.city-filter').forEach(btn => {
+                    if (btn.dataset.city === nearestCity) {
+                        btn.classList.add('bg-white', 'text-primary-700');
+                        btn.classList.remove('bg-white/10', 'text-white');
+                    } else {
+                        btn.classList.remove('bg-white', 'text-primary-700');
+                        btn.classList.add('bg-white/10', 'text-white');
+                    }
+                });
+                fetchPharmacies(true);
+                btn.innerHTML = originalIcon;
             } else {
-                showNearestPharmaciesOnMap(userLat, userLng, gardeInCity, `Garde à ${nearestCity}`);
+                const gardeInCity = pharmacies.filter(p => p.is_garde && p.ville === nearestCity && p.lat !== null && p.lng !== null);
+                
+                if (gardeInCity.length === 0) {
+                    const allGarde = pharmacies.filter(p => p.is_garde && p.lat !== null && p.lng !== null);
+                    if (allGarde.length === 0) {
+                        alert('Aucune pharmacie de garde trouvée');
+                        btn.innerHTML = originalIcon;
+                        return;
+                    }
+                    showNearestPharmaciesOnMap(userLat, userLng, allGarde, 'Garde les plus proches');
+                } else {
+                    showNearestPharmaciesOnMap(userLat, userLng, gardeInCity, `Garde à ${nearestCity}`);
+                }
+                btn.innerHTML = originalIcon;
             }
-            
-            btn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
         },
         (error) => {
             let message = 'Impossible d\'obtenir votre position';
@@ -184,7 +196,7 @@ function locateNearestGardePharmacy() {
                     break;
             }
             alert(message);
-            btn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
+            btn.innerHTML = originalIcon;
         },
         { enableHighAccuracy: true, timeout: 10000 }
     );
@@ -840,6 +852,17 @@ function switchTab(tab) {
             searchSection.style.display = 'block';
         } else {
             searchSection.style.display = 'none';
+        }
+    }
+    
+    const gpsBtn = document.getElementById('gpsLocateBtn');
+    if (gpsBtn) {
+        if (tab === 'garde' || tab === 'map') {
+            gpsBtn.classList.remove('hidden');
+            gpsBtn.classList.add('flex');
+        } else {
+            gpsBtn.classList.add('hidden');
+            gpsBtn.classList.remove('flex');
         }
     }
     

@@ -131,7 +131,7 @@
             </div>
             
             <div id="tab-map" class="tab-content hidden">
-                <div id="map" class="h-[calc(100vh-140px)] lg:h-[calc(100vh-220px)]"></div>
+                <div id="map" class="h-[calc(100vh-64px)] lg:h-[calc(100vh-172px)] w-full"></div>
             </div>
             
             <div id="tab-medicaments" class="tab-content hidden">
@@ -291,8 +291,9 @@
     </div>
 
     <button id="gpsLocateBtn" onclick="locateNearestGardePharmacy()" 
-            class="fixed bottom-24 right-4 lg:bottom-8 lg:right-8 z-50 w-14 h-14 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="hidden fixed bottom-20 right-3 lg:bottom-6 lg:right-6 z-[60] w-10 h-10 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+            title="Localiser les pharmacies de garde près de moi">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
         </svg>
