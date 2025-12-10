@@ -10,6 +10,11 @@ Preferred communication style: Simple, everyday language (French).
 
 ## Recent Changes (December 2025)
 
+- Fixed admin duplicate key error - now updates existing admin instead of creating duplicates
+- Replaced "horaire" with timezone setting (fuseau horaire) using dropdown selector
+- Popup images now uploaded securely with sanitized filenames (stored in static/uploads/popups/)
+- Added header code block in settings for custom scripts/analytics injection
+- Centered popup content for better visual display
 - Added admin settings panel for site configuration (app name, logo, favicon, SEO/OpenGraph metadata, default hours)
 - Implemented popup system with image upload, title, description, and warning block (red border)
 - Added welcome popup with French text about platform development and user contributions
