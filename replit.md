@@ -10,6 +10,11 @@ Preferred communication style: Simple, everyday language (French).
 
 ## Recent Changes (December 2025)
 
+- Added admin settings panel for site configuration (app name, logo, favicon, SEO/OpenGraph metadata, default hours)
+- Implemented popup system with image upload, title, description, and warning block (red border)
+- Added welcome popup with French text about platform development and user contributions
+- Phone numbers made clickable with popup selector for multiple numbers (separated by / or -)
+- Created comprehensive README.md with project description, features, and init_demo instructions
 - Added pharmacy categorization system (gare, hopital, aeroport, marche, depot, centre_commercial, generale)
 - "De garde" is now a state (checkbox) separate from category
 - Added GPS coordinate capture with geolocation button and manual entry
