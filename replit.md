@@ -10,6 +10,11 @@ Preferred communication style: Simple, everyday language (French).
 
 ## Recent Changes (December 2025)
 
+- Added pharmacy verification system with is_verified field and visual badges
+- Changed pharmacy icon to proper pharmacy cross symbol (circle with cross inside)
+- Added verified pharmacies count in admin dashboard stats
+- Added verification column in admin pharmacy table
+- Added verification checkbox in pharmacy add/edit form
 - Redesigned UI with mobile-first responsive design
 - Added tab-based navigation (Pharmacies, Pharmacies de garde, Carte)
 - Implemented admin authentication and dashboard
@@ -42,8 +47,9 @@ Preferred communication style: Simple, everyday language (French).
 #### Pharmacy
 - id, code, nom, ville, quartier
 - telephone, bp, horaires, services, proprietaire
-- type_etablissement, is_garde, is_gare
+- type_etablissement, is_garde, is_gare, is_verified
 - latitude, longitude (GPS coordinates)
+- location_validated, validated_at, validated_by_admin_id
 
 ## External Dependencies
 
