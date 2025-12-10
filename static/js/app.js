@@ -265,7 +265,7 @@ const TYPE_COLORS = {
 };
 
 const CATEGORY_LABELS = {
-    'standard': null,
+    'standard': 'Standard',
     'gare': 'Gare',
     'hopital': 'Hôpital',
     'aeroport': 'Aéroport',
@@ -307,8 +307,7 @@ function getGardeBadge(pharmacy) {
 
 function getCategoryBadge(pharmacy) {
     const category = pharmacy.categorie_emplacement || 'standard';
-    const label = CATEGORY_LABELS[category];
-    if (!label) return '';
+    const label = CATEGORY_LABELS[category] || 'Standard';
     return `<span class="flex-shrink-0 px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full">
         ${label}
     </span>`;
