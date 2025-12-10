@@ -993,6 +993,9 @@ async function submitSuggestion(e) {
                 return;
             }
             
+            const latValue = document.getElementById('pharmacyLat').value;
+            const lngValue = document.getElementById('pharmacyLng').value;
+            
             const data = {
                 nom,
                 ville,
@@ -1005,6 +1008,8 @@ async function submitSuggestion(e) {
                 type_etablissement: document.getElementById('pharmacyType').value,
                 is_garde: document.getElementById('pharmacyIsGarde').checked,
                 comment: document.getElementById('pharmacyComment').value,
+                latitude: latValue ? parseFloat(latValue) : null,
+                longitude: lngValue ? parseFloat(lngValue) : null,
                 name,
                 phone,
                 email
@@ -1043,6 +1048,64 @@ async function submitSuggestion(e) {
         console.error('Error submitting suggestion:', error);
         alert('Erreur de connexion. Veuillez réessayer.');
     }
+}
+
+function getPharmacyLocation() {
+    const btn = document.getElementById('getLocationBtn');
+    const btnText = document.getElementById('getLocationBtnText');
+    const latInput = document.getElementById('pharmacyLat');
+    const lngInput = document.getElementById('pharmacyLng');
+    const statusEl = document.getElementById('locationStatus');
+    
+    if (!navigator.geolocation) {
+        alert('La géolocalisation n\'est pas supportée par votre navigateur');
+        return;
+    }
+    
+    btn.disabled = true;
+    btnText.textContent = 'Récupération en cours...';
+    btn.classList.add('opacity-75');
+    
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            
+            latInput.value = lat.toFixed(6);
+            lngInput.value = lng.toFixed(6);
+            
+            statusEl.textContent = 'Position récupérée avec succès !';
+            statusEl.classList.remove('hidden', 'text-red-600');
+            statusEl.classList.add('text-green-600');
+            
+            btn.disabled = false;
+            btnText.textContent = 'Récupérer ma position actuelle';
+            btn.classList.remove('opacity-75');
+        },
+        (error) => {
+            let message = 'Impossible d\'obtenir votre position';
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    message = 'Vous avez refusé l\'accès à votre position. Saisissez les coordonnées manuellement.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message = 'Position indisponible. Saisissez les coordonnées manuellement.';
+                    break;
+                case error.TIMEOUT:
+                    message = 'Délai d\'attente dépassé. Réessayez ou saisissez manuellement.';
+                    break;
+            }
+            
+            statusEl.textContent = message;
+            statusEl.classList.remove('hidden', 'text-green-600');
+            statusEl.classList.add('text-red-600');
+            
+            btn.disabled = false;
+            btnText.textContent = 'Réessayer';
+            btn.classList.remove('opacity-75');
+        },
+        { enableHighAccuracy: true, timeout: 15000 }
+    );
 }
 
 document.addEventListener('DOMContentLoaded', () => {
