@@ -324,7 +324,17 @@ function createPharmacyCard(pharmacy) {
             <div class="flex items-start justify-between">
                 <div class="flex-1 min-w-0">
                     <h3 class="font-semibold text-gray-800 truncate">${pharmacy.nom}</h3>
-                    <p class="text-sm text-gray-500 mt-0.5">${pharmacy.quartier || ''}</p>
+                    ${pharmacy.quartier ? `
+                        <div class="flex items-center gap-1.5 mt-0.5">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 text-gray-600 text-sm font-medium rounded-full">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                ${pharmacy.quartier}
+                            </span>
+                        </div>
+                    ` : ''}
                     ${pharmacy.telephone ? `
                         <div class="flex items-center gap-1.5 mt-1">
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-full">
