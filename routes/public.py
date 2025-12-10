@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, jsonify, request
+from markupsafe import Markup
 from services.pharmacy_service import PharmacyService
 from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal
 from models.pharmacy import Pharmacy
 from models.emergency_contact import EmergencyContact
-from models.site_settings import PopupMessage
+from models.site_settings import PopupMessage, SiteSettings
 from extensions import db
 
 public_bp = Blueprint('public', __name__)
@@ -23,11 +24,14 @@ def index():
             contacts_by_city[contact.ville] = []
         contacts_by_city[contact.ville].append(contact)
     
+    header_code = SiteSettings.get('header_code', '')
+    
     return render_template('index.html', 
                           villes=villes, 
                           total_pharmacies=total_pharmacies,
                           national_contacts=national_contacts,
-                          contacts_by_city=contacts_by_city)
+                          contacts_by_city=contacts_by_city,
+                          header_code=Markup(header_code) if header_code else '')
 
 
 @public_bp.route('/api/pharmacies')

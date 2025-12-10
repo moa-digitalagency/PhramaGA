@@ -1,5 +1,8 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+import os
+import uuid
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
 from flask_login import login_user, logout_user, login_required, current_user
+from werkzeug.utils import secure_filename
 from models.admin import Admin
 from models.pharmacy import Pharmacy
 from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal
@@ -10,6 +13,11 @@ from utils.helpers import safe_float, CITY_COORDINATES
 from extensions import db
 from datetime import datetime, timedelta
 from sqlalchemy import func
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -434,9 +442,9 @@ def site_settings():
     if request.method == 'POST':
         settings_keys = [
             'site_name', 'site_description', 'site_logo_url', 'site_favicon_url',
-            'default_horaires', 'contact_email', 'contact_phone',
+            'site_timezone', 'contact_email', 'contact_phone',
             'og_title', 'og_description', 'og_image_url',
-            'meta_keywords', 'google_analytics_id'
+            'meta_keywords', 'google_analytics_id', 'header_code'
         ]
         
         for key in settings_keys:
@@ -457,15 +465,32 @@ def list_popups():
     return render_template('admin/popups.html', popups=popups)
 
 
+def get_upload_path():
+    upload_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'popups')
+    os.makedirs(upload_dir, exist_ok=True)
+    return upload_dir
+
 @admin_bp.route('/popup/add', methods=['GET', 'POST'])
 @login_required
 def add_popup():
     if request.method == 'POST':
+        image_filename = None
+        if 'image_file' in request.files:
+            file = request.files['image_file']
+            if file and file.filename and allowed_file(file.filename):
+                original_filename = secure_filename(file.filename)
+                ext = original_filename.rsplit('.', 1)[1].lower() if '.' in original_filename else 'jpg'
+                image_filename = f"{uuid.uuid4().hex}.{ext}"
+                upload_dir = get_upload_path()
+                upload_path = os.path.join(upload_dir, image_filename)
+                file.save(upload_path)
+        
         popup = PopupMessage(
             title=request.form.get('title'),
             description=request.form.get('description', ''),
             warning_text=request.form.get('warning_text', ''),
             image_url=request.form.get('image_url', ''),
+            image_filename=image_filename,
             is_active=request.form.get('is_active') == 'on',
             show_once=request.form.get('show_once') == 'on',
             ordering=int(request.form.get('ordering', 0))
@@ -478,16 +503,44 @@ def add_popup():
     return render_template('admin/popup_form.html', popup=None)
 
 
+def safe_delete_upload(filename):
+    if not filename or '..' in filename or '/' in filename or '\\' in filename:
+        return
+    upload_dir = get_upload_path()
+    file_path = os.path.join(upload_dir, filename)
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        os.remove(file_path)
+
 @admin_bp.route('/popup/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_popup(id):
     popup = PopupMessage.query.get_or_404(id)
     
     if request.method == 'POST':
+        if 'image_file' in request.files:
+            file = request.files['image_file']
+            if file and file.filename and allowed_file(file.filename):
+                if popup.image_filename:
+                    safe_delete_upload(popup.image_filename)
+                
+                original_filename = secure_filename(file.filename)
+                ext = original_filename.rsplit('.', 1)[1].lower() if '.' in original_filename else 'jpg'
+                popup.image_filename = f"{uuid.uuid4().hex}.{ext}"
+                upload_dir = get_upload_path()
+                upload_path = os.path.join(upload_dir, popup.image_filename)
+                file.save(upload_path)
+        
+        if request.form.get('remove_image') == 'on':
+            if popup.image_filename:
+                safe_delete_upload(popup.image_filename)
+                popup.image_filename = None
+            popup.image_url = ''
+        
         popup.title = request.form.get('title')
         popup.description = request.form.get('description', '')
         popup.warning_text = request.form.get('warning_text', '')
-        popup.image_url = request.form.get('image_url', '')
+        if not request.form.get('remove_image'):
+            popup.image_url = request.form.get('image_url', '')
         popup.is_active = request.form.get('is_active') == 'on'
         popup.show_once = request.form.get('show_once') == 'on'
         popup.ordering = int(request.form.get('ordering', 0))

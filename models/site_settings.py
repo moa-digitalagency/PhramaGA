@@ -36,11 +36,17 @@ class PopupMessage(db.Model):
     description = db.Column(db.Text)
     warning_text = db.Column(db.Text)
     image_url = db.Column(db.String(500))
+    image_filename = db.Column(db.String(255))
     is_active = db.Column(db.Boolean, default=True)
     show_once = db.Column(db.Boolean, default=True)
     ordering = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def get_image_url(self):
+        if self.image_filename:
+            return f'/static/uploads/popups/{self.image_filename}'
+        return self.image_url or ''
     
     def to_dict(self):
         return {
@@ -48,7 +54,7 @@ class PopupMessage(db.Model):
             'title': self.title,
             'description': self.description or '',
             'warning_text': self.warning_text or '',
-            'image_url': self.image_url or '',
+            'image_url': self.get_image_url(),
             'is_active': self.is_active,
             'show_once': self.show_once,
             'ordering': self.ordering
