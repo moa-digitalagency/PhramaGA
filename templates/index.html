@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pharmacies du Gabon</title>
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="icon" href="{{ favicon_url }}">
+    {% if og_title %}<meta property="og:title" content="{{ og_title }}">{% endif %}
+    {% if og_description %}<meta property="og:description" content="{{ og_description }}">{% endif %}
+    {% if og_image_url %}<meta property="og:image" content="{{ og_image_url }}">{% endif %}
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

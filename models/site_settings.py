@@ -28,6 +28,27 @@ class SiteSettings(db.Model):
     def get_all():
         settings = SiteSettings.query.all()
         return {s.key: s.value for s in settings}
+    
+    @staticmethod
+    def get_logo_url():
+        filename = SiteSettings.get('site_logo_filename')
+        if filename:
+            return f'/static/uploads/settings/{filename}'
+        return None
+    
+    @staticmethod
+    def get_favicon_url():
+        filename = SiteSettings.get('site_favicon_filename')
+        if filename:
+            return f'/static/uploads/settings/{filename}'
+        return '/static/favicon.svg'
+    
+    @staticmethod
+    def get_og_image_url():
+        filename = SiteSettings.get('og_image_filename')
+        if filename:
+            return f'/static/uploads/settings/{filename}'
+        return None
 
 
 class PopupMessage(db.Model):

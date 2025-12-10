@@ -25,13 +25,25 @@ def index():
         contacts_by_city[contact.ville].append(contact)
     
     header_code = SiteSettings.get('header_code', '')
+    favicon_url = SiteSettings.get_favicon_url()
+    logo_url = SiteSettings.get_logo_url()
+    og_image_url = SiteSettings.get_og_image_url()
+    site_name = SiteSettings.get('site_name', 'Pharmacies Gabon')
+    og_title = SiteSettings.get('og_title', 'Pharmacies Gabon - Trouvez votre pharmacie')
+    og_description = SiteSettings.get('og_description', '')
     
     return render_template('index.html', 
                           villes=villes, 
                           total_pharmacies=total_pharmacies,
                           national_contacts=national_contacts,
                           contacts_by_city=contacts_by_city,
-                          header_code=Markup(header_code) if header_code else '')
+                          header_code=Markup(header_code) if header_code else '',
+                          favicon_url=favicon_url,
+                          logo_url=logo_url,
+                          og_image_url=og_image_url,
+                          site_name=site_name,
+                          og_title=og_title,
+                          og_description=og_description)
 
 
 @public_bp.route('/api/pharmacies')

@@ -14,10 +14,23 @@ from extensions import db
 from datetime import datetime, timedelta
 from sqlalchemy import func
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'ico'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def get_settings_upload_path():
+    upload_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads', 'settings')
+    os.makedirs(upload_dir, exist_ok=True)
+    return upload_dir
+
+def safe_delete_settings_upload(filename):
+    if not filename or '..' in filename or '/' in filename or '\\' in filename:
+        return
+    upload_dir = get_settings_upload_path()
+    file_path = os.path.join(upload_dir, filename)
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        os.remove(file_path)
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -441,15 +454,74 @@ def delete_emergency_contact(id):
 def site_settings():
     if request.method == 'POST':
         settings_keys = [
-            'site_name', 'site_description', 'site_logo_url', 'site_favicon_url',
+            'site_name', 'site_description',
             'site_timezone', 'contact_email', 'contact_phone',
-            'og_title', 'og_description', 'og_image_url',
+            'og_title', 'og_description',
             'meta_keywords', 'google_analytics_id', 'header_code'
         ]
         
         for key in settings_keys:
             value = request.form.get(key, '')
             SiteSettings.set(key, value)
+        
+        upload_dir = get_settings_upload_path()
+        
+        if request.form.get('remove_logo') == 'on':
+            old_filename = SiteSettings.get('site_logo_filename')
+            if old_filename:
+                safe_delete_settings_upload(old_filename)
+                SiteSettings.set('site_logo_filename', '')
+        
+        if request.form.get('remove_favicon') == 'on':
+            old_filename = SiteSettings.get('site_favicon_filename')
+            if old_filename:
+                safe_delete_settings_upload(old_filename)
+                SiteSettings.set('site_favicon_filename', '')
+        
+        if request.form.get('remove_og_image') == 'on':
+            old_filename = SiteSettings.get('og_image_filename')
+            if old_filename:
+                safe_delete_settings_upload(old_filename)
+                SiteSettings.set('og_image_filename', '')
+        
+        if 'site_logo_file' in request.files:
+            file = request.files['site_logo_file']
+            if file and file.filename and allowed_file(file.filename):
+                old_filename = SiteSettings.get('site_logo_filename')
+                if old_filename:
+                    safe_delete_settings_upload(old_filename)
+                
+                original_filename = secure_filename(file.filename)
+                ext = original_filename.rsplit('.', 1)[1].lower() if '.' in original_filename else 'png'
+                new_filename = f"logo_{uuid.uuid4().hex}.{ext}"
+                file.save(os.path.join(upload_dir, new_filename))
+                SiteSettings.set('site_logo_filename', new_filename)
+        
+        if 'site_favicon_file' in request.files:
+            file = request.files['site_favicon_file']
+            if file and file.filename and allowed_file(file.filename):
+                old_filename = SiteSettings.get('site_favicon_filename')
+                if old_filename:
+                    safe_delete_settings_upload(old_filename)
+                
+                original_filename = secure_filename(file.filename)
+                ext = original_filename.rsplit('.', 1)[1].lower() if '.' in original_filename else 'ico'
+                new_filename = f"favicon_{uuid.uuid4().hex}.{ext}"
+                file.save(os.path.join(upload_dir, new_filename))
+                SiteSettings.set('site_favicon_filename', new_filename)
+        
+        if 'og_image_file' in request.files:
+            file = request.files['og_image_file']
+            if file and file.filename and allowed_file(file.filename):
+                old_filename = SiteSettings.get('og_image_filename')
+                if old_filename:
+                    safe_delete_settings_upload(old_filename)
+                
+                original_filename = secure_filename(file.filename)
+                ext = original_filename.rsplit('.', 1)[1].lower() if '.' in original_filename else 'jpg'
+                new_filename = f"og_image_{uuid.uuid4().hex}.{ext}"
+                file.save(os.path.join(upload_dir, new_filename))
+                SiteSettings.set('og_image_filename', new_filename)
         
         flash('Paramètres enregistrés avec succès', 'success')
         return redirect(url_for('admin.site_settings'))
@@ -489,7 +561,7 @@ def add_popup():
             title=request.form.get('title'),
             description=request.form.get('description', ''),
             warning_text=request.form.get('warning_text', ''),
-            image_url=request.form.get('image_url', ''),
+            image_url='',
             image_filename=image_filename,
             is_active=request.form.get('is_active') == 'on',
             show_once=request.form.get('show_once') == 'on',
@@ -539,8 +611,6 @@ def edit_popup(id):
         popup.title = request.form.get('title')
         popup.description = request.form.get('description', '')
         popup.warning_text = request.form.get('warning_text', '')
-        if not request.form.get('remove_image'):
-            popup.image_url = request.form.get('image_url', '')
         popup.is_active = request.form.get('is_active') == 'on'
         popup.show_once = request.form.get('show_once') == 'on'
         popup.ordering = int(request.form.get('ordering', 0))
