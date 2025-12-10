@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 from app import app
 from extensions import db
 
@@ -18,5 +19,31 @@ def init_database():
         print("  - pharmacy_view")
         print("  - suggestion")
 
+def init_admin_from_env():
+    with app.app_context():
+        from models.admin import Admin
+        
+        username = os.environ.get('ADMIN_USERNAME')
+        password = os.environ.get('ADMIN_PASSWORD')
+        
+        if not username or not password:
+            print("ADMIN_USERNAME and ADMIN_PASSWORD environment variables are required.")
+            return False
+        
+        existing_admin = Admin.query.filter_by(username=username).first()
+        if existing_admin:
+            existing_admin.set_password(password)
+            db.session.commit()
+            print(f"Admin '{username}' password updated successfully!")
+        else:
+            admin = Admin(username=username)
+            admin.set_password(password)
+            db.session.add(admin)
+            db.session.commit()
+            print(f"Admin '{username}' created successfully!")
+        
+        return True
+
 if __name__ == '__main__':
     init_database()
+    init_admin_from_env()
