@@ -35,7 +35,6 @@ class Pharmacy(db.Model):
     is_garde = db.Column(db.Boolean, default=False)
     garde_start_date = db.Column(db.DateTime)
     garde_end_date = db.Column(db.DateTime)
-    is_gare = db.Column(db.Boolean, default=False)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
     location_validated = db.Column(db.Boolean, default=False)
@@ -68,7 +67,6 @@ class Pharmacy(db.Model):
             'type_etablissement': self.type_etablissement or 'pharmacie_generale',
             'categorie_emplacement': self.categorie_emplacement or 'standard',
             'is_garde': self.is_currently_garde,
-            'is_gare': self.is_gare,
             'lat': self.latitude,
             'lng': self.longitude,
             'location_validated': self.location_validated,

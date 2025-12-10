@@ -5,7 +5,7 @@ from models.pharmacy import Pharmacy
 
 class PharmacyService:
     @staticmethod
-    def get_all_pharmacies(search=None, ville=None, garde_only=False, gare_only=False):
+    def get_all_pharmacies(search=None, ville=None, garde_only=False, categorie=None):
         query = Pharmacy.query
         
         if search:
@@ -24,8 +24,8 @@ class PharmacyService:
         if garde_only:
             query = query.filter(Pharmacy.is_garde == True)
         
-        if gare_only:
-            query = query.filter(Pharmacy.is_gare == True)
+        if categorie:
+            query = query.filter(Pharmacy.categorie_emplacement == categorie)
         
         return query.order_by(Pharmacy.nom).all()
     
@@ -37,7 +37,7 @@ class PharmacyService:
     def get_stats():
         total = Pharmacy.query.count()
         garde = Pharmacy.query.filter(Pharmacy.is_garde == True).count()
-        gare = Pharmacy.query.filter(Pharmacy.is_gare == True).count()
+        gare = Pharmacy.query.filter(Pharmacy.categorie_emplacement == 'gare').count()
         validated = Pharmacy.query.filter(Pharmacy.location_validated == True).count()
         
         villes = db.session.query(
@@ -73,7 +73,6 @@ class PharmacyService:
             type_etablissement=data.get('type_etablissement', 'pharmacie_generale'),
             categorie_emplacement=data.get('categorie_emplacement', 'standard'),
             is_garde=data.get('is_garde', False),
-            is_gare=data.get('is_gare', False),
             is_verified=data.get('is_verified', False),
             latitude=data.get('latitude'),
             longitude=data.get('longitude'),
@@ -97,7 +96,6 @@ class PharmacyService:
         pharmacy.type_etablissement = data.get('type_etablissement', pharmacy.type_etablissement)
         pharmacy.categorie_emplacement = data.get('categorie_emplacement', pharmacy.categorie_emplacement)
         pharmacy.is_garde = data.get('is_garde', pharmacy.is_garde)
-        pharmacy.is_gare = data.get('is_gare', pharmacy.is_gare)
         pharmacy.is_verified = data.get('is_verified', pharmacy.is_verified)
         
         if 'latitude' in data:

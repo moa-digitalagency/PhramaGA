@@ -171,17 +171,6 @@
                         </label>
                         <label class="flex items-center gap-3 cursor-pointer group">
                             <div class="relative">
-                                <input type="checkbox" name="is_gare" class="peer sr-only"
-                                       {% if pharmacy and pharmacy.is_gare %}checked{% endif %}>
-                                <div class="w-6 h-6 bg-gray-100 border-2 border-gray-300 rounded-lg peer-checked:bg-blue-500 peer-checked:border-blue-500 transition-all"></div>
-                                <svg class="w-4 h-4 text-white absolute top-1 left-1 hidden peer-checked:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                                </svg>
-                            </div>
-                            <span class="text-sm font-medium text-gray-700 group-hover:text-gray-900">Proche gare</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer group">
-                            <div class="relative">
                                 <input type="checkbox" name="is_verified" class="peer sr-only"
                                        {% if pharmacy and pharmacy.is_verified %}checked{% endif %}>
                                 <div class="w-6 h-6 bg-gray-100 border-2 border-gray-300 rounded-lg peer-checked:bg-indigo-500 peer-checked:border-indigo-500 transition-all"></div>

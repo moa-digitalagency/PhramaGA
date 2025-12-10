@@ -105,7 +105,7 @@ function initMap() {
 
 function getMarkerColor(pharmacy) {
     if (pharmacy.is_garde) return '#ef4444';
-    if (pharmacy.is_gare) return '#3b82f6';
+    if (pharmacy.categorie_emplacement === 'gare') return '#3b82f6';
     if (pharmacy.type_etablissement && pharmacy.type_etablissement.toLowerCase().includes('dépôt')) return '#f97316';
     return '#10b981';
 }

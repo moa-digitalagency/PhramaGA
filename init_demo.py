@@ -161,7 +161,7 @@ def init_demo_data(force=False):
                 categorie_emplacement=row.get('categorie', 'standard'),
                 latitude=base_coords["lat"] + lat_offset,
                 longitude=base_coords["lng"] + lng_offset,
-                is_garde=row.get('is_garde', False),
+                is_garde=False,
                 is_verified=False
             )
             db.session.add(pharmacy)
