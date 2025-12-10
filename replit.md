@@ -10,6 +10,14 @@ Preferred communication style: Simple, everyday language (French).
 
 ## Recent Changes (December 2025)
 
+- Enhanced admin statistics dashboard with Chart.js visualizations:
+  - Views over last 7 days (bar chart) and 30 days (line chart)
+  - Pharmacies distribution by city (doughnut chart)
+  - Views by city (pie chart)
+  - Pharmacies by type (horizontal bar chart)
+  - Today/week/month view counters
+  - Submission tracking for locations, infos, suggestions, and proposals
+- Optimized database queries using GROUP BY aggregations for performance (single queries instead of N-count loops)
 - Converted all image settings to file upload only (no URLs) - logo, favicon, OpenGraph image, and popup images now use file uploads exclusively
 - Added helper methods in SiteSettings for generating image URLs from uploaded filenames
 - Fixed admin duplicate key error - now updates existing admin instead of creating duplicates
