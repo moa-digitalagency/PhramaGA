@@ -287,7 +287,7 @@ def admin_pharmacy_garde(id):
         
         db.session.commit()
         flash('Statut de garde mis à jour avec succès', 'success')
-        return redirect(url_for('admin.admin_dashboard'))
+        return redirect(url_for('admin.admin_dashboard') + '#pharmacies')
     
     return render_template('admin/pharmacy_garde.html', pharmacy=pharmacy)
 
@@ -314,6 +314,15 @@ def admin_invalidate_location(id):
     pharmacy = PharmacyService.get_pharmacy_by_id(id)
     PharmacyService.invalidate_location(pharmacy)
     return jsonify({'success': True, 'location_validated': False})
+
+
+@admin_bp.route('/pharmacy/<int:id>/toggle-verified', methods=['POST'])
+@login_required
+def admin_toggle_verified(id):
+    pharmacy = PharmacyService.get_pharmacy_by_id(id)
+    pharmacy.is_verified = not pharmacy.is_verified
+    db.session.commit()
+    return jsonify({'success': True, 'is_verified': pharmacy.is_verified})
 
 
 @admin_bp.route('/pharmacy/<int:id>/update-coordinates', methods=['POST'])
