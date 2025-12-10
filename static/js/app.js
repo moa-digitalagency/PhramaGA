@@ -105,21 +105,18 @@ function getCityBadgeClass(ville) {
 }
 
 function createMapPopup(pharmacy) {
-    const cityBadgeClass = getCityBadgeClass(pharmacy.ville);
+    const pharmacyData = JSON.stringify(pharmacy).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     return `
-        <div style="min-width: 220px; max-width: 280px;">
-            <div style="padding: 12px;">
-                <h4 style="font-weight: 600; color: #1f2937; font-size: 14px; margin: 0 0 8px 0;">${pharmacy.nom}</h4>
-                <p style="font-size: 12px; color: #6b7280; margin: 0 0 8px 0;">${pharmacy.quartier || ''}, ${pharmacy.ville}</p>
-                ${pharmacy.telephone ? `<p style="font-size: 13px; color: #059669; margin: 0 0 8px 0; font-weight: 500;">${pharmacy.telephone}</p>` : ''}
-                <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;">
-                    ${pharmacy.is_garde ? '<span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: #fef2f2; color: #b91c1c; font-size: 11px; border-radius: 20px; font-weight: 500;"><span style="width: 6px; height: 6px; background: #ef4444; border-radius: 50%;"></span>Garde</span>' : ''}
-                    <span style="padding: 2px 8px; background: #ecfdf5; color: #047857; font-size: 11px; border-radius: 20px; font-weight: 500;">${pharmacy.ville}</span>
+        <div style="min-width: 200px; max-width: 260px; cursor: pointer;" onclick="showPharmacyDetail(${pharmacyData})">
+            <div style="padding: 10px;">
+                <h4 style="font-weight: 600; color: #1f2937; font-size: 13px; margin: 0 0 6px 0;">${pharmacy.nom}</h4>
+                <p style="font-size: 11px; color: #6b7280; margin: 0 0 6px 0;">${pharmacy.quartier || ''}, ${pharmacy.ville}</p>
+                ${pharmacy.telephone ? `<p style="font-size: 12px; color: #059669; margin: 0 0 6px 0; font-weight: 500;">${pharmacy.telephone}</p>` : ''}
+                <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                    ${pharmacy.is_garde ? '<span style="display: inline-flex; align-items: center; gap: 3px; padding: 2px 6px; background: #fef2f2; color: #b91c1c; font-size: 10px; border-radius: 12px; font-weight: 500;"><span style="width: 5px; height: 5px; background: #ef4444; border-radius: 50%;"></span>Garde</span>' : ''}
+                    <span style="padding: 2px 6px; background: #ecfdf5; color: #047857; font-size: 10px; border-radius: 12px; font-weight: 500;">${pharmacy.ville}</span>
                 </div>
-                <button onclick="showPharmacyDetail(${JSON.stringify(pharmacy).replace(/"/g, '&quot;')})" 
-                        style="width: 100%; padding: 8px; background: #059669; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;">
-                    Voir détails
-                </button>
+                <p style="font-size: 10px; color: #9ca3af; margin: 8px 0 0 0; text-align: center;">Toucher pour voir les détails</p>
             </div>
         </div>
     `;
