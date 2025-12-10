@@ -196,8 +196,8 @@ def init_demo_data(force=False):
         
         welcome_popup = PopupMessage(
             title="Bienvenue sur PharmaciesGabon.com",
-            description="La première plateforme qui recense toutes les pharmacies au Gabon, aide à trouver la pharmacie de garde la plus proche et les contacts d'urgence dans toutes les villes gabonaises.",
-            warning_text="Cette plateforme est encore en cours de développement. Vous pouvez contribuer à rendre cette plateforme plus précise en complétant les informations de pharmacie, ajoutant une localisation précise ou même une pharmacie manquante et ses informations. Cela peut peut-être sauver une vie.",
+            description="Découvrez la première plateforme qui réunit toutes les pharmacies du Gabon ! Trouvez facilement la pharmacie de garde la plus proche et les contacts d'urgence où que vous soyez.",
+            warning_text="Le projet est encore en construction — aidez-nous à le rendre meilleur ! Ajoutez une pharmacie manquante ou corrigez des infos… chaque contribution compte !",
             is_active=True,
             show_once=True,
             ordering=0
