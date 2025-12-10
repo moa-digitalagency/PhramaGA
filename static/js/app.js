@@ -1296,12 +1296,14 @@ function showWelcomePopup(popup) {
     
     overlay.innerHTML = `
         <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-fade-in">
-            ${imageHtml}
             <div class="p-6 text-center">
                 <h2 class="text-xl font-bold text-gray-800 mb-3">${popup.title}</h2>
                 ${popup.description ? `<p class="text-gray-600">${popup.description}</p>` : ''}
                 ${warningHtml}
-                <button onclick="closeWelcomePopup(${popup.id})" class="mt-6 w-full py-3 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition">
+            </div>
+            ${imageHtml}
+            <div class="p-6 pt-0 text-center">
+                <button onclick="closeWelcomePopup(${popup.id})" class="w-full py-3 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition">
                     J'ai compris
                 </button>
             </div>
