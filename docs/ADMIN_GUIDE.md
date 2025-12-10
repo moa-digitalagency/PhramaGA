@@ -1,4 +1,4 @@
-# Pharmacies Gabon - Admin Guide
+# UrgenceGabon.com - Admin Guide
 
 ## Getting Started
 

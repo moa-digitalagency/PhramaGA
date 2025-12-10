@@ -1,8 +1,8 @@
-# Pharmacies Gabon - API Documentation
+# UrgenceGabon.com - API Documentation
 
 ## Overview
 
-The Pharmacies Gabon API provides programmatic access to pharmacy data, statistics, and submission endpoints. All public endpoints return JSON responses.
+The UrgenceGabon.com API provides programmatic access to pharmacy data, statistics, and submission endpoints. All public endpoints return JSON responses.
 
 **Base URL**: `https://your-domain.com`
 
@@ -128,7 +128,7 @@ Retrieve currently active popup messages.
 [
   {
     "id": 1,
-    "title": "Bienvenue sur PharmaciesGabon.com",
+    "title": "Bienvenue sur UrgenceGabon.com",
     "description": "Découvrez la première plateforme...",
     "warning_text": "Le projet est encore en construction...",
     "image_url": "",

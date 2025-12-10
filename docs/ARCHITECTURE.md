@@ -1,65 +1,65 @@
-# Pharmacies Gabon - Technical Architecture
+# UrgenceGabon.com - Technical Architecture
 
 ## Overview
 
-Pharmacies Gabon is built on a Flask-based architecture with PostgreSQL as the data store. The application follows a modular structure with clear separation between routes, models, services, and utilities.
+UrgenceGabon.com is built on a Flask-based architecture with PostgreSQL as the data store. The application follows a modular structure with clear separation between routes, models, services, and utilities.
 
 ## System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         Client Layer                             │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │
-│  │   Browser   │  │   Mobile    │  │    Admin Dashboard      │  │
-│  │  (Public)   │  │  (Future)   │  │    (Authenticated)      │  │
-│  └─────────────┘  └─────────────┘  └─────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                       Web Server Layer                           │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │              Gunicorn WSGI Server                        │    │
-│  │              (Port 5000, --reload)                       │    │
-│  └─────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      Application Layer                           │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │                    Flask Application                      │   │
-│  │  ┌────────────┐  ┌────────────┐  ┌────────────────────┐  │   │
-│  │  │   Routes   │  │  Services  │  │     Security       │  │   │
-│  │  │  public.py │  │  pharmacy  │  │   Flask-Login      │  │   │
-│  │  │  admin.py  │  │  _service  │  │   auth.py          │  │   │
-│  │  └────────────┘  └────────────┘  └────────────────────┘  │   │
-│  └──────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                        Data Layer                                │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │                   SQLAlchemy ORM                          │   │
-│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────────────┐  │   │
-│  │  │ Pharmacy │ │  Admin   │ │ Emergency│ │ Submissions │  │   │
-│  │  │  Model   │ │  Model   │ │ Contact  │ │   Models    │  │   │
-│  │  └──────────┘ └──────────┘ └──────────┘ └─────────────┘  │   │
-│  └──────────────────────────────────────────────────────────┘   │
-│                              │                                   │
-│                              ▼                                   │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │                   PostgreSQL Database                     │   │
-│  │            (Managed via DATABASE_URL)                     │   │
-│  └──────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────┘
++------------------------------------------------------------------+
+|                         Client Layer                              |
+|  +--------------+  +--------------+  +--------------------------+ |
+|  |   Browser    |  |   Mobile     |  |    Admin Dashboard       | |
+|  |  (Public)    |  |  (Future)    |  |    (Authenticated)       | |
+|  +--------------+  +--------------+  +--------------------------+ |
++------------------------------------------------------------------+
+                              |
+                              v
++------------------------------------------------------------------+
+|                       Web Server Layer                            |
+|  +--------------------------------------------------------------+ |
+|  |              Gunicorn WSGI Server                             | |
+|  |              (Port 5000, --reload)                            | |
+|  +--------------------------------------------------------------+ |
++------------------------------------------------------------------+
+                              |
+                              v
++------------------------------------------------------------------+
+|                      Application Layer                            |
+|  +------------------------------------------------------------+  |
+|  |                    Flask Application                        |  |
+|  |  +-------------+  +-------------+  +---------------------+  |  |
+|  |  |   Routes    |  |  Services   |  |     Security        |  |  |
+|  |  |  public.py  |  |  pharmacy   |  |   Flask-Login       |  |  |
+|  |  |  admin.py   |  |  _service   |  |   auth.py           |  |  |
+|  |  +-------------+  +-------------+  +---------------------+  |  |
+|  +------------------------------------------------------------+  |
++------------------------------------------------------------------+
+                              |
+                              v
++------------------------------------------------------------------+
+|                        Data Layer                                 |
+|  +------------------------------------------------------------+  |
+|  |                   SQLAlchemy ORM                            |  |
+|  |  +-----------+ +-----------+ +-----------+ +-------------+  |  |
+|  |  | Pharmacy  | |  Admin    | | Emergency | | Submissions |  |  |
+|  |  |  Model    | |  Model    | | Contact   | |   Models    |  |  |
+|  |  +-----------+ +-----------+ +-----------+ +-------------+  |  |
+|  +------------------------------------------------------------+  |
+|                              |                                    |
+|                              v                                    |
+|  +------------------------------------------------------------+  |
+|  |                   PostgreSQL Database                       |  |
+|  |            (Managed via DATABASE_URL)                       |  |
+|  +------------------------------------------------------------+  |
++------------------------------------------------------------------+
 ```
 
 ## Directory Structure
 
 ```
-pharmacies-gabon/
+urgence-gabon/
 ├── app.py                    # Flask app factory & configuration
 ├── main.py                   # Application entry point
 ├── extensions.py             # Flask extensions initialization
@@ -123,97 +123,97 @@ pharmacies-gabon/
 ### Entity Relationship Diagram
 
 ```
-┌──────────────────┐       ┌──────────────────────┐
-│      Admin       │       │      Pharmacy        │
-├──────────────────┤       ├──────────────────────┤
-│ id (PK)          │       │ id (PK)              │
-│ username         │       │ code (unique)        │
-│ password_hash    │◄──────│ validated_by_admin_id│
-└──────────────────┘       │ nom                  │
-         │                 │ ville                │
-         │                 │ quartier             │
-         │                 │ telephone            │
-         │                 │ bp                   │
-         │                 │ horaires             │
-         │                 │ services             │
-         │                 │ proprietaire         │
-         │                 │ type_etablissement   │
-         │                 │ categorie_emplacement│
-         │                 │ is_garde             │
-         │                 │ garde_start_date     │
-         │                 │ garde_end_date       │
-         │                 │ latitude             │
-         │                 │ longitude            │
-         │                 │ location_validated   │
-         │                 │ is_verified          │
-         │                 │ created_at           │
-         │                 │ updated_at           │
-         │                 └──────────────────────┘
-         │                           │
-         │                           │
-         │    ┌──────────────────────┼───────────────────────┐
-         │    │                      │                       │
-         │    ▼                      ▼                       ▼
-┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐
-│ LocationSubmission  │  │   InfoSubmission    │  │   PharmacyView      │
-├─────────────────────┤  ├─────────────────────┤  ├─────────────────────┤
-│ id (PK)             │  │ id (PK)             │  │ id (PK)             │
-│ pharmacy_id (FK)    │  │ pharmacy_id (FK)    │  │ pharmacy_id (FK)    │
-│ latitude            │  │ field_name          │  │ viewed_at           │
-│ longitude           │  │ current_value       │  └─────────────────────┘
-│ submitted_by_name   │  │ proposed_value      │
-│ submitted_by_phone  │  │ submitted_by_name   │
-│ comment             │  │ submitted_by_phone  │
-│ status              │  │ comment             │
-│ created_at          │  │ status              │
-│ reviewed_at         │  │ created_at          │
-│ reviewed_by_admin_id│  │ reviewed_at         │
-└─────────────────────┘  │ reviewed_by_admin_id│
-                         └─────────────────────┘
++------------------+       +----------------------+
+|      Admin       |       |      Pharmacy        |
++------------------+       +----------------------+
+| id (PK)          |       | id (PK)              |
+| username         |       | code (unique)        |
+| password_hash    |<------| validated_by_admin_id|
++------------------+       | nom                  |
+         |                 | ville                |
+         |                 | quartier             |
+         |                 | telephone            |
+         |                 | bp                   |
+         |                 | horaires             |
+         |                 | services             |
+         |                 | proprietaire         |
+         |                 | type_etablissement   |
+         |                 | categorie_emplacement|
+         |                 | is_garde             |
+         |                 | garde_start_date     |
+         |                 | garde_end_date       |
+         |                 | latitude             |
+         |                 | longitude            |
+         |                 | location_validated   |
+         |                 | is_verified          |
+         |                 | created_at           |
+         |                 | updated_at           |
+         |                 +----------------------+
+         |                           |
+         |                           |
+         |    +----------------------+------------------------+
+         |    |                      |                        |
+         |    v                      v                        v
++---------------------+  +---------------------+  +---------------------+
+| LocationSubmission  |  |   InfoSubmission    |  |   PharmacyView      |
++---------------------+  +---------------------+  +---------------------+
+| id (PK)             |  | id (PK)             |  | id (PK)             |
+| pharmacy_id (FK)    |  | pharmacy_id (FK)    |  | pharmacy_id (FK)    |
+| latitude            |  | field_name          |  | viewed_at           |
+| longitude           |  | current_value       |  +---------------------+
+| submitted_by_name   |  | proposed_value      |
+| submitted_by_phone  |  | submitted_by_name   |
+| comment             |  | submitted_by_phone  |
+| status              |  | comment             |
+| created_at          |  | status              |
+| reviewed_at         |  | created_at          |
+| reviewed_by_admin_id|  | reviewed_at         |
++---------------------+  | reviewed_by_admin_id|
+                         +---------------------+
 
-┌─────────────────────┐  ┌─────────────────────┐
-│    Suggestion       │  │  PharmacyProposal   │
-├─────────────────────┤  ├─────────────────────┤
-│ id (PK)             │  │ id (PK)             │
-│ category            │  │ nom                 │
-│ subject             │  │ ville               │
-│ message             │  │ quartier            │
-│ submitted_by_name   │  │ telephone           │
-│ submitted_by_email  │  │ ... (pharmacy data) │
-│ submitted_by_phone  │  │ submitted_by_name   │
-│ status              │  │ submitted_by_email  │
-│ admin_response      │  │ submitted_by_phone  │
-│ created_at          │  │ comment             │
-│ reviewed_at         │  │ status              │
-│ reviewed_by_admin_id│  │ created_at          │
-└─────────────────────┘  │ reviewed_at         │
-                         │ reviewed_by_admin_id│
-                         └─────────────────────┘
++---------------------+  +---------------------+
+|    Suggestion       |  |  PharmacyProposal   |
++---------------------+  +---------------------+
+| id (PK)             |  | id (PK)             |
+| category            |  | nom                 |
+| subject             |  | ville               |
+| message             |  | quartier            |
+| submitted_by_name   |  | telephone           |
+| submitted_by_email  |  | ... (pharmacy data) |
+| submitted_by_phone  |  | submitted_by_name   |
+| status              |  | submitted_by_email  |
+| admin_response      |  | submitted_by_phone  |
+| created_at          |  | comment             |
+| reviewed_at         |  | status              |
+| reviewed_by_admin_id|  | created_at          |
++---------------------+  | reviewed_at         |
+                         | reviewed_by_admin_id|
+                         +---------------------+
 
-┌─────────────────────┐  ┌─────────────────────┐
-│  EmergencyContact   │  │    SiteSettings     │
-├─────────────────────┤  ├─────────────────────┤
-│ id (PK)             │  │ id (PK)             │
-│ ville               │  │ key (unique)        │
-│ service_type        │  │ value               │
-│ label               │  │ updated_at          │
-│ phone_numbers       │  └─────────────────────┘
-│ address             │
-│ notes               │  ┌─────────────────────┐
-│ is_national         │  │    PopupMessage     │
-│ is_active           │  ├─────────────────────┤
-│ ordering            │  │ id (PK)             │
-│ created_at          │  │ title               │
-│ updated_at          │  │ description         │
-└─────────────────────┘  │ warning_text        │
-                         │ image_url           │
-                         │ image_filename      │
-                         │ is_active           │
-                         │ show_once           │
-                         │ ordering            │
-                         │ created_at          │
-                         │ updated_at          │
-                         └─────────────────────┘
++---------------------+  +---------------------+
+|  EmergencyContact   |  |    SiteSettings     |
++---------------------+  +---------------------+
+| id (PK)             |  | id (PK)             |
+| ville               |  | key (unique)        |
+| service_type        |  | value               |
+| label               |  | updated_at          |
+| phone_numbers       |  +---------------------+
+| address             |
+| notes               |  +---------------------+
+| is_national         |  |    PopupMessage     |
+| is_active           |  +---------------------+
+| ordering            |  | id (PK)             |
+| created_at          |  | title               |
+| updated_at          |  | description         |
++---------------------+  | warning_text        |
+                         | image_url           |
+                         | image_filename      |
+                         | is_active           |
+                         | show_once           |
+                         | ordering            |
+                         | created_at          |
+                         | updated_at          |
+                         +---------------------+
 ```
 
 ## Key Components
