@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import sys
 
 from app import app
@@ -6,6 +7,7 @@ from extensions import db
 from models.pharmacy import Pharmacy
 from models.emergency_contact import EmergencyContact
 from models.site_settings import PopupMessage
+from models.admin import Admin
 from utils.helpers import CITY_COORDINATES
 
 EMERGENCY_CONTACTS_DATA = [
@@ -206,6 +208,34 @@ def init_demo_data(force=False):
         db.session.commit()
         print("Welcome popup created!")
 
+
+def init_superadmin():
+    with app.app_context():
+        admin_username = os.environ.get('ADMIN_USERNAME')
+        admin_password = os.environ.get('ADMIN_PASSWORD')
+        
+        if not admin_username or not admin_password:
+            print("Warning: ADMIN_USERNAME and/or ADMIN_PASSWORD not set in environment.")
+            print("Superadmin creation skipped. Set these secrets to create an admin account.")
+            return False
+        
+        existing_admin = Admin.query.filter_by(username=admin_username).first()
+        if existing_admin:
+            print(f"Admin '{admin_username}' already exists. Updating password...")
+            existing_admin.set_password(admin_password)
+            db.session.commit()
+            print(f"Admin '{admin_username}' password updated successfully!")
+        else:
+            admin = Admin(username=admin_username)
+            admin.set_password(admin_password)
+            db.session.add(admin)
+            db.session.commit()
+            print(f"Superadmin '{admin_username}' created successfully!")
+        
+        return True
+
+
 if __name__ == "__main__":
     force = "--force" in sys.argv
     init_demo_data(force=force)
+    init_superadmin()
