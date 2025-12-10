@@ -140,6 +140,14 @@ Loads pharmacy demo data from CSV file. Does NOT create admin user (admin is cre
 python init_demo.py
 ```
 
+## Documentation
+
+Full documentation is available in the `/docs` folder:
+- [docs/COMMERCIAL.md](docs/COMMERCIAL.md) - Commercial overview in English
+- [docs/API.md](docs/API.md) - Complete API reference
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - Technical architecture and data models
+- [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md) - Admin panel user guide
+
 ## Environment Variables
 
 Required secrets:

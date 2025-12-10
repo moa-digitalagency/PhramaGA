@@ -29,6 +29,15 @@ Plateforme complète de référencement des pharmacies au Gabon. Trouvez facilem
 - **Carte** : Leaflet.js avec OpenStreetMap
 - **Authentification** : Flask-Login
 
+## Documentation
+
+Toute la documentation est disponible dans le dossier `/docs` :
+
+- [Documentation Commerciale (EN)](docs/COMMERCIAL.md) - Présentation commerciale en anglais
+- [Documentation API](docs/API.md) - Référence complète de l'API
+- [Architecture Technique](docs/ARCHITECTURE.md) - Architecture et modèles de données
+- [Guide Administrateur](docs/ADMIN_GUIDE.md) - Guide du panneau d'administration
+
 ## Installation
 
 ### Prérequis
@@ -53,6 +62,8 @@ pip install -r requirements.txt
 ```bash
 export DATABASE_URL="postgresql://user:password@localhost/pharmacies_gabon"
 export SESSION_SECRET="votre-secret-securise"
+export ADMIN_USERNAME="admin"
+export ADMIN_PASSWORD="votre-mot-de-passe-securise"
 ```
 
 4. Initialisez la base de données avec les données de démonstration :
@@ -97,8 +108,13 @@ gunicorn --bind 0.0.0.0:5000 --reuse-port --reload main:app
 │   ├── js/app.js           # JavaScript principal
 │   ├── favicon.svg         # Favicon
 │   └── ...
-└── utils/
-    └── helpers.py          # Fonctions utilitaires et coordonnées GPS
+├── utils/
+│   └── helpers.py          # Fonctions utilitaires et coordonnées GPS
+└── docs/                   # Documentation
+    ├── COMMERCIAL.md       # Documentation commerciale (EN)
+    ├── API.md              # Documentation API
+    ├── ARCHITECTURE.md     # Architecture technique
+    └── ADMIN_GUIDE.md      # Guide administrateur
 ```
 
 ## Données de démonstration
@@ -107,6 +123,7 @@ Le script `init_demo.py` charge :
 - **87 pharmacies** réparties dans toutes les villes du Gabon
 - **18 contacts d'urgence** (nationaux et par ville)
 - **1 popup de bienvenue** avec message d'avertissement
+- **1 compte administrateur** depuis les variables d'environnement
 
 ### Villes couvertes
 - Libreville (capitale)
@@ -123,9 +140,7 @@ Le script `init_demo.py` charge :
 
 ### Accès
 - URL : `/admin`
-- Identifiants par défaut :
-  - Nom d'utilisateur : `admin`
-  - Mot de passe : `admin123`
+- Identifiants : Configurés via les secrets `ADMIN_USERNAME` et `ADMIN_PASSWORD`
 
 ### Fonctionnalités admin
 1. **Tableau de bord** : Statistiques et aperçu global
@@ -139,6 +154,8 @@ Le script `init_demo.py` charge :
 9. **Paramètres** : Configuration du site et SEO
 
 ## API
+
+Voir la [documentation API complète](docs/API.md) pour tous les détails.
 
 ### Endpoints publics
 - `GET /api/pharmacies` : Liste des pharmacies (avec filtres)
