@@ -258,27 +258,68 @@ function showNearestPharmaciesOnMap(userLat, userLng, pharmacyList, title) {
     }, 200);
 }
 
+const TYPE_COLORS = {
+    'pharmacie_generale': { border: 'border-l-emerald-500', bg: 'bg-emerald-100', text: 'text-emerald-700', label: 'Pharmacie générale' },
+    'depot_pharmaceutique': { border: 'border-l-orange-500', bg: 'bg-orange-100', text: 'text-orange-700', label: 'Dépôt pharmaceutique' },
+    'pharmacie_hospitaliere': { border: 'border-l-purple-500', bg: 'bg-purple-100', text: 'text-purple-700', label: 'Pharmacie hospitalière' }
+};
+
+const CATEGORY_LABELS = {
+    'standard': null,
+    'gare': 'Gare',
+    'hopital': 'Hôpital',
+    'aeroport': 'Aéroport',
+    'centre_commercial': 'Centre commercial',
+    'marche': 'Marché',
+    'centre_ville': 'Centre-ville',
+    'zone_residentielle': 'Zone résidentielle',
+    'depot': 'Dépôt',
+    'generale': null
+};
+
+function normalizeTypeEtablissement(typeStr) {
+    if (!typeStr) return 'pharmacie_generale';
+    const lower = typeStr.toLowerCase();
+    if (lower.includes('dépôt') || lower.includes('depot')) return 'depot_pharmaceutique';
+    if (lower.includes('hospitalière') || lower.includes('hospitaliere')) return 'pharmacie_hospitaliere';
+    return 'pharmacie_generale';
+}
+
+function getTypeStyle(pharmacy) {
+    const normalizedType = normalizeTypeEtablissement(pharmacy.type_etablissement);
+    return TYPE_COLORS[normalizedType] || TYPE_COLORS['pharmacie_generale'];
+}
+
 function getTypeBadge(pharmacy) {
+    const typeStyle = getTypeStyle(pharmacy);
+    return `<span class="flex-shrink-0 px-2 py-1 ${typeStyle.bg} ${typeStyle.text} text-xs font-medium rounded-full">
+        ${typeStyle.label}
+    </span>`;
+}
+
+function getGardeBadge(pharmacy) {
     if (pharmacy.is_garde) {
         return `<span class="flex-shrink-0 px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full flex items-center gap-1">
             <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
             Garde
         </span>`;
     }
-    if (pharmacy.is_gare) {
-        return `<span class="flex-shrink-0 px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
-            Gare
-        </span>`;
-    }
-    return `<span class="flex-shrink-0 px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">
-        Pharmacie
+    return '';
+}
+
+function getCategoryBadge(pharmacy) {
+    const category = pharmacy.categorie_emplacement || 'standard';
+    const label = CATEGORY_LABELS[category];
+    if (!label) return '';
+    return `<span class="flex-shrink-0 px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full">
+        ${label}
     </span>`;
 }
 
 function createPharmacyCard(pharmacy) {
     const cityBadgeClass = getCityBadgeClass(pharmacy.ville);
-    const borderColor = pharmacy.is_garde ? 'border-l-red-500' : 
-                       pharmacy.is_gare ? 'border-l-blue-500' : 'border-l-emerald-500';
+    const typeStyle = getTypeStyle(pharmacy);
+    const borderColor = pharmacy.is_garde ? 'border-l-red-500' : typeStyle.border;
     
     return `
         <div class="pharmacy-card bg-white rounded-xl p-4 shadow-sm border-l-4 ${borderColor} border border-gray-100 active:scale-[0.98] transition cursor-pointer hover:shadow-md"
@@ -291,7 +332,9 @@ function createPharmacyCard(pharmacy) {
                 </div>
             </div>
             <div class="flex flex-wrap gap-1.5 mt-3">
+                ${getGardeBadge(pharmacy)}
                 ${getTypeBadge(pharmacy)}
+                ${getCategoryBadge(pharmacy)}
                 <span class="flex-shrink-0 px-2 py-1 ${cityBadgeClass} text-xs font-medium rounded-full">
                     ${pharmacy.ville}
                 </span>

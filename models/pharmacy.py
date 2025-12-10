@@ -4,9 +4,6 @@ from datetime import datetime, timedelta
 
 ETABLISSEMENT_TYPES = [
     ('pharmacie_generale', 'Pharmacie générale'),
-    ('pharmacie_garde_24h', 'Pharmacie de garde 24h/24'),
-    ('pharmacie_garde_principale', 'Pharmacie de garde principale'),
-    ('pharmacie_generale_24h', 'Pharmacie générale 24h/24'),
     ('depot_pharmaceutique', 'Dépôt pharmaceutique'),
     ('pharmacie_hospitaliere', 'Pharmacie hospitalière'),
 ]
