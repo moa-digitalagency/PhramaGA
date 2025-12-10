@@ -195,7 +195,7 @@
             </div>
             
             <div id="tab-suggestions" class="tab-content hidden">
-                <div class="px-4 py-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                     <div class="max-w-lg mx-auto">
                         <div class="text-center mb-6">
                             <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -207,10 +207,10 @@
                             <p class="text-gray-600 text-sm">Partagez vos idées pour améliorer notre service</p>
                         </div>
                         
-                        <form id="suggestionForm" class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 space-y-4">
+                        <form id="suggestionForm" class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Catégorie *</label>
-                                <select id="suggestionCategory" required class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                                <select id="suggestionCategory" onchange="updateSuggestionForm()" required class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
                                     <option value="">Sélectionnez une catégorie</option>
                                     <option value="suggestion">Suggestion d'amélioration</option>
                                     <option value="erreur">Signaler une erreur</option>
@@ -219,14 +219,83 @@
                                 </select>
                             </div>
                             
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Sujet *</label>
-                                <input type="text" id="suggestionSubject" required class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Résumez votre suggestion">
+                            <div id="standardFields">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Sujet *</label>
+                                        <input type="text" id="suggestionSubject" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Résumez votre suggestion">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Message *</label>
+                                        <textarea id="suggestionMessage" rows="4" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Décrivez votre suggestion en détail..."></textarea>
+                                    </div>
+                                </div>
                             </div>
                             
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Message *</label>
-                                <textarea id="suggestionMessage" required rows="4" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Décrivez votre suggestion en détail..."></textarea>
+                            <div id="pharmacyFields" class="hidden space-y-4">
+                                <div class="bg-primary-50 border border-primary-200 rounded-lg p-3 mb-4">
+                                    <p class="text-sm text-primary-800">Remplissez les informations de la pharmacie que vous souhaitez proposer</p>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div class="sm:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Nom de la pharmacie *</label>
+                                        <input type="text" id="pharmacyNom" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Ex: Pharmacie du Centre">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Ville *</label>
+                                        <select id="pharmacyVille" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                                            <option value="">Sélectionnez une ville</option>
+                                            {% for ville in villes %}
+                                            <option value="{{ ville }}">{{ ville }}</option>
+                                            {% endfor %}
+                                            <option value="autre">Autre ville...</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Quartier</label>
+                                        <input type="text" id="pharmacyQuartier" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Quartier / Adresse">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                                        <input type="tel" id="pharmacyTelephone" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Ex: 011 XX XX XX">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Boîte Postale</label>
+                                        <input type="text" id="pharmacyBP" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="BP">
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Horaires</label>
+                                        <input type="text" id="pharmacyHoraires" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Ex: Lun-Sam: 8h-20h">
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Services</label>
+                                        <input type="text" id="pharmacyServices" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Ex: Parapharmacie, Conseil">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Propriétaire</label>
+                                        <input type="text" id="pharmacyProprietaire" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Nom du propriétaire">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Type d'établissement</label>
+                                        <select id="pharmacyType" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                                            <option value="Pharmacie générale">Pharmacie générale</option>
+                                            <option value="Pharmacie de garde 24h/24">Pharmacie de garde 24h/24</option>
+                                            <option value="Dépôt pharmaceutique">Dépôt pharmaceutique</option>
+                                        </select>
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" id="pharmacyIsGarde" class="w-4 h-4 text-purple-600 rounded focus:ring-purple-500">
+                                            <span class="text-sm text-gray-700">Cette pharmacie est de garde 24h/24</span>
+                                        </label>
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Commentaire additionnel</label>
+                                        <textarea id="pharmacyComment" rows="2" class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Informations supplémentaires..."></textarea>
+                                    </div>
+                                </div>
                             </div>
                             
                             <div class="border-t pt-4">
@@ -248,7 +317,7 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                                 </svg>
-                                Envoyer ma suggestion
+                                <span id="submitBtnText">Envoyer ma suggestion</span>
                             </button>
                         </form>
                         
@@ -258,8 +327,8 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                 </svg>
                             </div>
-                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Merci pour votre suggestion !</h3>
-                            <p class="text-gray-600 mb-4">Nous avons bien reçu votre message et nous y répondrons dans les plus brefs délais.</p>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Merci pour votre contribution !</h3>
+                            <p class="text-gray-600 mb-4">Nous avons bien reçu votre message et nous l'examinerons dans les plus brefs délais.</p>
                             <button onclick="resetSuggestionForm()" class="px-6 py-2 bg-purple-100 text-purple-700 font-medium rounded-lg hover:bg-purple-200 transition">
                                 Envoyer une autre suggestion
                             </button>

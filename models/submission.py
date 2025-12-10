@@ -103,3 +103,52 @@ class Suggestion(db.Model):
             'admin_response': self.admin_response or '',
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
+
+
+class PharmacyProposal(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nom = db.Column(db.String(200), nullable=False)
+    ville = db.Column(db.String(100), nullable=False)
+    quartier = db.Column(db.String(200))
+    telephone = db.Column(db.String(100))
+    bp = db.Column(db.String(50))
+    horaires = db.Column(db.String(200))
+    services = db.Column(db.Text)
+    proprietaire = db.Column(db.String(200))
+    type_etablissement = db.Column(db.String(100))
+    is_garde = db.Column(db.Boolean, default=False)
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
+    submitted_by_name = db.Column(db.String(100))
+    submitted_by_email = db.Column(db.String(120))
+    submitted_by_phone = db.Column(db.String(50))
+    comment = db.Column(db.Text)
+    status = db.Column(db.String(20), default='pending')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    reviewed_at = db.Column(db.DateTime)
+    reviewed_by_admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    
+    reviewed_by = db.relationship('Admin', foreign_keys=[reviewed_by_admin_id])
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'nom': self.nom,
+            'ville': self.ville,
+            'quartier': self.quartier or '',
+            'telephone': self.telephone or '',
+            'bp': self.bp or '',
+            'horaires': self.horaires or '',
+            'services': self.services or '',
+            'proprietaire': self.proprietaire or '',
+            'type_etablissement': self.type_etablissement or '',
+            'is_garde': self.is_garde,
+            'latitude': self.latitude,
+            'longitude': self.longitude,
+            'submitted_by_name': self.submitted_by_name or 'Anonyme',
+            'submitted_by_email': self.submitted_by_email or '',
+            'submitted_by_phone': self.submitted_by_phone or '',
+            'comment': self.comment or '',
+            'status': self.status,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }

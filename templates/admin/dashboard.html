@@ -109,6 +109,16 @@
                     Statistiques
                 </button>
                 
+                <button onclick="switchAdminTab('proposals')" class="admin-tab-btn w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition flex items-center gap-3 text-white/80 hover:bg-white/10" data-tab="proposals">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    Nouvelles pharmacies
+                    {% if pending_proposals %}
+                    <span class="ml-auto px-2 py-0.5 bg-green-400 text-white text-xs font-semibold rounded-full">{{ pending_proposals|length }}</span>
+                    {% endif %}
+                </button>
+                
                 <button onclick="switchAdminTab('suggestions')" class="admin-tab-btn w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition flex items-center gap-3 text-white/80 hover:bg-white/10" data-tab="suggestions">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
@@ -320,7 +330,7 @@
                         </div>
                     </div>
                     
-                    {% if pending_locations or pending_infos or pending_suggestions %}
+                    {% if pending_locations or pending_infos or pending_suggestions or pending_proposals %}
                     <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6">
                         <div class="flex items-start gap-4">
                             <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -331,7 +341,8 @@
                             <div>
                                 <h4 class="font-bold text-amber-800 text-lg">Soumissions en attente</h4>
                                 <p class="text-amber-700 mt-1">
-                                    Vous avez <strong>{{ pending_locations|length }}</strong> localisation(s), 
+                                    Vous avez <strong>{{ pending_proposals|length if pending_proposals else 0 }}</strong> proposition(s) de pharmacie,
+                                    <strong>{{ pending_locations|length }}</strong> localisation(s), 
                                     <strong>{{ pending_infos|length }}</strong> correction(s) et
                                     <strong>{{ pending_suggestions|length if pending_suggestions else 0 }}</strong> suggestion(s) a valider.
                                 </p>
@@ -561,6 +572,95 @@
                     </div>
                 </div>
                 
+                <div id="tab-proposals" class="tab-content">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Propositions de nouvelles pharmacies</h2>
+                    {% if pending_proposals %}
+                    <div class="space-y-4">
+                        {% for prop in pending_proposals %}
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6" id="proposal-{{ prop.id }}">
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-lg">Nouvelle pharmacie</span>
+                                        {% if prop.is_garde %}
+                                        <span class="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-lg">Garde 24h/24</span>
+                                        {% endif %}
+                                    </div>
+                                    <h3 class="font-bold text-gray-800 text-lg">{{ prop.nom }}</h3>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 text-sm">
+                                        <div>
+                                            <span class="text-gray-500">Ville:</span>
+                                            <span class="text-gray-800 font-medium ml-1">{{ prop.ville }}</span>
+                                        </div>
+                                        {% if prop.quartier %}
+                                        <div>
+                                            <span class="text-gray-500">Quartier:</span>
+                                            <span class="text-gray-800 ml-1">{{ prop.quartier }}</span>
+                                        </div>
+                                        {% endif %}
+                                        {% if prop.telephone %}
+                                        <div>
+                                            <span class="text-gray-500">Tel:</span>
+                                            <span class="text-gray-800 ml-1">{{ prop.telephone }}</span>
+                                        </div>
+                                        {% endif %}
+                                        {% if prop.horaires %}
+                                        <div>
+                                            <span class="text-gray-500">Horaires:</span>
+                                            <span class="text-gray-800 ml-1">{{ prop.horaires }}</span>
+                                        </div>
+                                        {% endif %}
+                                        {% if prop.services %}
+                                        <div class="sm:col-span-2">
+                                            <span class="text-gray-500">Services:</span>
+                                            <span class="text-gray-800 ml-1">{{ prop.services }}</span>
+                                        </div>
+                                        {% endif %}
+                                        {% if prop.proprietaire %}
+                                        <div>
+                                            <span class="text-gray-500">Proprietaire:</span>
+                                            <span class="text-gray-800 ml-1">{{ prop.proprietaire }}</span>
+                                        </div>
+                                        {% endif %}
+                                        {% if prop.type_etablissement %}
+                                        <div>
+                                            <span class="text-gray-500">Type:</span>
+                                            <span class="text-gray-800 ml-1">{{ prop.type_etablissement }}</span>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% if prop.comment %}
+                                    <div class="mt-3 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+                                        {{ prop.comment }}
+                                    </div>
+                                    {% endif %}
+                                    <div class="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
+                                        Propose par: {{ prop.submitted_by_name or 'Anonyme' }}
+                                        {% if prop.submitted_by_phone %} - {{ prop.submitted_by_phone }}{% endif %}
+                                        {% if prop.submitted_by_email %} - {{ prop.submitted_by_email }}{% endif %}
+                                        <span class="ml-2">{{ prop.created_at.strftime('%d/%m/%Y %H:%M') if prop.created_at else '' }}</span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <button onclick="approveProposal({{ prop.id }})" class="px-4 py-2 bg-green-600 text-white rounded-xl text-sm font-medium hover:bg-green-700 transition">Valider</button>
+                                    <button onclick="rejectProposal({{ prop.id }})" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-sm font-medium hover:bg-gray-200 transition">Rejeter</button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+                        <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                        </div>
+                        <p class="text-gray-500">Aucune proposition de pharmacie en attente</p>
+                    </div>
+                    {% endif %}
+                </div>
+                
                 <div id="tab-suggestions" class="tab-content">
                     <h2 class="text-2xl font-bold text-gray-800 mb-6">Suggestions des utilisateurs</h2>
                     {% if pending_suggestions %}
@@ -685,6 +785,43 @@
                         btn.classList.toggle('text-purple-600');
                         btn.classList.toggle('bg-gray-100');
                         btn.classList.toggle('text-gray-400');
+                    }
+                });
+        }
+        
+        function approveProposal(id) {
+            if (!confirm('Valider cette pharmacie et l\'ajouter a la liste ?')) return;
+            
+            fetch('/admin/pharmacy-proposal/' + id + '/approve', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('proposal-' + id).remove();
+                        alert('Pharmacie ajoutee avec succes !');
+                    }
+                })
+                .catch(err => alert('Erreur lors de la validation'));
+        }
+        
+        function rejectProposal(id) {
+            if (!confirm('Rejeter cette proposition de pharmacie ?')) return;
+            
+            fetch('/admin/pharmacy-proposal/' + id + '/reject', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('proposal-' + id).remove();
+                    }
+                })
+                .catch(err => alert('Erreur lors du rejet'));
+        }
+        
+        function archiveSuggestion(id) {
+            fetch('/admin/suggestion/' + id + '/archive', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
                     }
                 });
         }

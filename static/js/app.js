@@ -948,29 +948,88 @@ function resetSuggestionForm() {
     document.getElementById('suggestionForm').reset();
     document.getElementById('suggestionForm').classList.remove('hidden');
     document.getElementById('suggestionSuccess').classList.add('hidden');
+    updateSuggestionForm();
+}
+
+function updateSuggestionForm() {
+    const category = document.getElementById('suggestionCategory').value;
+    const standardFields = document.getElementById('standardFields');
+    const pharmacyFields = document.getElementById('pharmacyFields');
+    const submitBtnText = document.getElementById('submitBtnText');
+    
+    if (category === 'pharmacie') {
+        standardFields.classList.add('hidden');
+        pharmacyFields.classList.remove('hidden');
+        if (submitBtnText) submitBtnText.textContent = 'Proposer cette pharmacie';
+    } else {
+        standardFields.classList.remove('hidden');
+        pharmacyFields.classList.add('hidden');
+        if (submitBtnText) submitBtnText.textContent = 'Envoyer ma suggestion';
+    }
 }
 
 async function submitSuggestion(e) {
     e.preventDefault();
     
     const category = document.getElementById('suggestionCategory').value;
-    const subject = document.getElementById('suggestionSubject').value;
-    const message = document.getElementById('suggestionMessage').value;
     const name = document.getElementById('suggestionName').value;
     const phone = document.getElementById('suggestionPhone').value;
     const email = document.getElementById('suggestionEmail').value;
     
-    if (!category || !subject || !message) {
-        alert('Veuillez remplir tous les champs obligatoires');
+    if (!category) {
+        alert('Veuillez sélectionner une catégorie');
         return;
     }
     
     try {
-        const response = await fetch('/api/suggestions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ category, subject, message, name, phone, email })
-        });
+        let response;
+        
+        if (category === 'pharmacie') {
+            const nom = document.getElementById('pharmacyNom').value;
+            const ville = document.getElementById('pharmacyVille').value;
+            
+            if (!nom || !ville) {
+                alert('Le nom et la ville sont obligatoires');
+                return;
+            }
+            
+            const data = {
+                nom,
+                ville,
+                quartier: document.getElementById('pharmacyQuartier').value,
+                telephone: document.getElementById('pharmacyTelephone').value,
+                bp: document.getElementById('pharmacyBP').value,
+                horaires: document.getElementById('pharmacyHoraires').value,
+                services: document.getElementById('pharmacyServices').value,
+                proprietaire: document.getElementById('pharmacyProprietaire').value,
+                type_etablissement: document.getElementById('pharmacyType').value,
+                is_garde: document.getElementById('pharmacyIsGarde').checked,
+                comment: document.getElementById('pharmacyComment').value,
+                name,
+                phone,
+                email
+            };
+            
+            response = await fetch('/api/pharmacy-proposal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+        } else {
+            const subject = document.getElementById('suggestionSubject').value;
+            const message = document.getElementById('suggestionMessage').value;
+            
+            if (!subject || !message) {
+                alert('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+            
+            response = await fetch('/api/suggestions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ category, subject, message, name, phone, email })
+            });
+        }
         
         const result = await response.json();
         

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request
 from services.pharmacy_service import PharmacyService
-from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion
+from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal
 from models.pharmacy import Pharmacy
 from extensions import db
 
@@ -121,3 +121,37 @@ def submit_suggestion():
     db.session.commit()
     
     return jsonify({'success': True, 'message': 'Suggestion envoyée avec succès'})
+
+
+@public_bp.route('/api/pharmacy-proposal', methods=['POST'])
+def submit_pharmacy_proposal():
+    data = request.get_json()
+    
+    nom = data.get('nom')
+    ville = data.get('ville')
+    
+    if not nom or not ville:
+        return jsonify({'success': False, 'error': 'Le nom et la ville sont obligatoires'}), 400
+    
+    proposal = PharmacyProposal(
+        nom=nom,
+        ville=ville,
+        quartier=data.get('quartier', ''),
+        telephone=data.get('telephone', ''),
+        bp=data.get('bp', ''),
+        horaires=data.get('horaires', ''),
+        services=data.get('services', ''),
+        proprietaire=data.get('proprietaire', ''),
+        type_etablissement=data.get('type_etablissement', ''),
+        is_garde=data.get('is_garde', False),
+        latitude=data.get('latitude'),
+        longitude=data.get('longitude'),
+        submitted_by_name=data.get('name', ''),
+        submitted_by_email=data.get('email', ''),
+        submitted_by_phone=data.get('phone', ''),
+        comment=data.get('comment', '')
+    )
+    db.session.add(proposal)
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': 'Proposition de pharmacie envoyée avec succès'})

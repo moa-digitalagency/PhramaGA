@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_user, logout_user, login_required, current_user
 from models.admin import Admin
 from models.pharmacy import Pharmacy
-from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion
+from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal
 from services.pharmacy_service import PharmacyService
 from utils.helpers import safe_float, CITY_COORDINATES
 from extensions import db
@@ -45,6 +45,7 @@ def admin_dashboard():
     pending_locations = LocationSubmission.query.filter_by(status='pending').order_by(LocationSubmission.created_at.desc()).all()
     pending_infos = InfoSubmission.query.filter_by(status='pending').order_by(InfoSubmission.created_at.desc()).all()
     pending_suggestions = Suggestion.query.filter_by(status='pending').order_by(Suggestion.created_at.desc()).all()
+    pending_proposals = PharmacyProposal.query.filter_by(status='pending').order_by(PharmacyProposal.created_at.desc()).all()
     
     top_pharmacies = db.session.query(
         Pharmacy.id, Pharmacy.nom, Pharmacy.ville,
@@ -60,6 +61,7 @@ def admin_dashboard():
         pending_locations=pending_locations,
         pending_infos=pending_infos,
         pending_suggestions=pending_suggestions,
+        pending_proposals=pending_proposals,
         top_pharmacies=top_pharmacies,
         recent_pharmacies=recent_pharmacies,
         total_views=total_views
@@ -292,6 +294,57 @@ def archive_suggestion(id):
     suggestion.status = 'archived'
     suggestion.reviewed_at = datetime.utcnow()
     suggestion.reviewed_by_admin_id = current_user.id
+    
+    db.session.commit()
+    
+    return jsonify({'success': True})
+
+
+@admin_bp.route('/pharmacy-proposal/<int:id>/approve', methods=['POST'])
+@login_required
+def approve_pharmacy_proposal(id):
+    proposal = PharmacyProposal.query.get_or_404(id)
+    
+    import random
+    import string
+    code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    
+    pharmacy = Pharmacy(
+        code=f"NEW{code}",
+        nom=proposal.nom,
+        ville=proposal.ville,
+        quartier=proposal.quartier,
+        telephone=proposal.telephone,
+        bp=proposal.bp,
+        horaires=proposal.horaires,
+        services=proposal.services,
+        proprietaire=proposal.proprietaire,
+        type_etablissement=proposal.type_etablissement or 'Pharmacie générale',
+        is_garde=proposal.is_garde,
+        latitude=proposal.latitude,
+        longitude=proposal.longitude,
+        is_verified=False
+    )
+    
+    db.session.add(pharmacy)
+    
+    proposal.status = 'approved'
+    proposal.reviewed_at = datetime.utcnow()
+    proposal.reviewed_by_admin_id = current_user.id
+    
+    db.session.commit()
+    
+    return jsonify({'success': True, 'pharmacy_id': pharmacy.id})
+
+
+@admin_bp.route('/pharmacy-proposal/<int:id>/reject', methods=['POST'])
+@login_required
+def reject_pharmacy_proposal(id):
+    proposal = PharmacyProposal.query.get_or_404(id)
+    
+    proposal.status = 'rejected'
+    proposal.reviewed_at = datetime.utcnow()
+    proposal.reviewed_by_admin_id = current_user.id
     
     db.session.commit()
     
