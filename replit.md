@@ -10,6 +10,8 @@ Preferred communication style: Simple, everyday language (French).
 
 ## Recent Changes (December 2025)
 
+- Converted all image settings to file upload only (no URLs) - logo, favicon, OpenGraph image, and popup images now use file uploads exclusively
+- Added helper methods in SiteSettings for generating image URLs from uploaded filenames
 - Fixed admin duplicate key error - now updates existing admin instead of creating duplicates
 - Replaced "horaire" with timezone setting (fuseau horaire) using dropdown selector
 - Popup images now uploaded securely with sanitized filenames (stored in static/uploads/popups/)
