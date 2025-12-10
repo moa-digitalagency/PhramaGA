@@ -1045,6 +1045,31 @@ function filterByCity(city) {
     }
 }
 
+let currentGardeCity = '';
+
+function filterGardeByCity(city) {
+    currentGardeCity = city;
+    fetchGardePharmacies();
+}
+
+async function fetchGardePharmacies() {
+    const params = new URLSearchParams();
+    if (currentGardeCity) params.append('ville', currentGardeCity);
+    params.append('garde', 'true');
+    
+    try {
+        const response = await fetch(`/api/pharmacies?${params}`);
+        const data = await response.json();
+        
+        document.getElementById('countGarde').textContent = `(${data.length})`;
+        document.getElementById('gardeList').innerHTML = data.length > 0 
+            ? data.map(p => createPharmacyCard(p)).join('')
+            : '<p class="text-center text-gray-500 py-8">Aucune pharmacie de garde trouvée</p>';
+    } catch (error) {
+        console.error('Error fetching garde pharmacies:', error);
+    }
+}
+
 async function fetchPharmacies(gardeOnly = false) {
     const search = document.getElementById('searchInput').value;
     
