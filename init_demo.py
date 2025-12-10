@@ -124,16 +124,23 @@ def init_demo_data(force=False):
             lat_offset = (offset_idx % 50) * 0.002 - 0.05
             lng_offset = (offset_idx // 50 % 50) * 0.002 - 0.05
             
-            type_etablissement = row.get('type_etablissement', '')
+            type_etablissement_raw = row.get('type_etablissement', '')
             horaires = row.get('horaires', '')
             nom = row.get('nom', '')
             
-            is_garde = 'garde' in type_etablissement.lower() or '24h' in horaires.lower()
+            if 'dépôt' in type_etablissement_raw.lower() or 'depot' in type_etablissement_raw.lower():
+                type_etablissement = 'depot_pharmaceutique'
+            elif 'hospitalière' in type_etablissement_raw.lower() or 'hospitaliere' in type_etablissement_raw.lower():
+                type_etablissement = 'pharmacie_hospitaliere'
+            else:
+                type_etablissement = 'pharmacie_generale'
+            
+            is_garde = 'garde' in type_etablissement_raw.lower() or '24h' in horaires.lower()
             is_gare = 'gare' in quartier.lower() or 'gare' in nom.lower()
             
-            categorie = row.get('categorie', 'generale')
-            if 'dépôt' in type_etablissement.lower():
-                categorie = 'depot'
+            categorie_raw = row.get('categorie', 'standard')
+            valid_categories = ['standard', 'gare', 'hopital', 'aeroport', 'centre_commercial', 'marche', 'centre_ville', 'zone_residentielle']
+            categorie = categorie_raw if categorie_raw in valid_categories else 'standard'
             
             pharmacy = Pharmacy(
                 code=row['id'],

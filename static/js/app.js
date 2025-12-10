@@ -272,9 +272,7 @@ const CATEGORY_LABELS = {
     'centre_commercial': 'Centre commercial',
     'marche': 'Marché',
     'centre_ville': 'Centre-ville',
-    'zone_residentielle': 'Zone résidentielle',
-    'depot': 'Dépôt',
-    'generale': null
+    'zone_residentielle': 'Zone résidentielle'
 };
 
 function normalizeTypeEtablissement(typeStr) {
