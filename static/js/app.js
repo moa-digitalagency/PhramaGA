@@ -82,11 +82,12 @@ function displayOnMap(data) {
         const color = getMarkerColor(pharmacy);
         const icon = createMarkerIcon(color);
         
-        const popupContent = createMapPopup(pharmacy);
-        
         const marker = L.marker([pharmacy.lat, pharmacy.lng], { icon })
-            .bindPopup(popupContent)
             .addTo(map);
+        
+        marker.on('click', function() {
+            showPharmacyDetail(pharmacy);
+        });
         
         markers.push(marker);
     });
@@ -235,17 +236,17 @@ function showNearestPharmaciesOnMap(userLat, userLng, pharmacyList, title) {
             const color = '#ef4444'; // Red for garde
             const icon = createMarkerIcon(color);
             
-            const popupContent = createMapPopup(pharmacy);
-            
             const marker = L.marker([pharmacy.lat, pharmacy.lng], { icon })
-                .bindPopup(popupContent, { maxWidth: 300 })
                 .addTo(map);
+            
+            marker.on('click', function() {
+                showPharmacyDetail(pharmacy);
+            });
             
             markers.push(marker);
             
-            // Open popup for nearest pharmacy
             if (index === 0) {
-                marker.openPopup();
+                showPharmacyDetail(pharmacy);
             }
         });
         
