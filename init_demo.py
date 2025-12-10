@@ -8,13 +8,12 @@ from extensions import db
 from models.pharmacy import Pharmacy
 from utils.helpers import CITY_COORDINATES
 
-def init_demo_data():
+def init_demo_data(force=False):
     with app.app_context():
         if Pharmacy.query.count() > 0:
             print(f"Database already contains {Pharmacy.query.count()} pharmacies.")
-            response = input("Do you want to clear and reimport? (y/N): ")
-            if response.lower() != 'y':
-                print("Aborted.")
+            if not force:
+                print("Use --force to clear and reimport.")
                 return
             Pharmacy.query.delete()
             db.session.commit()
@@ -82,4 +81,5 @@ def init_demo_data():
         print("  - ADMIN_PASSWORD")
 
 if __name__ == '__main__':
-    init_demo_data()
+    force = '--force' in sys.argv
+    init_demo_data(force=force)

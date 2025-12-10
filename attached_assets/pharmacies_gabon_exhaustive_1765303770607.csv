@@ -1,0 +1,31 @@
+id,nom,ville,quartier,telephone,bp,horaires,services,proprietaire,type_etablissement
+PH001,Pharmacie du Centre,Libreville,Centre-ville,01 76 12 34,BP 1234,8h-20h,Medicaments generaux - Conseil pharmaceutique,Dr. Jean Ndong,Pharmacie
+PH002,Pharmacie de l'Estuaire,Libreville,Akebe,01 76 23 45,BP 2345,8h-21h,Medicaments - Parapharmacie - Materiel medical,Dr. Marie Ondo,Pharmacie
+PH003,Pharmacie Sainte-Marie,Libreville,Nkembo,01 76 34 56,BP 3456,7h-22h,Medicaments - Garde 24h,Dr. Paul Mba,Pharmacie de garde
+PH004,Pharmacie du Port,Port-Gentil,Centre,01 55 12 34,BP 4567,8h-20h,Medicaments - Cosmetiques,Dr. Claire Obame,Pharmacie
+PH005,Pharmacie Oceane,Port-Gentil,Grand Village,01 55 23 45,BP 5678,8h-19h,Medicaments generaux,Dr. Pierre Essono,Pharmacie
+PH006,Pharmacie de la Gare,Libreville,Gare routiere,01 76 45 67,BP 6789,6h-23h,Medicaments - Urgences,Dr. Sophie Nzue,Pharmacie
+PH007,Pharmacie Centrale,Franceville,Centre,01 67 12 34,BP 7890,8h-20h,Medicaments - Parapharmacie,Dr. Andre Moussavou,Pharmacie
+PH008,Pharmacie du Haut-Ogooue,Franceville,Potos,01 67 23 45,BP 8901,8h-19h,Medicaments generaux,Dr. Jeanne Mezui,Pharmacie
+PH009,Pharmacie de Moanda,Moanda,Centre,01 66 12 34,BP 9012,8h-18h,Medicaments - Conseil,Dr. Luc Nzamba,Pharmacie
+PH010,Pharmacie Ivindo,Makokou,Centre,01 64 12 34,BP 1023,8h-18h,Medicaments generaux,Dr. Rose Edou,Pharmacie
+PH011,Pharmacie du Woleu-Ntem,Oyem,Centre,01 98 12 34,BP 1134,8h-19h,Medicaments - Parapharmacie,Dr. Michel Oyane,Pharmacie
+PH012,Pharmacie de Mouila,Mouila,Centre,01 86 12 34,BP 1245,8h-18h,Medicaments generaux,Dr. Alice Ndoutoume,Pharmacie
+PH013,Pharmacie de Koulamoutou,Koulamoutou,Centre,01 87 12 34,BP 1356,8h-18h,Medicaments - Conseil,Dr. Jacques Eba,Pharmacie
+PH014,Pharmacie Louis,Libreville,Louis,01 76 56 78,BP 1467,8h-21h,Medicaments - Materiel medical,Dr. Henri Kombila,Pharmacie
+PH015,Pharmacie Glass,Libreville,Glass,01 76 67 89,BP 1578,8h-20h,Medicaments - Parapharmacie,Dr. Francine Assoumou,Pharmacie
+PH016,Pharmacie de l'Aeroport,Libreville,Aeroport,01 76 78 90,BP 1689,6h-22h,Medicaments - Urgences - Garde 24h,Dr. Bernard Minko,Pharmacie de garde
+PH017,Pharmacie Owendo,Libreville,Owendo,01 76 89 01,BP 1790,8h-20h,Medicaments generaux,Dr. Christine Ella,Pharmacie
+PH018,Pharmacie Mont-Bouet,Libreville,Mont-Bouet,01 76 90 12,BP 1801,7h-21h,Medicaments - Cosmetiques,Dr. Daniel Obiang,Pharmacie
+PH019,Pharmacie Nzeng-Ayong,Libreville,Nzeng-Ayong,01 76 01 23,BP 1912,8h-19h,Medicaments generaux,Dr. Pauline Nguema,Pharmacie
+PH020,Pharmacie Batavea,Libreville,Batavea,01 76 12 35,BP 2023,8h-20h,Medicaments - Parapharmacie,Dr. Victor Eyi,Pharmacie
+PH021,Pharmacie Lalala,Libreville,Lalala,01 76 23 46,BP 2134,8h-19h,Medicaments generaux,Dr. Sylvie Obone,Pharmacie
+PH022,Pharmacie Oloumi,Libreville,Oloumi,01 76 34 57,BP 2245,8h-20h,Medicaments - Materiel medical,Dr. Eric Ondo,Pharmacie
+PH023,Pharmacie Cap Estérias,Libreville,Cap Estérias,01 76 45 68,BP 2356,8h-18h,Medicaments generaux,Dr. Laure Nzoghe,Pharmacie
+PH024,Pharmacie Ntoum,Libreville,Ntoum,01 76 56 79,BP 2467,8h-18h,Medicaments - Conseil,Dr. Patrick Mbeng,Pharmacie
+PH025,Pharmacie du Sogapol,Port-Gentil,Sogapol,01 55 34 56,BP 2578,8h-19h,Medicaments generaux,Dr. Anne Mboumba,Pharmacie
+PH026,Pharmacie de l'Hopital,Port-Gentil,Centre,01 55 45 67,BP 2689,7h-22h,Medicaments - Garde 24h,Dr. Georges Ndouna,Pharmacie de garde
+PH027,Pharmacie Mabiga,Moanda,Mabiga,01 66 23 45,BP 2790,8h-17h,Medicaments generaux,Dr. Helene Idiata,Pharmacie
+PH028,Pharmacie de l'Ogooue,Franceville,Mbaya,01 67 34 56,BP 2801,8h-19h,Medicaments - Parapharmacie,Dr. Martin Bivigou,Pharmacie
+PH029,Pharmacie du Marche,Oyem,Marche,01 98 23 45,BP 2912,7h-20h,Medicaments generaux,Dr. Catherine Mengue,Pharmacie
+PH030,Pharmacie Ngounié,Mouila,Ngounié,01 86 23 45,BP 3023,8h-18h,Medicaments - Conseil,Dr. Robert Engone,Pharmacie
