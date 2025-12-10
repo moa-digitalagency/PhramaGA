@@ -565,7 +565,7 @@ function showPharmacyDetail(pharmacy) {
                         </div>
                         <div>
                             <p class="text-sm text-gray-500">Téléphone</p>
-                            <a href="tel:${pharmacy.telephone.split('/')[0].trim()}" class="font-medium text-emerald-600">${pharmacy.telephone}</a>
+                            <button onclick="handlePhoneClick('${pharmacy.telephone.replace(/'/g, "\\'")}', event)" class="font-medium text-emerald-600 hover:underline cursor-pointer">${pharmacy.telephone}</button>
                         </div>
                     </div>
                 ` : ''}
@@ -601,13 +601,13 @@ function showPharmacyDetail(pharmacy) {
             
             <div class="flex flex-col gap-2 mt-4">
                 ${pharmacy.telephone ? `
-                    <a href="tel:${pharmacy.telephone.split('/')[0].trim()}" 
+                    <button onclick="handlePhoneClick('${pharmacy.telephone.replace(/'/g, "\\'")}', event)" 
                        class="w-full py-3 bg-emerald-600 text-white font-semibold rounded-xl flex items-center justify-center gap-2 hover:bg-emerald-700 transition">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                         </svg>
                         Appeler
-                    </a>
+                    </button>
                 ` : ''}
                 
                 <button onclick="closeModal(); locatePharmacy(${pharmacy.id}, ${pharmacy.lat}, ${pharmacy.lng})"
