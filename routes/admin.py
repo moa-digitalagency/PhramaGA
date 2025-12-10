@@ -79,20 +79,23 @@ def admin_dashboard():
     
     total_views = db.session.query(func.count(PharmacyView.id)).scalar() or 0
     
-    views_by_city = db.session.query(
+    views_by_city_query = db.session.query(
         Pharmacy.ville,
         func.count(PharmacyView.id).label('view_count')
     ).join(PharmacyView, Pharmacy.id == PharmacyView.pharmacy_id).group_by(Pharmacy.ville).order_by(func.count(PharmacyView.id).desc()).all()
+    views_by_city = [{'ville': row.ville, 'view_count': row.view_count} for row in views_by_city_query]
     
-    pharmacies_by_city = db.session.query(
+    pharmacies_by_city_query = db.session.query(
         Pharmacy.ville,
         func.count(Pharmacy.id).label('count')
     ).group_by(Pharmacy.ville).order_by(func.count(Pharmacy.id).desc()).all()
+    pharmacies_by_city = [{'ville': row.ville, 'count': row.count} for row in pharmacies_by_city_query]
     
-    pharmacies_by_type = db.session.query(
+    pharmacies_by_type_query = db.session.query(
         Pharmacy.type_etablissement,
         func.count(Pharmacy.id).label('count')
     ).group_by(Pharmacy.type_etablissement).all()
+    pharmacies_by_type = [{'type': row.type_etablissement, 'count': row.count} for row in pharmacies_by_type_query]
     
     today = datetime.utcnow().date()
     day_names = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']

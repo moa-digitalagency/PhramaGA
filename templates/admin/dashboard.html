@@ -1227,9 +1227,9 @@
                 new Chart(ctxCity, {
                     type: 'doughnut',
                     data: {
-                        labels: pharmaciesByCityData.map(d => d[0]),
+                        labels: pharmaciesByCityData.map(d => d.ville),
                         datasets: [{
-                            data: pharmaciesByCityData.map(d => d[1]),
+                            data: pharmaciesByCityData.map(d => d.count),
                             backgroundColor: chartColors,
                             borderWidth: 2,
                             borderColor: '#fff'
@@ -1250,9 +1250,9 @@
                 new Chart(ctxViewsCity, {
                     type: 'pie',
                     data: {
-                        labels: viewsByCityData.map(d => d[0]),
+                        labels: viewsByCityData.map(d => d.ville),
                         datasets: [{
-                            data: viewsByCityData.map(d => d[1]),
+                            data: viewsByCityData.map(d => d.view_count),
                             backgroundColor: chartColors,
                             borderWidth: 2,
                             borderColor: '#fff'
@@ -1279,10 +1279,10 @@
                 new Chart(ctxType, {
                     type: 'bar',
                     data: {
-                        labels: pharmaciesByTypeData.map(d => typeLabels[d[0]] || d[0]),
+                        labels: pharmaciesByTypeData.map(d => typeLabels[d.type] || d.type),
                         datasets: [{
                             label: 'Nombre',
-                            data: pharmaciesByTypeData.map(d => d[1]),
+                            data: pharmaciesByTypeData.map(d => d.count),
                             backgroundColor: chartColors,
                             borderWidth: 0,
                             borderRadius: 8
