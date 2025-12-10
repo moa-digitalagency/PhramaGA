@@ -342,7 +342,14 @@ function createPharmacyCard(pharmacy) {
                         </svg>
                         Vérifié
                     </span>
-                ` : ''}
+                ` : `
+                    <span class="flex-shrink-0 px-2 py-1 bg-gray-100 text-gray-500 text-xs font-medium rounded-full flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                        </svg>
+                        Non vérifié
+                    </span>
+                `}
             </div>
         </div>
     `;
@@ -431,7 +438,14 @@ function showPharmacyDetail(pharmacy) {
                         </svg>
                         Établissement vérifié
                     </span>
-                ` : ''}
+                ` : `
+                    <span class="px-3 py-1 bg-gray-100 text-gray-500 text-sm font-medium rounded-full flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                        </svg>
+                        Non vérifié
+                    </span>
+                `}
             </div>
             
             ${pharmacy.is_garde ? `

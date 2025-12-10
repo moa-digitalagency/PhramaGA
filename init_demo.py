@@ -4,7 +4,29 @@ import sys
 from app import app
 from extensions import db
 from models.pharmacy import Pharmacy
+from models.emergency_contact import EmergencyContact
 from utils.helpers import CITY_COORDINATES
+
+EMERGENCY_CONTACTS_DATA = [
+    {"ville": None, "service_type": "police", "label": "Police Secours (National)", "phone_numbers": "1730 / 177", "notes": "Numéro national d'urgence police", "is_national": True, "ordering": 1},
+    {"ville": None, "service_type": "pompiers", "label": "Pompiers (National)", "phone_numbers": "18", "notes": "Numéro national des sapeurs-pompiers", "is_national": True, "ordering": 2},
+    {"ville": None, "service_type": "ambulance", "label": "Ambulance / SAMU (National)", "phone_numbers": "1300 - 1399", "notes": "Numéros d'urgence médicale selon le réseau", "is_national": True, "ordering": 3},
+    {"ville": None, "service_type": "sos_medecins", "label": "SOS Médecins (National)", "phone_numbers": "1300 / 0174 / 0880", "notes": "Selon votre opérateur téléphonique", "is_national": True, "ordering": 4},
+    {"ville": "Libreville", "service_type": "police", "label": "Police Libreville", "phone_numbers": "177 / 011 72 00 37", "notes": "Commissariat Central de Libreville", "is_national": False, "ordering": 10},
+    {"ville": "Libreville", "service_type": "hopital", "label": "CHU de Libreville", "phone_numbers": "011 76 24 46", "address": "Boulevard Omar Bongo, Libreville", "notes": "Centre Hospitalier Universitaire - Urgences 24h/24", "is_national": False, "ordering": 11},
+    {"ville": "Libreville", "service_type": "clinique", "label": "Clinique El Rapha", "phone_numbers": "011 44 34 44", "address": "Libreville", "notes": "Clinique privée avec service d'urgence", "is_national": False, "ordering": 12},
+    {"ville": "Libreville", "service_type": "hopital", "label": "Hôpital d'Instructions des Armées", "phone_numbers": "011 76 00 55", "address": "Libreville", "notes": "Hôpital militaire avec urgences", "is_national": False, "ordering": 13},
+    {"ville": "Libreville", "service_type": "ambulance", "label": "SAMU Libreville", "phone_numbers": "1300 / 011 76 24 46", "notes": "Service d'Aide Médicale Urgente", "is_national": False, "ordering": 14},
+    {"ville": "Port-Gentil", "service_type": "police", "label": "Police Port-Gentil", "phone_numbers": "011 55 22 36", "notes": "Commissariat de Port-Gentil", "is_national": False, "ordering": 20},
+    {"ville": "Port-Gentil", "service_type": "hopital", "label": "Hôpital Régional de Port-Gentil", "phone_numbers": "011 55 20 44", "address": "Port-Gentil", "notes": "Hôpital régional avec urgences", "is_national": False, "ordering": 21},
+    {"ville": "Port-Gentil", "service_type": "clinique", "label": "Clinique Mandji", "phone_numbers": "011 55 39 00", "address": "Port-Gentil", "notes": "Clinique privée de référence", "is_national": False, "ordering": 22},
+    {"ville": "Franceville", "service_type": "police", "label": "Police Franceville", "phone_numbers": "011 67 72 76 / 011 67 72 94", "notes": "Commissariat de Franceville", "is_national": False, "ordering": 30},
+    {"ville": "Franceville", "service_type": "hopital", "label": "Hôpital Régional de Franceville", "phone_numbers": "011 67 72 33", "address": "Franceville", "notes": "Hôpital régional du Haut-Ogooué", "is_national": False, "ordering": 31},
+    {"ville": "Oyem", "service_type": "hopital", "label": "Hôpital Régional d'Oyem", "phone_numbers": "011 98 60 16", "address": "Oyem", "notes": "Hôpital régional du Woleu-Ntem", "is_national": False, "ordering": 40},
+    {"ville": "Mouila", "service_type": "hopital", "label": "Hôpital Régional de Mouila", "phone_numbers": "011 86 12 33", "address": "Mouila", "notes": "Hôpital régional de la Ngounié", "is_national": False, "ordering": 50},
+    {"ville": "Makokou", "service_type": "hopital", "label": "Hôpital Régional de Makokou", "phone_numbers": "011 66 10 20", "address": "Makokou", "notes": "Hôpital régional de l'Ogooué-Ivindo", "is_national": False, "ordering": 60},
+    {"ville": "Koulamoutou", "service_type": "hopital", "label": "Hôpital Régional de Koulamoutou", "phone_numbers": "011 65 10 25", "address": "Koulamoutou", "notes": "Hôpital régional de l'Ogooué-Lolo", "is_national": False, "ordering": 70},
+]
 
 PHARMACIES_DATA = [
     {"id": "LBV001", "nom": "Grande Pharmacie des Forestiers", "ville": "Libreville", "quartier": "Galerie de Mbolo", "telephone": "011 72 23 52", "bp": "2", "horaires": "Lun-Sam: 8h-19h30, Dim: 8h-18h", "services": "Parapharmacie, Conseil pharmaceutique", "proprietaire": "", "type_etablissement": "pharmacie_generale", "categorie": "centre_commercial"},
@@ -139,13 +161,34 @@ def init_demo_data(force=False):
                 latitude=base_coords["lat"] + lat_offset,
                 longitude=base_coords["lng"] + lng_offset,
                 is_garde=row.get('is_garde', False),
-                is_verified=True
+                is_verified=False
             )
             db.session.add(pharmacy)
             count += 1
         
         db.session.commit()
         print(f"Successfully imported {count} pharmacies!")
+        
+        EmergencyContact.query.delete()
+        db.session.commit()
+        
+        emergency_count = 0
+        for contact_data in EMERGENCY_CONTACTS_DATA:
+            contact = EmergencyContact(
+                ville=contact_data.get('ville'),
+                service_type=contact_data.get('service_type'),
+                label=contact_data.get('label'),
+                phone_numbers=contact_data.get('phone_numbers'),
+                address=contact_data.get('address', ''),
+                notes=contact_data.get('notes', ''),
+                is_national=contact_data.get('is_national', False),
+                ordering=contact_data.get('ordering', 0)
+            )
+            db.session.add(contact)
+            emergency_count += 1
+        
+        db.session.commit()
+        print(f"Successfully imported {emergency_count} emergency contacts!")
 
 if __name__ == "__main__":
     force = "--force" in sys.argv

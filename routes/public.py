@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, jsonify, request
 from services.pharmacy_service import PharmacyService
 from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal
 from models.pharmacy import Pharmacy
+from models.emergency_contact import EmergencyContact
 from extensions import db
 
 public_bp = Blueprint('public', __name__)
@@ -11,7 +12,21 @@ public_bp = Blueprint('public', __name__)
 def index():
     villes = PharmacyService.get_distinct_cities()
     total_pharmacies = Pharmacy.query.count()
-    return render_template('index.html', villes=villes, total_pharmacies=total_pharmacies)
+    
+    national_contacts = EmergencyContact.query.filter_by(is_national=True, is_active=True).order_by(EmergencyContact.ordering).all()
+    city_contacts = EmergencyContact.query.filter_by(is_national=False, is_active=True).order_by(EmergencyContact.ordering).all()
+    
+    contacts_by_city = {}
+    for contact in city_contacts:
+        if contact.ville not in contacts_by_city:
+            contacts_by_city[contact.ville] = []
+        contacts_by_city[contact.ville].append(contact)
+    
+    return render_template('index.html', 
+                          villes=villes, 
+                          total_pharmacies=total_pharmacies,
+                          national_contacts=national_contacts,
+                          contacts_by_city=contacts_by_city)
 
 
 @public_bp.route('/api/pharmacies')
