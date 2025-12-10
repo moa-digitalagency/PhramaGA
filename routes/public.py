@@ -3,6 +3,7 @@ from services.pharmacy_service import PharmacyService
 from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal
 from models.pharmacy import Pharmacy
 from models.emergency_contact import EmergencyContact
+from models.site_settings import PopupMessage
 from extensions import db
 
 public_bp = Blueprint('public', __name__)
@@ -171,3 +172,9 @@ def submit_pharmacy_proposal():
     db.session.commit()
     
     return jsonify({'success': True, 'message': 'Proposition de pharmacie envoyée avec succès'})
+
+
+@public_bp.route('/api/popups')
+def get_active_popups():
+    popups = PopupMessage.query.filter_by(is_active=True).order_by(PopupMessage.ordering).all()
+    return jsonify([p.to_dict() for p in popups])

@@ -5,6 +5,7 @@ from app import app
 from extensions import db
 from models.pharmacy import Pharmacy
 from models.emergency_contact import EmergencyContact
+from models.site_settings import PopupMessage
 from utils.helpers import CITY_COORDINATES
 
 EMERGENCY_CONTACTS_DATA = [
@@ -189,6 +190,21 @@ def init_demo_data(force=False):
         
         db.session.commit()
         print(f"Successfully imported {emergency_count} emergency contacts!")
+        
+        PopupMessage.query.delete()
+        db.session.commit()
+        
+        welcome_popup = PopupMessage(
+            title="Bienvenue sur PharmaciesGabon.com",
+            description="La première plateforme qui recense toutes les pharmacies au Gabon, aide à trouver la pharmacie de garde la plus proche et les contacts d'urgence dans toutes les villes gabonaises.",
+            warning_text="Cette plateforme est encore en cours de développement. Vous pouvez contribuer à rendre cette plateforme plus précise en complétant les informations de pharmacie, ajoutant une localisation précise ou même une pharmacie manquante et ses informations. Cela peut peut-être sauver une vie.",
+            is_active=True,
+            show_once=True,
+            ordering=0
+        )
+        db.session.add(welcome_popup)
+        db.session.commit()
+        print("Welcome popup created!")
 
 if __name__ == "__main__":
     force = "--force" in sys.argv

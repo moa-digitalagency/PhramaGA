@@ -1249,8 +1249,76 @@ function getPharmacyLocation() {
     );
 }
 
+function loadActivePopups() {
+    fetch('/api/popups')
+        .then(response => response.json())
+        .then(popups => {
+            popups.forEach(popup => {
+                const seenKey = `popup_seen_${popup.id}`;
+                if (popup.show_once && localStorage.getItem(seenKey)) {
+                    return;
+                }
+                showWelcomePopup(popup);
+                if (popup.show_once) {
+                    localStorage.setItem(seenKey, 'true');
+                }
+            });
+        })
+        .catch(error => console.error('Error loading popups:', error));
+}
+
+function showWelcomePopup(popup) {
+    const overlay = document.createElement('div');
+    overlay.id = `welcomePopup_${popup.id}`;
+    overlay.className = 'fixed inset-0 bg-black/60 z-[3000] flex items-center justify-center p-4';
+    overlay.onclick = function(e) {
+        if (e.target === overlay) closeWelcomePopup(popup.id);
+    };
+    
+    let imageHtml = '';
+    if (popup.image_url) {
+        imageHtml = `<img src="${popup.image_url}" alt="" class="w-full h-48 object-cover rounded-t-2xl">`;
+    }
+    
+    let warningHtml = '';
+    if (popup.warning_text) {
+        warningHtml = `
+            <div class="mt-4 p-4 bg-red-50 border-2 border-red-400 rounded-xl">
+                <div class="flex items-start gap-3">
+                    <svg class="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    <p class="text-red-700 text-sm">${popup.warning_text}</p>
+                </div>
+            </div>
+        `;
+    }
+    
+    overlay.innerHTML = `
+        <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-fade-in">
+            ${imageHtml}
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-3">${popup.title}</h2>
+                ${popup.description ? `<p class="text-gray-600">${popup.description}</p>` : ''}
+                ${warningHtml}
+                <button onclick="closeWelcomePopup(${popup.id})" class="mt-6 w-full py-3 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition">
+                    J'ai compris
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+}
+
+function closeWelcomePopup(popupId) {
+    const popup = document.getElementById(`welcomePopup_${popupId}`);
+    if (popup) popup.remove();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     fetchPharmacies();
+    loadActivePopups();
     
     document.getElementById('searchInput').addEventListener('input', () => {
         debounce(() => fetchPharmacies(currentTab === 'garde'), 300);

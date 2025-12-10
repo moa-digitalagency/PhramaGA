@@ -4,6 +4,7 @@ from models.admin import Admin
 from models.pharmacy import Pharmacy
 from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal
 from models.emergency_contact import EmergencyContact, EMERGENCY_SERVICE_TYPES
+from models.site_settings import SiteSettings, PopupMessage
 from services.pharmacy_service import PharmacyService
 from utils.helpers import safe_float, CITY_COORDINATES
 from extensions import db
@@ -425,3 +426,93 @@ def delete_emergency_contact(id):
     db.session.commit()
     flash('Contact d\'urgence supprimé', 'success')
     return redirect(url_for('admin.list_emergency_contacts'))
+
+
+@admin_bp.route('/settings', methods=['GET', 'POST'])
+@login_required
+def site_settings():
+    if request.method == 'POST':
+        settings_keys = [
+            'site_name', 'site_description', 'site_logo_url', 'site_favicon_url',
+            'default_horaires', 'contact_email', 'contact_phone',
+            'og_title', 'og_description', 'og_image_url',
+            'meta_keywords', 'google_analytics_id'
+        ]
+        
+        for key in settings_keys:
+            value = request.form.get(key, '')
+            SiteSettings.set(key, value)
+        
+        flash('Paramètres enregistrés avec succès', 'success')
+        return redirect(url_for('admin.site_settings'))
+    
+    settings = SiteSettings.get_all()
+    return render_template('admin/settings.html', settings=settings)
+
+
+@admin_bp.route('/popups')
+@login_required
+def list_popups():
+    popups = PopupMessage.query.order_by(PopupMessage.ordering, PopupMessage.created_at.desc()).all()
+    return render_template('admin/popups.html', popups=popups)
+
+
+@admin_bp.route('/popup/add', methods=['GET', 'POST'])
+@login_required
+def add_popup():
+    if request.method == 'POST':
+        popup = PopupMessage(
+            title=request.form.get('title'),
+            description=request.form.get('description', ''),
+            warning_text=request.form.get('warning_text', ''),
+            image_url=request.form.get('image_url', ''),
+            is_active=request.form.get('is_active') == 'on',
+            show_once=request.form.get('show_once') == 'on',
+            ordering=int(request.form.get('ordering', 0))
+        )
+        db.session.add(popup)
+        db.session.commit()
+        flash('Popup ajouté avec succès', 'success')
+        return redirect(url_for('admin.list_popups'))
+    
+    return render_template('admin/popup_form.html', popup=None)
+
+
+@admin_bp.route('/popup/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_popup(id):
+    popup = PopupMessage.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        popup.title = request.form.get('title')
+        popup.description = request.form.get('description', '')
+        popup.warning_text = request.form.get('warning_text', '')
+        popup.image_url = request.form.get('image_url', '')
+        popup.is_active = request.form.get('is_active') == 'on'
+        popup.show_once = request.form.get('show_once') == 'on'
+        popup.ordering = int(request.form.get('ordering', 0))
+        
+        db.session.commit()
+        flash('Popup mis à jour', 'success')
+        return redirect(url_for('admin.list_popups'))
+    
+    return render_template('admin/popup_form.html', popup=popup)
+
+
+@admin_bp.route('/popup/<int:id>/toggle', methods=['POST'])
+@login_required
+def toggle_popup(id):
+    popup = PopupMessage.query.get_or_404(id)
+    popup.is_active = not popup.is_active
+    db.session.commit()
+    return jsonify({'success': True, 'is_active': popup.is_active})
+
+
+@admin_bp.route('/popup/<int:id>/delete', methods=['POST'])
+@login_required
+def delete_popup(id):
+    popup = PopupMessage.query.get_or_404(id)
+    db.session.delete(popup)
+    db.session.commit()
+    flash('Popup supprimé', 'success')
+    return redirect(url_for('admin.list_popups'))
