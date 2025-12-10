@@ -1,9 +1,6 @@
-import csv
-import os
 from datetime import datetime
 from extensions import db
 from models.pharmacy import Pharmacy
-from utils.helpers import CITY_COORDINATES
 
 
 class PharmacyService:
@@ -143,54 +140,3 @@ class PharmacyService:
         pharmacy.validated_by_admin_id = None
         db.session.commit()
         return pharmacy
-    
-    @staticmethod
-    def import_csv_data():
-        csv_path = os.path.join('attached_assets', 'pharmacies_gabon_exhaustive_1765368648009.csv')
-        if not os.path.exists(csv_path):
-            return
-        
-        quartier_offsets = {}
-        
-        with open(csv_path, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-            for idx, row in enumerate(reader):
-                if not row['id']:
-                    continue
-                
-                ville = row['ville']
-                quartier = row['quartier']
-                
-                base_coords = CITY_COORDINATES.get(ville, {"lat": 0.4162, "lng": 9.4673})
-                
-                offset_key = f"{ville}_{quartier}"
-                if offset_key not in quartier_offsets:
-                    quartier_offsets[offset_key] = len(quartier_offsets)
-                
-                offset_idx = quartier_offsets[offset_key] + idx
-                lat_offset = (offset_idx % 50) * 0.002 - 0.05
-                lng_offset = (offset_idx // 50 % 50) * 0.002 - 0.05
-                
-                is_garde = 'garde' in row['type_etablissement'].lower() or '24h' in row['horaires']
-                is_gare = 'gare' in row['quartier'].lower() or 'gare' in row['nom'].lower()
-                
-                pharmacy = Pharmacy(
-                    code=row['id'],
-                    nom=row['nom'],
-                    ville=ville,
-                    quartier=quartier,
-                    telephone=row['telephone'],
-                    bp=row['bp'],
-                    horaires=row['horaires'],
-                    services=row['services'],
-                    proprietaire=row['proprietaire'],
-                    type_etablissement=row['type_etablissement'],
-                    is_garde=is_garde,
-                    is_gare=is_gare,
-                    latitude=base_coords['lat'] + lat_offset,
-                    longitude=base_coords['lng'] + lng_offset,
-                    location_validated=False
-                )
-                db.session.add(pharmacy)
-            
-            db.session.commit()

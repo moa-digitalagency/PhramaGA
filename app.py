@@ -5,7 +5,6 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from extensions import db, login_manager
 from routes import public_bp, admin_bp
 from security.auth import init_login_manager, create_default_admin
-from services.pharmacy_service import PharmacyService
 
 
 def create_app():
@@ -29,10 +28,6 @@ def create_app():
     with app.app_context():
         db.create_all()
         create_default_admin()
-        
-        from models.pharmacy import Pharmacy
-        if Pharmacy.query.count() == 0:
-            PharmacyService.import_csv_data()
     
     return app
 
