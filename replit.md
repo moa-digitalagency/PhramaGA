@@ -10,6 +10,15 @@ Preferred communication style: Simple, everyday language (French).
 
 ## Recent Changes (December 2025)
 
+- Implemented comprehensive advertising system with non-abusive display controls:
+  - Advertisement model with media upload (images) or video links (YouTube/Facebook/Vimeo)
+  - Multiple trigger types: time-based, page navigation, refresh count, or combined
+  - Configurable skip countdown timer (default 5 seconds)
+  - Session-based limits (max ads per session, cooldowns after skip/click)
+  - Device targeting (mobile/desktop toggle)
+  - Priority weighting for ad rotation
+  - View and click tracking with statistics
+  - Admin panel for managing ads and global settings
 - Enhanced admin statistics dashboard with Chart.js visualizations:
   - Views over last 7 days (bar chart) and 30 days (line chart)
   - Pharmacies distribution by city (doughnut chart)
