@@ -4,652 +4,667 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Pharmacies Gabon</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        .sidebar-gradient {
+            background: linear-gradient(180deg, #059669 0%, #0d9488 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+        }
     </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-50 min-h-screen">
     <div class="flex">
-        <aside class="w-64 bg-white border-r min-h-screen sticky top-0 hidden lg:block">
-            <div class="p-4 border-b">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v4h4v2h-4v4h-2v-4H7v-2h4V7z"/>
+        <aside class="w-72 sidebar-gradient min-h-screen sticky top-0 hidden lg:flex flex-col">
+            <div class="p-6 border-b border-white/20">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                        <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="white">
+                            <path d="M7 12h10v1c0 3-2 6-5 6s-5-3-5-6v-1z"/>
+                            <path d="M6 11h12c.5 0 1 .5 1 1s-.5 1-1 1H6c-.5 0-1-.5-1-1s.5-1 1-1z"/>
+                            <path d="M11 19h2v2H11z"/>
+                            <path d="M9 21h6v1H9z"/>
+                            <path d="M12 2c-.8 0-1.5.3-2 .8-.3.3-.5.7-.5 1.2 0 .8.5 1.5 1.2 1.8-.2.3-.2.7-.2 1.2 0 1 .5 2 1.5 2.5-1.5.5-2.5 1.5-3 3" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                            <circle cx="13.5" cy="2.5" r="1"/>
                         </svg>
                     </div>
                     <div>
-                        <h1 class="font-bold text-gray-800">Pharmacies Gabon</h1>
-                        <p class="text-xs text-gray-500">Administration</p>
+                        <h1 class="font-bold text-white text-lg">Pharmacies Gabon</h1>
+                        <p class="text-sm text-white/70">Administration</p>
                     </div>
                 </div>
             </div>
             
-            <nav class="p-4 space-y-1">
-                <button onclick="switchAdminTab('overview')" class="admin-tab-btn w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition flex items-center gap-3 bg-emerald-50 text-emerald-700" data-tab="overview">
+            <nav class="flex-1 p-4 space-y-2">
+                <button onclick="switchAdminTab('overview')" class="admin-tab-btn w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition flex items-center gap-3 bg-white/20 text-white" data-tab="overview">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
                     </svg>
                     Tableau de bord
                 </button>
                 
-                <button onclick="switchAdminTab('pharmacies')" class="admin-tab-btn w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition flex items-center gap-3 text-gray-600 hover:bg-gray-50" data-tab="pharmacies">
+                <button onclick="switchAdminTab('pharmacies')" class="admin-tab-btn w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition flex items-center gap-3 text-white/80 hover:bg-white/10" data-tab="pharmacies">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                     </svg>
                     Pharmacies
+                    <span class="ml-auto px-2 py-0.5 bg-white/20 text-white text-xs font-semibold rounded-full">{{ pharmacies|length }}</span>
                 </button>
                 
-                <button onclick="switchAdminTab('locations')" class="admin-tab-btn w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition flex items-center gap-3 text-gray-600 hover:bg-gray-50" data-tab="locations">
+                <button onclick="switchAdminTab('locations')" class="admin-tab-btn w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition flex items-center gap-3 text-white/80 hover:bg-white/10" data-tab="locations">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                     </svg>
                     Localisations
                     {% if pending_locations %}
-                    <span class="ml-auto px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">{{ pending_locations|length }}</span>
+                    <span class="ml-auto px-2 py-0.5 bg-blue-400 text-white text-xs font-semibold rounded-full">{{ pending_locations|length }}</span>
                     {% endif %}
                 </button>
                 
-                <button onclick="switchAdminTab('infos')" class="admin-tab-btn w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition flex items-center gap-3 text-gray-600 hover:bg-gray-50" data-tab="infos">
+                <button onclick="switchAdminTab('infos')" class="admin-tab-btn w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition flex items-center gap-3 text-white/80 hover:bg-white/10" data-tab="infos">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                     </svg>
                     Corrections
                     {% if pending_infos %}
-                    <span class="ml-auto px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-semibold rounded-full">{{ pending_infos|length }}</span>
+                    <span class="ml-auto px-2 py-0.5 bg-amber-400 text-white text-xs font-semibold rounded-full">{{ pending_infos|length }}</span>
                     {% endif %}
                 </button>
                 
-                <button onclick="switchAdminTab('stats')" class="admin-tab-btn w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition flex items-center gap-3 text-gray-600 hover:bg-gray-50" data-tab="stats">
+                <button onclick="switchAdminTab('stats')" class="admin-tab-btn w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition flex items-center gap-3 text-white/80 hover:bg-white/10" data-tab="stats">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                     </svg>
                     Statistiques
                 </button>
                 
-                <button onclick="switchAdminTab('suggestions')" class="admin-tab-btn w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition flex items-center gap-3 text-gray-600 hover:bg-gray-50" data-tab="suggestions">
+                <button onclick="switchAdminTab('suggestions')" class="admin-tab-btn w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition flex items-center gap-3 text-white/80 hover:bg-white/10" data-tab="suggestions">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
                     </svg>
                     Suggestions
                     {% if pending_suggestions %}
-                    <span class="ml-auto px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">{{ pending_suggestions|length }}</span>
+                    <span class="ml-auto px-2 py-0.5 bg-purple-400 text-white text-xs font-semibold rounded-full">{{ pending_suggestions|length }}</span>
                     {% endif %}
                 </button>
             </nav>
             
-            <div class="absolute bottom-0 left-0 right-0 p-4 border-t bg-white">
+            <div class="p-4 border-t border-white/20">
                 <div class="flex items-center justify-between">
-                    <a href="/" class="text-sm text-gray-600 hover:text-emerald-600 flex items-center gap-2">
+                    <a href="/" class="text-sm text-white/80 hover:text-white flex items-center gap-2 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                         </svg>
                         Voir le site
                     </a>
-                    <a href="{{ url_for('admin.admin_logout') }}" class="text-sm text-red-600 hover:text-red-700 flex items-center gap-2">
+                    <a href="{{ url_for('admin.admin_logout') }}" class="text-sm text-red-300 hover:text-red-200 flex items-center gap-2 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                         </svg>
-                        Déconnexion
+                        Quitter
                     </a>
                 </div>
             </div>
         </aside>
         
-        <main class="flex-1 p-6">
-            <header class="lg:hidden mb-6 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v4h4v2h-4v4h-2v-4H7v-2h4V7z"/>
-                        </svg>
-                    </div>
-                    <h1 class="font-bold text-gray-800">Administration</h1>
-                </div>
-                <a href="{{ url_for('admin.admin_logout') }}" class="px-3 py-2 text-sm text-gray-600 hover:text-red-600">Déconnexion</a>
-            </header>
-            
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                    <div class="mb-4 p-4 rounded-xl {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
-                        {{ message }}
-                    </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-            
-            <div id="tab-overview" class="tab-content active">
-                <h2 class="text-xl font-bold text-gray-800 mb-6">Tableau de bord</h2>
-                
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-                    <div class="bg-white rounded-xl p-4 shadow-sm">
-                        <p class="text-xs text-gray-500">Total</p>
-                        <p class="text-2xl font-bold text-gray-800">{{ pharmacies|length }}</p>
-                    </div>
-                    <div class="bg-white rounded-xl p-4 shadow-sm">
-                        <p class="text-xs text-gray-500">De garde</p>
-                        <p class="text-2xl font-bold text-red-600">{{ pharmacies|selectattr('is_garde')|list|length }}</p>
-                    </div>
-                    <div class="bg-white rounded-xl p-4 shadow-sm">
-                        <p class="text-xs text-gray-500">Gare</p>
-                        <p class="text-2xl font-bold text-blue-600">{{ pharmacies|selectattr('is_gare')|list|length }}</p>
-                    </div>
-                    <div class="bg-white rounded-xl p-4 shadow-sm">
-                        <p class="text-xs text-gray-500">Avec GPS</p>
-                        <p class="text-2xl font-bold text-green-600">{{ pharmacies|selectattr('latitude')|list|length }}</p>
-                    </div>
-                    <div class="bg-white rounded-xl p-4 shadow-sm">
-                        <p class="text-xs text-gray-500">GPS Validés</p>
-                        <p class="text-2xl font-bold text-purple-600">{{ pharmacies|selectattr('location_validated')|list|length }}</p>
-                    </div>
-                    <div class="bg-white rounded-xl p-4 shadow-sm">
-                        <p class="text-xs text-gray-500">Vérifiés</p>
-                        <p class="text-2xl font-bold text-blue-600">{{ pharmacies|selectattr('is_verified')|list|length }}</p>
-                    </div>
-                    <div class="bg-white rounded-xl p-4 shadow-sm">
-                        <p class="text-xs text-gray-500">Consultations</p>
-                        <p class="text-2xl font-bold text-cyan-600">{{ total_views }}</p>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-white rounded-xl shadow-sm p-4">
-                        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        <main class="flex-1 min-h-screen">
+            <header class="bg-white border-b shadow-sm sticky top-0 z-50">
+                <div class="px-6 py-4 flex items-center justify-between">
+                    <div class="lg:hidden flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="white">
+                                <path d="M7 12h10v1c0 3-2 6-5 6s-5-3-5-6v-1z"/>
+                                <path d="M6 11h12c.5 0 1 .5 1 1s-.5 1-1 1H6c-.5 0-1-.5-1-1s.5-1 1-1z"/>
                             </svg>
-                            Modifications récentes
-                        </h3>
-                        <div class="space-y-3">
-                            {% for pharmacy in recent_pharmacies %}
-                            <div class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-                                <div>
-                                    <p class="font-medium text-gray-800">{{ pharmacy.nom }}</p>
-                                    <p class="text-xs text-gray-500">{{ pharmacy.ville }}</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-gray-400">{{ pharmacy.updated_at.strftime('%d/%m/%Y') if pharmacy.updated_at else '-' }}</p>
-                                </div>
-                            </div>
-                            {% else %}
-                            <p class="text-sm text-gray-500 text-center py-4">Aucune modification récente</p>
-                            {% endfor %}
                         </div>
+                        <h1 class="font-bold text-gray-800">Administration</h1>
                     </div>
-                    
-                    <div class="bg-white rounded-xl shadow-sm p-4">
-                        <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                            </svg>
-                            Top consultations
-                        </h3>
-                        <div class="space-y-3">
-                            {% for item in top_pharmacies %}
-                            <div class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-                                <div>
-                                    <p class="font-medium text-gray-800">{{ item.nom }}</p>
-                                    <p class="text-xs text-gray-500">{{ item.ville }}</p>
-                                </div>
-                                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-sm font-semibold rounded-full">
-                                    {{ item.view_count }} vues
-                                </span>
-                            </div>
-                            {% else %}
-                            <p class="text-sm text-gray-500 text-center py-4">Aucune consultation enregistrée</p>
-                            {% endfor %}
-                        </div>
+                    <div class="hidden lg:block">
+                        <h2 class="text-xl font-bold text-gray-800">Bienvenue dans l'administration</h2>
+                        <p class="text-sm text-gray-500">Gerez vos pharmacies et consultez les statistiques</p>
                     </div>
-                </div>
-                
-                {% if pending_locations or pending_infos %}
-                <div class="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-                    <div class="flex items-start gap-3">
-                        <svg class="w-6 h-6 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                        </svg>
-                        <div>
-                            <h4 class="font-semibold text-amber-800">Soumissions en attente</h4>
-                            <p class="text-sm text-amber-700 mt-1">
-                                {{ pending_locations|length }} localisation(s) et {{ pending_infos|length }} correction(s) d'informations à valider.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-            
-            <div id="tab-pharmacies" class="tab-content">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-gray-800">Gestion des pharmacies</h2>
-                    <a href="{{ url_for('admin.admin_add_pharmacy') }}" 
-                       class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                        </svg>
-                        Ajouter
-                    </a>
-                </div>
-                
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                    <div class="p-4 border-b">
-                        <input type="text" id="searchAdmin" placeholder="Rechercher une pharmacie..." 
-                               class="w-full px-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                               onkeyup="filterTable()">
-                    </div>
-                    
-                    <div class="overflow-x-auto">
-                        <table class="w-full" id="pharmacyTable">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ville</th>
-                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Garde</th>
-                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Fin garde</th>
-                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">GPS</th>
-                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Validé</th>
-                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Vérifié</th>
-                                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100">
-                                {% for pharmacy in pharmacies %}
-                                <tr class="hover:bg-gray-50 pharmacy-row" id="pharmacy-row-{{ pharmacy.id }}">
-                                    <td class="px-4 py-3">
-                                        <div class="font-medium text-gray-800">{{ pharmacy.nom }}</div>
-                                        <div class="text-xs text-gray-500">{{ pharmacy.code }}</div>
-                                    </td>
-                                    <td class="px-4 py-3 text-sm text-gray-600">{{ pharmacy.ville }}</td>
-                                    <td class="px-4 py-3 text-center">
-                                        <button onclick="openGardeModal({{ pharmacy.id }}, '{{ pharmacy.nom }}', {{ 'true' if pharmacy.is_garde else 'false' }})" 
-                                                class="garde-btn-{{ pharmacy.id }} p-1.5 rounded-lg transition {% if pharmacy.is_garde %}bg-red-100 text-red-600{% else %}bg-gray-100 text-gray-400{% endif %}">
-                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                                            </svg>
-                                        </button>
-                                    </td>
-                                    <td class="px-4 py-3 text-center garde-end-{{ pharmacy.id }}">
-                                        {% if pharmacy.garde_end_date %}
-                                        <span class="text-xs text-red-600 font-medium">{{ pharmacy.garde_end_date.strftime('%d/%m/%Y') }}</span>
-                                        {% else %}
-                                        <span class="text-xs text-gray-400">-</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="px-4 py-3 text-center">
-                                        {% if pharmacy.latitude and pharmacy.longitude %}
-                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                                            Oui
-                                        </span>
-                                        {% else %}
-                                        <span class="text-gray-400 text-xs">Non</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="px-4 py-3 text-center">
-                                        {% if pharmacy.latitude and pharmacy.longitude %}
-                                        <button onclick="toggleValidation({{ pharmacy.id }}, this, {{ 'true' if pharmacy.location_validated else 'false' }})" 
-                                                class="validation-toggle p-1.5 rounded-lg transition {% if pharmacy.location_validated %}bg-purple-100 text-purple-600{% else %}bg-gray-100 text-gray-400{% endif %}">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                            </svg>
-                                        </button>
-                                        {% else %}
-                                        <span class="text-gray-400 text-xs">-</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="px-4 py-3 text-center">
-                                        {% if pharmacy.is_verified %}
-                                        <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
-                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                                            </svg>
-                                            Oui
-                                        </span>
-                                        {% else %}
-                                        <span class="text-gray-400 text-xs">Non</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="px-4 py-3 text-right">
-                                        <div class="flex items-center justify-end gap-2">
-                                            <a href="{{ url_for('admin.admin_edit_pharmacy', id=pharmacy.id) }}" 
-                                               class="p-2 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                                </svg>
-                                            </a>
-                                            <form action="{{ url_for('admin.admin_delete_pharmacy', id=pharmacy.id) }}" method="POST" 
-                                                  onsubmit="return confirm('Supprimer cette pharmacie ?')">
-                                                <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                    </svg>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="tab-locations" class="tab-content">
-                <h2 class="text-xl font-bold text-gray-800 mb-6">Localisations soumises</h2>
-                
-                {% if pending_locations %}
-                <div class="space-y-4">
-                    {% for sub in pending_locations %}
-                    <div class="bg-white rounded-xl shadow-sm p-4" id="location-sub-{{ sub.id }}">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <h4 class="font-semibold text-gray-800">{{ sub.pharmacy.nom }}</h4>
-                                <p class="text-sm text-gray-500">{{ sub.pharmacy.ville }} - {{ sub.pharmacy.quartier or '' }}</p>
-                            </div>
-                            <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">En attente</span>
-                        </div>
-                        
-                        <div class="mt-4 grid grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-xs text-gray-500">Coordonnées proposées</p>
-                                <p class="font-mono text-sm">{{ "%.6f"|format(sub.latitude) }}, {{ "%.6f"|format(sub.longitude) }}</p>
-                                <a href="https://www.google.com/maps?q={{ sub.latitude }},{{ sub.longitude }}" target="_blank" class="text-xs text-blue-600 hover:underline">Voir sur Google Maps</a>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500">Soumis par</p>
-                                <p class="text-sm">{{ sub.submitted_by_name or 'Anonyme' }}</p>
-                                {% if sub.submitted_by_phone %}
-                                <p class="text-xs text-gray-500">{{ sub.submitted_by_phone }}</p>
-                                {% endif %}
-                            </div>
-                        </div>
-                        
-                        {% if sub.comment %}
-                        <div class="mt-3 p-3 bg-gray-50 rounded-lg">
-                            <p class="text-xs text-gray-500">Commentaire</p>
-                            <p class="text-sm text-gray-700">{{ sub.comment }}</p>
-                        </div>
-                        {% endif %}
-                        
-                        <div class="mt-4 flex gap-2">
-                            <button onclick="approveLocation({{ sub.id }})" class="flex-1 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700">
-                                Approuver
-                            </button>
-                            <button onclick="rejectLocation({{ sub.id }})" class="flex-1 py-2 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200">
-                                Rejeter
-                            </button>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <div class="bg-white rounded-xl shadow-sm p-8 text-center">
-                    <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                    </svg>
-                    <p class="text-gray-500">Aucune localisation en attente de validation</p>
-                </div>
-                {% endif %}
-            </div>
-            
-            <div id="tab-infos" class="tab-content">
-                <h2 class="text-xl font-bold text-gray-800 mb-6">Corrections d'informations</h2>
-                
-                {% if pending_infos %}
-                <div class="space-y-4">
-                    {% for sub in pending_infos %}
-                    <div class="bg-white rounded-xl shadow-sm p-4" id="info-sub-{{ sub.id }}">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <h4 class="font-semibold text-gray-800">{{ sub.pharmacy.nom }}</h4>
-                                <p class="text-sm text-gray-500">{{ sub.pharmacy.ville }}</p>
-                            </div>
-                            <span class="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">En attente</span>
-                        </div>
-                        
-                        <div class="mt-4 space-y-3">
-                            <div class="p-3 bg-gray-50 rounded-lg">
-                                <p class="text-xs text-gray-500 mb-1">Champ: <span class="font-medium text-gray-700">{{ sub.field_name }}</span></p>
-                                <div class="grid grid-cols-2 gap-4 mt-2">
-                                    <div>
-                                        <p class="text-xs text-gray-500">Valeur actuelle</p>
-                                        <p class="text-sm text-gray-600">{{ sub.current_value or '(vide)' }}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs text-gray-500">Valeur proposée</p>
-                                        <p class="text-sm text-emerald-700 font-medium">{{ sub.proposed_value }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-500">Soumis par: {{ sub.submitted_by_name or 'Anonyme' }}</span>
-                                <span class="text-gray-400">{{ sub.created_at.strftime('%d/%m/%Y %H:%M') if sub.created_at else '' }}</span>
-                            </div>
-                        </div>
-                        
-                        {% if sub.comment %}
-                        <div class="mt-3 p-3 bg-amber-50 rounded-lg">
-                            <p class="text-xs text-gray-500">Commentaire</p>
-                            <p class="text-sm text-gray-700">{{ sub.comment }}</p>
-                        </div>
-                        {% endif %}
-                        
-                        <div class="mt-4 flex gap-2">
-                            <button onclick="approveInfo({{ sub.id }})" class="flex-1 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700">
-                                Approuver
-                            </button>
-                            <button onclick="rejectInfo({{ sub.id }})" class="flex-1 py-2 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200">
-                                Rejeter
-                            </button>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <div class="bg-white rounded-xl shadow-sm p-8 text-center">
-                    <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                    </svg>
-                    <p class="text-gray-500">Aucune correction en attente de validation</p>
-                </div>
-                {% endif %}
-            </div>
-            
-            <div id="tab-stats" class="tab-content">
-                <h2 class="text-xl font-bold text-gray-800 mb-6">Statistiques de consultation</h2>
-                
-                <div class="bg-white rounded-xl shadow-sm p-4">
-                    <h3 class="font-semibold text-gray-800 mb-4">Top 10 des pharmacies les plus consultées</h3>
-                    <div class="space-y-3">
-                        {% for item in top_pharmacies %}
-                        <div class="flex items-center gap-4 py-3 border-b border-gray-100 last:border-0">
-                            <span class="w-8 h-8 flex items-center justify-center bg-gray-100 text-gray-600 text-sm font-bold rounded-full">{{ loop.index }}</span>
-                            <div class="flex-1">
-                                <p class="font-medium text-gray-800">{{ item.nom }}</p>
-                                <p class="text-sm text-gray-500">{{ item.ville }}</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-xl font-bold text-emerald-600">{{ item.view_count }}</p>
-                                <p class="text-xs text-gray-500">consultations</p>
-                            </div>
-                        </div>
-                        {% else %}
-                        <p class="text-sm text-gray-500 text-center py-4">Aucune statistique disponible</p>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            
-            <div id="tab-suggestions" class="tab-content">
-                <h2 class="text-xl font-bold text-gray-800 mb-6">Suggestions des utilisateurs</h2>
-                
-                {% if pending_suggestions %}
-                <div class="grid gap-4">
-                    {% for sug in pending_suggestions %}
-                    <div class="bg-white rounded-xl shadow-sm p-4" id="suggestion-{{ sug.id }}">
-                        <div class="flex items-start justify-between mb-3">
-                            <div>
-                                <span class="inline-block px-2 py-1 text-xs font-medium rounded-full 
-                                    {% if sug.category == 'suggestion' %}bg-blue-100 text-blue-700
-                                    {% elif sug.category == 'erreur' %}bg-red-100 text-red-700
-                                    {% elif sug.category == 'pharmacie' %}bg-green-100 text-green-700
-                                    {% else %}bg-gray-100 text-gray-700{% endif %}">
-                                    {% if sug.category == 'suggestion' %}Suggestion
-                                    {% elif sug.category == 'erreur' %}Erreur
-                                    {% elif sug.category == 'pharmacie' %}Nouvelle pharmacie
-                                    {% else %}Autre{% endif %}
-                                </span>
-                            </div>
-                            <span class="text-xs text-gray-400">{{ sug.created_at.strftime('%d/%m/%Y %H:%M') if sug.created_at else '' }}</span>
-                        </div>
-                        
-                        <h4 class="font-semibold text-gray-800 mb-2">{{ sug.subject }}</h4>
-                        <p class="text-sm text-gray-600 mb-3">{{ sug.message }}</p>
-                        
-                        <div class="flex items-center gap-4 text-xs text-gray-500 mb-4">
-                            <span class="flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="flex items-center gap-4">
+                        <a href="{{ url_for('admin.admin_logout') }}" class="lg:hidden px-3 py-2 text-sm text-gray-600 hover:text-red-600">Quitter</a>
+                        <div class="hidden lg:flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl">
+                            <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                 </svg>
-                                {{ sug.submitted_by_name or 'Anonyme' }}
-                            </span>
-                            {% if sug.submitted_by_phone %}
-                            <span class="flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                                </svg>
-                                {{ sug.submitted_by_phone }}
-                            </span>
-                            {% endif %}
-                            {% if sug.submitted_by_email %}
-                            <span class="flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                </svg>
-                                {{ sug.submitted_by_email }}
-                            </span>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="flex gap-2">
-                            <button onclick="archiveSuggestion({{ sug.id }})" class="flex-1 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200">
-                                Archiver
-                            </button>
-                            <button onclick="openRespondModal({{ sug.id }}, '{{ sug.subject|e }}')" class="flex-1 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700">
-                                Répondre
-                            </button>
+                            </div>
+                            <span class="text-sm font-medium text-gray-700">Administrateur</span>
                         </div>
                     </div>
-                    {% endfor %}
                 </div>
-                {% else %}
-                <div class="bg-white rounded-xl shadow-sm p-8 text-center">
-                    <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
-                    </svg>
-                    <p class="text-gray-500">Aucune suggestion en attente</p>
+            </header>
+            
+            <div class="p-6">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="mb-6 p-4 rounded-xl flex items-center gap-3 {% if category == 'error' %}bg-red-50 text-red-700 border border-red-200{% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
+                            {% if category == 'error' %}
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            {% else %}
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            {% endif %}
+                            <span class="text-sm font-medium">{{ message }}</span>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <div id="tab-overview" class="tab-content active">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4 mb-8">
+                        <div class="stat-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="text-3xl font-bold text-gray-800">{{ pharmacies|length }}</p>
+                            <p class="text-sm text-gray-500 mt-1">Total</p>
+                        </div>
+                        <div class="stat-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="text-3xl font-bold text-red-600">{{ pharmacies|selectattr('is_garde')|list|length }}</p>
+                            <p class="text-sm text-gray-500 mt-1">De garde</p>
+                        </div>
+                        <div class="stat-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="text-3xl font-bold text-blue-600">{{ pharmacies|selectattr('is_gare')|list|length }}</p>
+                            <p class="text-sm text-gray-500 mt-1">Proche gare</p>
+                        </div>
+                        <div class="stat-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="text-3xl font-bold text-green-600">{{ pharmacies|selectattr('latitude')|list|length }}</p>
+                            <p class="text-sm text-gray-500 mt-1">Avec GPS</p>
+                        </div>
+                        <div class="stat-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="text-3xl font-bold text-purple-600">{{ pharmacies|selectattr('location_validated')|list|length }}</p>
+                            <p class="text-sm text-gray-500 mt-1">GPS Valides</p>
+                        </div>
+                        <div class="stat-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="text-3xl font-bold text-indigo-600">{{ pharmacies|selectattr('is_verified')|list|length }}</p>
+                            <p class="text-sm text-gray-500 mt-1">Verifies</p>
+                        </div>
+                        <div class="stat-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-cyan-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="text-3xl font-bold text-cyan-600">{{ total_views }}</p>
+                            <p class="text-sm text-gray-500 mt-1">Consultations</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                                <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <h3 class="font-semibold text-gray-800">Modifications recentes</h3>
+                            </div>
+                            <div class="divide-y divide-gray-50">
+                                {% for pharmacy in recent_pharmacies %}
+                                <div class="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition">
+                                    <div>
+                                        <p class="font-medium text-gray-800">{{ pharmacy.nom }}</p>
+                                        <p class="text-sm text-gray-500">{{ pharmacy.ville }}</p>
+                                    </div>
+                                    <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-lg">{{ pharmacy.updated_at.strftime('%d/%m/%Y') if pharmacy.updated_at else '-' }}</span>
+                                </div>
+                                {% else %}
+                                <div class="px-6 py-8 text-center text-gray-500">Aucune modification recente</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                                <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                                    </svg>
+                                </div>
+                                <h3 class="font-semibold text-gray-800">Top consultations</h3>
+                            </div>
+                            <div class="divide-y divide-gray-50">
+                                {% for item in top_pharmacies %}
+                                <div class="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition">
+                                    <div>
+                                        <p class="font-medium text-gray-800">{{ item.nom }}</p>
+                                        <p class="text-sm text-gray-500">{{ item.ville }}</p>
+                                    </div>
+                                    <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-sm font-semibold rounded-full">{{ item.view_count }} vues</span>
+                                </div>
+                                {% else %}
+                                <div class="px-6 py-8 text-center text-gray-500">Aucune consultation enregistree</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if pending_locations or pending_infos or pending_suggestions %}
+                    <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-amber-800 text-lg">Soumissions en attente</h4>
+                                <p class="text-amber-700 mt-1">
+                                    Vous avez <strong>{{ pending_locations|length }}</strong> localisation(s), 
+                                    <strong>{{ pending_infos|length }}</strong> correction(s) et
+                                    <strong>{{ pending_suggestions|length if pending_suggestions else 0 }}</strong> suggestion(s) a valider.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
-                {% endif %}
+                
+                <div id="tab-pharmacies" class="tab-content">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Gestion des pharmacies</h2>
+                            <p class="text-gray-500 mt-1">Ajoutez, modifiez ou supprimez des pharmacies</p>
+                        </div>
+                        <a href="{{ url_for('admin.admin_add_pharmacy') }}" 
+                           class="px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-sm font-semibold hover:from-emerald-700 hover:to-teal-700 shadow-lg shadow-emerald-500/30 flex items-center gap-2 transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Ajouter une pharmacie
+                        </a>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="p-4 border-b border-gray-100">
+                            <div class="relative">
+                                <svg class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                                <input type="text" id="searchAdmin" placeholder="Rechercher une pharmacie..." 
+                                       class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition"
+                                       onkeyup="filterTable()">
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full" id="pharmacyTable">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Pharmacie</th>
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Ville</th>
+                                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Garde</th>
+                                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Fin garde</th>
+                                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">GPS</th>
+                                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Valide</th>
+                                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Verifie</th>
+                                        <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    {% for pharmacy in pharmacies %}
+                                    <tr class="hover:bg-gray-50 transition pharmacy-row" id="pharmacy-row-{{ pharmacy.id }}">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                    <svg class="w-5 h-5 text-emerald-600" viewBox="0 0 24 24" fill="currentColor">
+                                                        <path d="M7 12h10v1c0 3-2 6-5 6s-5-3-5-6v-1z"/>
+                                                        <path d="M6 11h12c.5 0 1 .5 1 1s-.5 1-1 1H6c-.5 0-1-.5-1-1s.5-1 1-1z"/>
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <div class="font-semibold text-gray-800">{{ pharmacy.nom }}</div>
+                                                    <div class="text-xs text-gray-400">{{ pharmacy.code }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-lg">{{ pharmacy.ville }}</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <button onclick="openGardeModal({{ pharmacy.id }}, '{{ pharmacy.nom }}', {{ 'true' if pharmacy.is_garde else 'false' }})" 
+                                                    class="garde-btn-{{ pharmacy.id }} p-2 rounded-xl transition {% if pharmacy.is_garde %}bg-red-100 text-red-600 hover:bg-red-200{% else %}bg-gray-100 text-gray-400 hover:bg-gray-200{% endif %}">
+                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                                </svg>
+                                            </button>
+                                        </td>
+                                        <td class="px-6 py-4 text-center garde-end-{{ pharmacy.id }}">
+                                            {% if pharmacy.garde_end_date %}
+                                            <span class="text-xs text-red-600 font-semibold bg-red-50 px-2 py-1 rounded-lg">{{ pharmacy.garde_end_date.strftime('%d/%m/%Y') }}</span>
+                                            {% else %}
+                                            <span class="text-xs text-gray-400">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            {% if pharmacy.latitude and pharmacy.longitude %}
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-green-100 text-green-700">
+                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/></svg>
+                                                Oui
+                                            </span>
+                                            {% else %}
+                                            <span class="text-gray-400 text-xs">Non</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            {% if pharmacy.latitude and pharmacy.longitude %}
+                                            <button onclick="toggleValidation({{ pharmacy.id }}, this, {{ 'true' if pharmacy.location_validated else 'false' }})" 
+                                                    class="validation-toggle p-2 rounded-xl transition {% if pharmacy.location_validated %}bg-purple-100 text-purple-600 hover:bg-purple-200{% else %}bg-gray-100 text-gray-400 hover:bg-gray-200{% endif %}">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                            </button>
+                                            {% else %}
+                                            <span class="text-gray-400 text-xs">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            {% if pharmacy.is_verified %}
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-100 text-blue-700">
+                                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                                </svg>
+                                                Oui
+                                            </span>
+                                            {% else %}
+                                            <span class="text-gray-400 text-xs">Non</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            <div class="flex items-center justify-end gap-2">
+                                                <a href="{{ url_for('admin.admin_edit_pharmacy', id=pharmacy.id) }}" 
+                                                   class="p-2 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition" title="Modifier">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                                    </svg>
+                                                </a>
+                                                <form action="{{ url_for('admin.admin_delete_pharmacy', id=pharmacy.id) }}" method="POST" 
+                                                      onsubmit="return confirm('Etes-vous sur de vouloir supprimer cette pharmacie ?')">
+                                                    <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition" title="Supprimer">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="tab-locations" class="tab-content">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Localisations en attente</h2>
+                    {% if pending_locations %}
+                    <div class="space-y-4">
+                        {% for loc in pending_locations %}
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">{{ loc.pharmacy.nom }}</h3>
+                                    <p class="text-sm text-gray-500">{{ loc.pharmacy.ville }}</p>
+                                    <p class="text-sm text-blue-600 mt-2">Lat: {{ loc.latitude }}, Lng: {{ loc.longitude }}</p>
+                                </div>
+                                <div class="flex gap-2">
+                                    <form action="{{ url_for('admin.approve_location', id=loc.id) }}" method="POST">
+                                        <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700">Approuver</button>
+                                    </form>
+                                    <form action="{{ url_for('admin.reject_location', id=loc.id) }}" method="POST">
+                                        <button type="submit" class="px-4 py-2 bg-red-100 text-red-600 rounded-xl text-sm font-medium hover:bg-red-200">Rejeter</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+                        <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            </svg>
+                        </div>
+                        <p class="text-gray-500">Aucune localisation en attente</p>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div id="tab-infos" class="tab-content">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Corrections d'informations</h2>
+                    {% if pending_infos %}
+                    <div class="space-y-4">
+                        {% for info in pending_infos %}
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">{{ info.pharmacy.nom }}</h3>
+                                    <p class="text-sm text-gray-500">Champ: {{ info.field_name }}</p>
+                                    <p class="text-sm text-amber-600 mt-2">Nouvelle valeur: {{ info.new_value }}</p>
+                                </div>
+                                <div class="flex gap-2">
+                                    <form action="{{ url_for('admin.approve_info', id=info.id) }}" method="POST">
+                                        <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700">Approuver</button>
+                                    </form>
+                                    <form action="{{ url_for('admin.reject_info', id=info.id) }}" method="POST">
+                                        <button type="submit" class="px-4 py-2 bg-red-100 text-red-600 rounded-xl text-sm font-medium hover:bg-red-200">Rejeter</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+                        <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                        </div>
+                        <p class="text-gray-500">Aucune correction en attente</p>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div id="tab-stats" class="tab-content">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Statistiques</h2>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+                        <div class="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                        </div>
+                        <p class="text-gray-500">Les statistiques detaillees seront bientot disponibles</p>
+                    </div>
+                </div>
+                
+                <div id="tab-suggestions" class="tab-content">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Suggestions des utilisateurs</h2>
+                    {% if pending_suggestions %}
+                    <div class="space-y-4">
+                        {% for sug in pending_suggestions %}
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded-lg">{{ sug.category }}</span>
+                                    </div>
+                                    <h3 class="font-semibold text-gray-800">{{ sug.subject }}</h3>
+                                    <p class="text-sm text-gray-600 mt-2">{{ sug.message }}</p>
+                                    {% if sug.name or sug.email or sug.phone %}
+                                    <div class="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
+                                        {% if sug.name %}{{ sug.name }}{% endif %}
+                                        {% if sug.email %} - {{ sug.email }}{% endif %}
+                                        {% if sug.phone %} - {{ sug.phone }}{% endif %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <form action="{{ url_for('admin.mark_suggestion_read', id=sug.id) }}" method="POST">
+                                    <button type="submit" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-sm font-medium hover:bg-gray-200">Marquer lu</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+                        <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                            </svg>
+                        </div>
+                        <p class="text-gray-500">Aucune suggestion en attente</p>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
         </main>
     </div>
     
-    <div id="respondModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-2xl max-w-md w-full mx-4 overflow-hidden">
-            <div class="p-4 border-b flex items-center justify-between">
-                <h3 class="font-semibold text-gray-800" id="respondModalTitle">Répondre à la suggestion</h3>
-                <button onclick="closeRespondModal()" class="p-2 text-gray-400 hover:text-gray-600">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
+    <div id="gardeModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl">
+            <div class="p-6 border-b border-gray-100">
+                <h3 class="text-lg font-bold text-gray-800">Gestion de garde</h3>
+                <p id="gardePharmacyName" class="text-sm text-gray-500 mt-1"></p>
             </div>
-            <div class="p-4">
-                <input type="hidden" id="respondSuggestionId">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Réponse</label>
-                    <textarea id="suggestionResponse" rows="4" class="w-full px-3 py-2 border rounded-lg" placeholder="Votre réponse..."></textarea>
+            <form id="gardeForm" method="POST" class="p-6">
+                <input type="hidden" id="gardePharmacyId" name="pharmacy_id">
+                <div class="space-y-4">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="gardeCheckbox" name="is_garde" class="w-5 h-5 text-red-600 rounded focus:ring-red-500">
+                        <span class="text-sm font-medium text-gray-700">Pharmacie de garde</span>
+                    </label>
+                    <div id="gardeDateContainer" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Date de fin de garde</label>
+                        <input type="date" id="gardeEndDate" name="garde_end_date" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    </div>
                 </div>
-                <div class="flex gap-3">
-                    <button onclick="closeRespondModal()" class="flex-1 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200">
-                        Annuler
-                    </button>
-                    <button onclick="submitResponse()" class="flex-1 py-2.5 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700">
-                        Envoyer
-                    </button>
+                <div class="flex gap-3 mt-6">
+                    <button type="button" onclick="closeGardeModal()" class="flex-1 px-4 py-3 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-medium transition">Annuler</button>
+                    <button type="submit" class="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 font-medium transition">Enregistrer</button>
                 </div>
-            </div>
-        </div>
-    </div>
-    
-    <div id="gardeModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-2xl max-w-md w-full mx-4 overflow-hidden">
-            <div class="p-4 border-b flex items-center justify-between">
-                <h3 class="font-semibold text-gray-800" id="gardeModalTitle">Gestion de la garde</h3>
-                <button onclick="closeGardeModal()" class="p-2 text-gray-400 hover:text-gray-600">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-            <div class="p-4">
-                <p class="text-sm text-gray-600 mb-4">Définir la date de début de garde (durée automatique de 7 jours)</p>
-                <input type="hidden" id="gardePharmacyId">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
-                    <input type="date" id="gardeStartDate" class="w-full px-4 py-2 border rounded-lg">
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="removeGarde()" class="flex-1 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200">
-                        Retirer la garde
-                    </button>
-                    <button onclick="setGarde()" class="flex-1 py-2.5 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700">
-                        Définir la garde
-                    </button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
     
     <script>
-        function switchAdminTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById(`tab-${tab}`).classList.add('active');
-            
-            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-                if (btn.dataset.tab === tab) {
-                    btn.classList.add('bg-emerald-50', 'text-emerald-700');
-                    btn.classList.remove('text-gray-600', 'hover:bg-gray-50');
-                } else {
-                    btn.classList.remove('bg-emerald-50', 'text-emerald-700');
-                    btn.classList.add('text-gray-600', 'hover:bg-gray-50');
-                }
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.admin-tab-btn').forEach(b => {
+                b.classList.remove('bg-white/20', 'text-white');
+                b.classList.add('text-white/80', 'hover:bg-white/10');
             });
+            
+            document.getElementById('tab-' + tabName).classList.add('active');
+            const activeBtn = document.querySelector(`.admin-tab-btn[data-tab="${tabName}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-white/20', 'text-white');
+                activeBtn.classList.remove('text-white/80', 'hover:bg-white/10');
+            }
         }
         
         function filterTable() {
-            const search = document.getElementById('searchAdmin').value.toLowerCase();
+            const input = document.getElementById('searchAdmin');
+            const filter = input.value.toLowerCase();
             const rows = document.querySelectorAll('.pharmacy-row');
             
             rows.forEach(row => {
                 const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(search) ? '' : 'none';
+                row.style.display = text.includes(filter) ? '' : 'none';
             });
         }
         
         function openGardeModal(id, name, isGarde) {
             document.getElementById('gardePharmacyId').value = id;
-            document.getElementById('gardeModalTitle').textContent = name;
-            document.getElementById('gardeStartDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('gardePharmacyName').textContent = name;
+            document.getElementById('gardeCheckbox').checked = isGarde;
+            document.getElementById('gardeDateContainer').classList.toggle('hidden', !isGarde);
             document.getElementById('gardeModal').classList.remove('hidden');
             document.getElementById('gardeModal').classList.add('flex');
+            document.getElementById('gardeForm').action = '/admin/pharmacy/' + id + '/garde';
         }
         
         function closeGardeModal() {
@@ -657,184 +672,21 @@
             document.getElementById('gardeModal').classList.remove('flex');
         }
         
-        async function setGarde() {
-            const id = document.getElementById('gardePharmacyId').value;
-            const startDate = document.getElementById('gardeStartDate').value;
-            
-            if (!startDate) {
-                alert('Veuillez sélectionner une date');
-                return;
-            }
-            
-            try {
-                const response = await fetch(`/admin/pharmacy/${id}/set-garde`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ start_date: startDate })
-                });
-                const data = await response.json();
-                
-                if (data.success) {
-                    const btn = document.querySelector(`.garde-btn-${id}`);
-                    btn.classList.remove('bg-gray-100', 'text-gray-400');
-                    btn.classList.add('bg-red-100', 'text-red-600');
-                    
-                    const endCell = document.querySelector(`.garde-end-${id}`);
-                    if (data.garde_end_date) {
-                        const endDate = new Date(data.garde_end_date);
-                        endCell.innerHTML = `<span class="text-xs text-red-600 font-medium">${endDate.toLocaleDateString('fr-FR')}</span>`;
+        document.getElementById('gardeCheckbox').addEventListener('change', function() {
+            document.getElementById('gardeDateContainer').classList.toggle('hidden', !this.checked);
+        });
+        
+        function toggleValidation(id, btn, current) {
+            fetch('/admin/pharmacy/' + id + '/validate', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        btn.classList.toggle('bg-purple-100');
+                        btn.classList.toggle('text-purple-600');
+                        btn.classList.toggle('bg-gray-100');
+                        btn.classList.toggle('text-gray-400');
                     }
-                    closeGardeModal();
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-        
-        async function removeGarde() {
-            const id = document.getElementById('gardePharmacyId').value;
-            
-            try {
-                const response = await fetch(`/admin/pharmacy/${id}/set-garde`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ start_date: null })
                 });
-                const data = await response.json();
-                
-                if (data.success) {
-                    const btn = document.querySelector(`.garde-btn-${id}`);
-                    btn.classList.remove('bg-red-100', 'text-red-600');
-                    btn.classList.add('bg-gray-100', 'text-gray-400');
-                    
-                    const endCell = document.querySelector(`.garde-end-${id}`);
-                    endCell.innerHTML = '<span class="text-xs text-gray-400">-</span>';
-                    closeGardeModal();
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-        
-        async function toggleValidation(id, btn, currentState) {
-            try {
-                const endpoint = currentState ? 
-                    `/admin/pharmacy/${id}/invalidate-location` : 
-                    `/admin/pharmacy/${id}/validate-location`;
-                    
-                const response = await fetch(endpoint, { method: 'POST' });
-                const data = await response.json();
-                
-                if (data.success) {
-                    if (data.location_validated) {
-                        btn.classList.remove('bg-gray-100', 'text-gray-400');
-                        btn.classList.add('bg-purple-100', 'text-purple-600');
-                        btn.setAttribute('onclick', `toggleValidation(${id}, this, true)`);
-                    } else {
-                        btn.classList.remove('bg-purple-100', 'text-purple-600');
-                        btn.classList.add('bg-gray-100', 'text-gray-400');
-                        btn.setAttribute('onclick', `toggleValidation(${id}, this, false)`);
-                    }
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-        
-        async function approveLocation(id) {
-            try {
-                const response = await fetch(`/admin/location-submission/${id}/approve`, { method: 'POST' });
-                const data = await response.json();
-                if (data.success) {
-                    document.getElementById(`location-sub-${id}`).remove();
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-        
-        async function rejectLocation(id) {
-            if (!confirm('Rejeter cette localisation ?')) return;
-            try {
-                const response = await fetch(`/admin/location-submission/${id}/reject`, { method: 'POST' });
-                const data = await response.json();
-                if (data.success) {
-                    document.getElementById(`location-sub-${id}`).remove();
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-        
-        async function approveInfo(id) {
-            try {
-                const response = await fetch(`/admin/info-submission/${id}/approve`, { method: 'POST' });
-                const data = await response.json();
-                if (data.success) {
-                    document.getElementById(`info-sub-${id}`).remove();
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-        
-        async function rejectInfo(id) {
-            if (!confirm('Rejeter cette correction ?')) return;
-            try {
-                const response = await fetch(`/admin/info-submission/${id}/reject`, { method: 'POST' });
-                const data = await response.json();
-                if (data.success) {
-                    document.getElementById(`info-sub-${id}`).remove();
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-        
-        function openRespondModal(id, subject) {
-            document.getElementById('respondSuggestionId').value = id;
-            document.getElementById('respondModalTitle').textContent = 'Répondre: ' + subject;
-            document.getElementById('suggestionResponse').value = '';
-            document.getElementById('respondModal').classList.remove('hidden');
-            document.getElementById('respondModal').classList.add('flex');
-        }
-        
-        function closeRespondModal() {
-            document.getElementById('respondModal').classList.add('hidden');
-            document.getElementById('respondModal').classList.remove('flex');
-        }
-        
-        async function submitResponse() {
-            const id = document.getElementById('respondSuggestionId').value;
-            const response = document.getElementById('suggestionResponse').value;
-            
-            try {
-                const res = await fetch(`/admin/suggestion/${id}/respond`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ response })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    document.getElementById(`suggestion-${id}`).remove();
-                    closeRespondModal();
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-        
-        async function archiveSuggestion(id) {
-            if (!confirm('Archiver cette suggestion ?')) return;
-            try {
-                const response = await fetch(`/admin/suggestion/${id}/archive`, { method: 'POST' });
-                const data = await response.json();
-                if (data.success) {
-                    document.getElementById(`suggestion-${id}`).remove();
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
         }
     </script>
 </body>
