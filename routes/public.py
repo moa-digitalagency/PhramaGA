@@ -143,6 +143,7 @@ def submit_pharmacy_proposal():
         services=data.get('services', ''),
         proprietaire=data.get('proprietaire', ''),
         type_etablissement=data.get('type_etablissement', ''),
+        categorie=data.get('categorie', 'generale'),
         is_garde=data.get('is_garde', False),
         latitude=data.get('latitude'),
         longitude=data.get('longitude'),

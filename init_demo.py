@@ -7,8 +7,8 @@ from models.pharmacy import Pharmacy
 from utils.helpers import CITY_COORDINATES
 
 PHARMACIES_DATA = [
-    {"id": "LBV001", "nom": "Grande Pharmacie des Forestiers", "ville": "Libreville", "quartier": "Galerie de Mbolo", "telephone": "011 72 23 52", "bp": "2", "horaires": "Lun-Sam: 8h-19h30, Dim: 8h-18h", "services": "Parapharmacie, Conseil pharmaceutique", "proprietaire": "", "type_etablissement": "Pharmacie générale"},
-    {"id": "LBV002", "nom": "La Nouvelle Pharmacie d'Awondo", "ville": "Libreville", "quartier": "Louis, Avenue Jean-Jacques Boucavel", "telephone": "011 44 57 07 / 066 15 80 00", "bp": "23537", "horaires": "24h/24 - 7j/7", "services": "Ordonnances, Conseil, Parapharmacie, Espace bébé, Matériel médical", "proprietaire": "Dr Yoba Bernadette", "type_etablissement": "Pharmacie générale 24h/24"},
+    {"id": "LBV001", "nom": "Grande Pharmacie des Forestiers", "ville": "Libreville", "quartier": "Galerie de Mbolo", "telephone": "011 72 23 52", "bp": "2", "horaires": "Lun-Sam: 8h-19h30, Dim: 8h-18h", "services": "Parapharmacie, Conseil pharmaceutique", "proprietaire": "", "type_etablissement": "Pharmacie générale", "categorie": "centre_commercial"},
+    {"id": "LBV002", "nom": "La Nouvelle Pharmacie d'Awondo", "ville": "Libreville", "quartier": "Louis, Avenue Jean-Jacques Boucavel", "telephone": "011 44 57 07 / 066 15 80 00", "bp": "23537", "horaires": "24h/24 - 7j/7", "services": "Ordonnances, Conseil, Parapharmacie, Espace bébé, Matériel médical", "proprietaire": "Dr Yoba Bernadette", "type_etablissement": "Pharmacie générale 24h/24", "categorie": "generale"},
     {"id": "LBV003", "nom": "Pharmacie Avolenzame", "ville": "Libreville", "quartier": "Nkembo, Route Atong Abè", "telephone": "065 29 10 02", "bp": "1685", "horaires": "7j/7: 7h-20h", "services": "Service courant", "proprietaire": "Dr Ntogone Patience", "type_etablissement": "Pharmacie générale"},
     {"id": "LBV004", "nom": "Pharmacie d'Akébé", "ville": "Libreville", "quartier": "Akébé Ville, Rond-point de l'église", "telephone": "011 72 01 38", "bp": "14349", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "Akani Monique", "type_etablissement": "Pharmacie générale"},
     {"id": "LBV005", "nom": "Grande Pharmacie Pauline", "ville": "Libreville", "quartier": "Alenakiri", "telephone": "", "bp": "", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "Corinne Nseng Nseng Ndong", "type_etablissement": "Pharmacie générale"},
@@ -29,7 +29,7 @@ PHARMACIES_DATA = [
     {"id": "LBV020", "nom": "Pharmacie de Garde Beau Séjour", "ville": "Libreville", "quartier": "Beau Séjour (GIE), Centre social Beauséjour", "telephone": "065 19 03 36", "bp": "", "horaires": "24h/24 - 7j/7", "services": "Service d'urgence", "proprietaire": "", "type_etablissement": "Pharmacie de garde 24h/24"},
     {"id": "LBV021", "nom": "Pharmacie de Garde de Nzeng-Ayong", "ville": "Libreville", "quartier": "Nzeng Ayong", "telephone": "066 73 45 41 / 011 71 23 67", "bp": "", "horaires": "24h/24 - 7j/7", "services": "Service d'urgence", "proprietaire": "", "type_etablissement": "Pharmacie de garde 24h/24"},
     {"id": "LBV022", "nom": "Pharmacie de Garde du PK6", "ville": "Libreville", "quartier": "PK6, Immeuble Beyrouth", "telephone": "066 50 41 16 / 011 77 21 52", "bp": "488", "horaires": "24h/24 - 7j/7", "services": "Service d'urgence", "proprietaire": "", "type_etablissement": "Pharmacie de garde 24h/24"},
-    {"id": "LBV023", "nom": "Pharmacie de l'Aéroport", "ville": "Libreville", "quartier": "Aéroport", "telephone": "077 77 77 77 / 065 50 63 99", "bp": "5453", "horaires": "7j/7: 8h-21h", "services": "Service courant", "proprietaire": "Glen-Chancy Ella Mebiame", "type_etablissement": "Pharmacie générale"},
+    {"id": "LBV023", "nom": "Pharmacie de l'Aéroport", "ville": "Libreville", "quartier": "Aéroport", "telephone": "077 77 77 77 / 065 50 63 99", "bp": "5453", "horaires": "7j/7: 8h-21h", "services": "Service courant", "proprietaire": "Glen-Chancy Ella Mebiame", "type_etablissement": "Pharmacie générale", "categorie": "aeroport"},
     {"id": "LBV024", "nom": "Pharmacie de l'Express J.J et M.", "ville": "Libreville", "quartier": "Charbonnages, Station PetroGabon", "telephone": "011 73 41 41", "bp": "", "horaires": "7j/7", "services": "Service courant", "proprietaire": "Doe Fausther Graciella Maddly", "type_etablissement": "Pharmacie générale"},
     {"id": "LBV025", "nom": "Pharmacie des Facultés", "ville": "Libreville", "quartier": "Ancienne Sobraga, Ambassade Cameroun", "telephone": "011 44 37 38", "bp": "", "horaires": "7h30-21h30 (20h sam)", "services": "Service courant", "proprietaire": "", "type_etablissement": "Pharmacie générale"},
     {"id": "LBV026", "nom": "Pharmacie des Gué-Gué", "ville": "Libreville", "quartier": "Rond-point Gué-Gué", "telephone": "011 44 41 36 / 065 19 03 40", "bp": "", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "", "type_etablissement": "Pharmacie générale"},
@@ -49,7 +49,7 @@ PHARMACIES_DATA = [
     {"id": "LBV040", "nom": "Pharmacie Saint Antoine", "ville": "Libreville", "quartier": "Carrefour SNI, Après Prix Import", "telephone": "011 70 74 60", "bp": "1063", "horaires": "7j/7", "services": "Service courant", "proprietaire": "", "type_etablissement": "Pharmacie générale"},
     {"id": "LBV041", "nom": "Pharmacie Emmanuel", "ville": "Libreville", "quartier": "Awendjé", "telephone": "065 65 65 31", "bp": "", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "", "type_etablissement": "Pharmacie générale"},
     {"id": "LBV042", "nom": "Pharmacie Saint André", "ville": "Libreville", "quartier": "Dispensaire d'Okala", "telephone": "066 25 56 67", "bp": "", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "", "type_etablissement": "Pharmacie générale"},
-    {"id": "LBV043", "nom": "Pharmacie de la Gare Routière", "ville": "Libreville", "quartier": "Galerie Gare Routière", "telephone": "", "bp": "16249", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "", "type_etablissement": "Pharmacie générale"},
+    {"id": "LBV043", "nom": "Pharmacie de la Gare Routière", "ville": "Libreville", "quartier": "Galerie Gare Routière", "telephone": "", "bp": "16249", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "", "type_etablissement": "Pharmacie générale", "categorie": "gare"},
     {"id": "LBV044", "nom": "Pharmacie de la Poste", "ville": "Libreville", "quartier": "Galerie Hollando (Bord de Mer)", "telephone": "011 72 83 30", "bp": "", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "", "type_etablissement": "Pharmacie générale"},
     {"id": "LBV045", "nom": "Pharmacie de St Joseph de Lalala", "ville": "Libreville", "quartier": "Lalala", "telephone": "", "bp": "379", "horaires": "8h-20h (fermée dimanche)", "services": "Service courant", "proprietaire": "", "type_etablissement": "Pharmacie générale"},
     {"id": "LBV046", "nom": "Pharmacie des Jardins de la Peyrie", "ville": "Libreville", "quartier": "La Peyrie", "telephone": "011 72 33 33", "bp": "", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "", "type_etablissement": "Pharmacie générale"},
@@ -87,10 +87,10 @@ PHARMACIES_DATA = [
     {"id": "PG008", "nom": "Pharmacie Andrea", "ville": "Port-Gentil", "quartier": "Boulevard Léon Mba", "telephone": "022 62 666 / 07 07 03 97 96", "bp": "1228", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "Dr Andrea Olivier", "type_etablissement": "Pharmacie générale"},
     {"id": "FV001", "nom": "Pharmacie du Plateau", "ville": "Franceville", "quartier": "Quartier Potos", "telephone": "06 77 502", "bp": "", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "", "type_etablissement": "Pharmacie générale"},
     {"id": "FV002", "nom": "Pharmacie Moderne", "ville": "Franceville", "quartier": "Rue des Maquis", "telephone": "", "bp": "", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "", "type_etablissement": "Pharmacie générale"},
-    {"id": "MK001", "nom": "Pharmacie du Marché Central", "ville": "Makokou", "quartier": "Marché Central", "telephone": "077 13 30 89", "bp": "", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "", "type_etablissement": "Pharmacie générale"},
-    {"id": "KM001", "nom": "Dépôt Pharmaceutique des Forestiers", "ville": "Koulamoutou", "quartier": "Koulamoutou", "telephone": "011 65 50 08", "bp": "100", "horaires": "Lun-Sam: 7h30-20h", "services": "Dépôt pharmaceutique", "proprietaire": "", "type_etablissement": "Dépôt pharmaceutique"},
+    {"id": "MK001", "nom": "Pharmacie du Marché Central", "ville": "Makokou", "quartier": "Marché Central", "telephone": "077 13 30 89", "bp": "", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "", "type_etablissement": "Pharmacie générale", "categorie": "marche"},
+    {"id": "KM001", "nom": "Dépôt Pharmaceutique des Forestiers", "ville": "Koulamoutou", "quartier": "Koulamoutou", "telephone": "011 65 50 08", "bp": "100", "horaires": "Lun-Sam: 7h30-20h", "services": "Dépôt pharmaceutique", "proprietaire": "", "type_etablissement": "Dépôt pharmaceutique", "categorie": "depot"},
     {"id": "NT001", "nom": "Pharmacie Clementine", "ville": "Ntom", "quartier": "Ntom", "telephone": "062 57 76 22", "bp": "", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "Ambolo Kanga Chelsy Michelle", "type_etablissement": "Pharmacie générale"},
-    {"id": "MD001", "nom": "Dépôt Phar. Boundama", "ville": "Moanda", "quartier": "Moanda", "telephone": "02 66 85 3 / 026 68 53", "bp": "", "horaires": "Horaires standards", "services": "Dépôt pharmaceutique", "proprietaire": "Chami Frederic R", "type_etablissement": "Dépôt pharmaceutique"},
+    {"id": "MD001", "nom": "Dépôt Phar. Boundama", "ville": "Moanda", "quartier": "Moanda", "telephone": "02 66 85 3 / 026 68 53", "bp": "", "horaires": "Horaires standards", "services": "Dépôt pharmaceutique", "proprietaire": "Chami Frederic R", "type_etablissement": "Dépôt pharmaceutique", "categorie": "depot"},
     {"id": "MD002", "nom": "Pharmacie de Moanda", "ville": "Moanda", "quartier": "Moanda", "telephone": "028 27 15", "bp": "2372", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "", "type_etablissement": "Pharmacie générale"},
     {"id": "OY001", "nom": "Pharmacie Pascale Magalie Nfoumou", "ville": "Oyem", "quartier": "Oyem", "telephone": "077 84 50 61", "bp": "1207", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "Ndoumou Obame Daniel", "type_etablissement": "Pharmacie générale"},
     {"id": "ML001", "nom": "Pharmacie Bangolouis", "ville": "Mouila", "quartier": "Mouila", "telephone": "074 41 96 16", "bp": "162", "horaires": "Horaires standards", "services": "Service courant", "proprietaire": "Dr Mahoumbou Aude Felicia", "type_etablissement": "Pharmacie générale"},
@@ -131,6 +131,10 @@ def init_demo_data(force=False):
             is_garde = 'garde' in type_etablissement.lower() or '24h' in horaires.lower()
             is_gare = 'gare' in quartier.lower() or 'gare' in nom.lower()
             
+            categorie = row.get('categorie', 'generale')
+            if 'dépôt' in type_etablissement.lower():
+                categorie = 'depot'
+            
             pharmacy = Pharmacy(
                 code=row['id'],
                 nom=nom,
@@ -142,6 +146,7 @@ def init_demo_data(force=False):
                 services=row.get('services', ''),
                 proprietaire=row.get('proprietaire', ''),
                 type_etablissement=type_etablissement,
+                categorie=categorie,
                 is_garde=is_garde,
                 is_gare=is_gare,
                 latitude=base_coords['lat'] + lat_offset,

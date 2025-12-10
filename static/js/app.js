@@ -1006,6 +1006,7 @@ async function submitSuggestion(e) {
                 services: document.getElementById('pharmacyServices').value,
                 proprietaire: document.getElementById('pharmacyProprietaire').value,
                 type_etablissement: document.getElementById('pharmacyType').value,
+                categorie: document.getElementById('pharmacyCategorie').value,
                 is_garde: document.getElementById('pharmacyIsGarde').checked,
                 comment: document.getElementById('pharmacyComment').value,
                 latitude: latValue ? parseFloat(latValue) : null,

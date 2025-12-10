@@ -2,6 +2,16 @@ from extensions import db
 from datetime import datetime, timedelta
 
 
+PHARMACY_CATEGORIES = [
+    ('generale', 'Pharmacie générale'),
+    ('gare', 'Proche de la gare'),
+    ('hopital', 'Proche de l\'hôpital'),
+    ('aeroport', 'Proche de l\'aéroport'),
+    ('centre_commercial', 'Centre commercial'),
+    ('marche', 'Proche du marché'),
+    ('depot', 'Dépôt pharmaceutique'),
+]
+
 class Pharmacy(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(20), unique=True, nullable=False)
@@ -14,6 +24,7 @@ class Pharmacy(db.Model):
     services = db.Column(db.Text)
     proprietaire = db.Column(db.String(200))
     type_etablissement = db.Column(db.String(100))
+    categorie = db.Column(db.String(50), default='generale')
     is_garde = db.Column(db.Boolean, default=False)
     garde_start_date = db.Column(db.DateTime)
     garde_end_date = db.Column(db.DateTime)
@@ -48,6 +59,7 @@ class Pharmacy(db.Model):
             'services': self.services or '',
             'proprietaire': self.proprietaire or '',
             'type_etablissement': self.type_etablissement or '',
+            'categorie': self.categorie or 'generale',
             'is_garde': self.is_currently_garde,
             'is_gare': self.is_gare,
             'lat': self.latitude,

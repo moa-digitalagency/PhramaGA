@@ -116,6 +116,7 @@ class PharmacyProposal(db.Model):
     services = db.Column(db.Text)
     proprietaire = db.Column(db.String(200))
     type_etablissement = db.Column(db.String(100))
+    categorie = db.Column(db.String(50), default='generale')
     is_garde = db.Column(db.Boolean, default=False)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
@@ -142,6 +143,7 @@ class PharmacyProposal(db.Model):
             'services': self.services or '',
             'proprietaire': self.proprietaire or '',
             'type_etablissement': self.type_etablissement or '',
+            'categorie': self.categorie or 'generale',
             'is_garde': self.is_garde,
             'latitude': self.latitude,
             'longitude': self.longitude,
