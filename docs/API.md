@@ -2,7 +2,7 @@
 
 ## Overview
 
-The UrgenceGabon.com API provides programmatic access to pharmacy data, statistics, and submission endpoints. All public endpoints return JSON responses.
+The UrgenceGabon.com API provides programmatic access to pharmacy data, statistics, advertisements, and submission endpoints. All public endpoints return JSON responses.
 
 **Base URL**: `https://your-domain.com`
 
@@ -129,7 +129,7 @@ Retrieve currently active popup messages.
   {
     "id": 1,
     "title": "Bienvenue sur UrgenceGabon.com",
-    "description": "Découvrez la première plateforme...",
+    "description": "Decouvrez la premiere plateforme...",
     "warning_text": "Le projet est encore en construction...",
     "image_url": "",
     "is_active": true,
@@ -175,7 +175,7 @@ Submit GPS coordinates for a pharmacy location.
   "longitude": 9.4673,
   "name": "Jean Dupont",
   "phone": "+241 06 00 00 00",
-  "comment": "Coordonnées précises du bâtiment"
+  "comment": "Coordonnees precises du batiment"
 }
 ```
 
@@ -193,7 +193,7 @@ Submit GPS coordinates for a pharmacy location.
 ```json
 {
   "success": true,
-  "message": "Localisation soumise avec succès"
+  "message": "Localisation soumise avec succes"
 }
 ```
 
@@ -201,7 +201,7 @@ Submit GPS coordinates for a pharmacy location.
 ```json
 {
   "success": false,
-  "error": "Coordonnées manquantes"
+  "error": "Coordonnees manquantes"
 }
 ```
 
@@ -223,7 +223,7 @@ Submit a correction for pharmacy information.
   "proposed_value": "011 72 00 00",
   "name": "Marie Martin",
   "phone": "+241 06 00 00 00",
-  "comment": "Nouveau numéro depuis janvier 2024"
+  "comment": "Nouveau numero depuis janvier 2024"
 }
 ```
 
@@ -249,7 +249,7 @@ Submit a correction for pharmacy information.
 ```json
 {
   "success": true,
-  "message": "Information soumise avec succès"
+  "message": "Information soumise avec succes"
 }
 ```
 
@@ -265,8 +265,8 @@ Submit a general suggestion or feedback.
 ```json
 {
   "category": "amelioration",
-  "subject": "Ajout de fonctionnalité",
-  "message": "Il serait utile d'avoir une fonction de recherche par médicament...",
+  "subject": "Ajout de fonctionnalite",
+  "message": "Il serait utile d'avoir une fonction de recherche par medicament...",
   "name": "Pierre Obame",
   "email": "pierre@example.com",
   "phone": "+241 06 00 00 00"
@@ -288,7 +288,7 @@ Submit a general suggestion or feedback.
 ```json
 {
   "success": true,
-  "message": "Suggestion envoyée avec succès"
+  "message": "Suggestion envoyee avec succes"
 }
 ```
 
@@ -319,7 +319,7 @@ Propose a new pharmacy to be added to the database.
   "name": "Jean Obiang",
   "email": "jean@example.com",
   "phone": "+241 06 00 00 00",
-  "comment": "Pharmacie ouverte récemment"
+  "comment": "Pharmacie ouverte recemment"
 }
 ```
 
@@ -364,7 +364,138 @@ Propose a new pharmacy to be added to the database.
 ```json
 {
   "success": true,
-  "message": "Proposition de pharmacie envoyée avec succès"
+  "message": "Proposition de pharmacie envoyee avec succes"
+}
+```
+
+---
+
+## Advertisement API Endpoints
+
+### 9. Get Ad Settings
+
+Retrieve global advertisement settings.
+
+**Endpoint**: `GET /api/ads/settings`
+
+**Response**:
+```json
+{
+  "ads_enabled": true,
+  "trigger_type": "time",
+  "time_delay": 60,
+  "time_repeat": true,
+  "time_interval": 300,
+  "page_count": 3,
+  "refresh_show": false,
+  "refresh_count": 1,
+  "default_skip_delay": 5,
+  "max_ads_per_session": 10,
+  "cooldown_after_skip": 60,
+  "cooldown_after_click": 300,
+  "show_on_mobile": true,
+  "show_on_desktop": true
+}
+```
+
+**Response Fields**:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `ads_enabled` | boolean | Whether ads are globally enabled |
+| `trigger_type` | string | Trigger type: "time", "page_count", or "refresh" |
+| `time_delay` | integer | Seconds before first ad (time trigger) |
+| `time_repeat` | boolean | Whether to show repeated ads |
+| `time_interval` | integer | Seconds between repeated ads |
+| `page_count` | integer | Pages before ad shows (page_count trigger) |
+| `refresh_show` | boolean | Show ad on page refresh |
+| `refresh_count` | integer | Refreshes before ad shows |
+| `default_skip_delay` | integer | Default skip button delay (seconds) |
+| `max_ads_per_session` | integer | Maximum ads per user session |
+| `cooldown_after_skip` | integer | Pause after user skips (seconds) |
+| `cooldown_after_click` | integer | Pause after user clicks CTA (seconds) |
+| `show_on_mobile` | boolean | Display ads on mobile devices |
+| `show_on_desktop` | boolean | Display ads on desktop |
+
+---
+
+### 10. Get Random Ad
+
+Retrieve a random active advertisement based on priority weighting.
+
+**Endpoint**: `GET /api/ads/random`
+
+**Response** (when ads available):
+```json
+{
+  "id": 1,
+  "title": "Special Offer",
+  "description": "Visit our partner pharmacy for 20% discount",
+  "media_type": "image",
+  "image_url": "/static/uploads/ads/abc123.jpg",
+  "video_url": "",
+  "cta_text": "En savoir plus",
+  "cta_url": "https://example.com/offer",
+  "skip_delay": 5,
+  "is_active": true,
+  "priority": 10
+}
+```
+
+**Response** (when no ads available):
+```json
+null
+```
+
+**Response Fields**:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Advertisement ID |
+| `title` | string | Ad headline |
+| `description` | string | Ad body text |
+| `media_type` | string | "image" or "video" |
+| `image_url` | string/null | URL to ad image |
+| `video_url` | string | Video embed URL (YouTube, etc.) |
+| `cta_text` | string | Call-to-action button text |
+| `cta_url` | string | CTA destination URL |
+| `skip_delay` | integer | Seconds before skip button activates |
+| `is_active` | boolean | Ad active status |
+| `priority` | integer | Display priority weight |
+
+---
+
+### 11. Record Ad View
+
+Record when an advertisement is displayed to a user.
+
+**Endpoint**: `POST /api/ads/<id>/view`
+
+**URL Parameters**:
+- `id` (integer): Advertisement ID
+
+**Response**:
+```json
+{
+  "success": true
+}
+```
+
+---
+
+### 12. Record Ad Click
+
+Record when a user clicks an advertisement's CTA button.
+
+**Endpoint**: `POST /api/ads/<id>/click`
+
+**URL Parameters**:
+- `id` (integer): Advertisement ID
+
+**Response**:
+```json
+{
+  "success": true
 }
 ```
 
@@ -430,6 +561,16 @@ Form data:
 | GET/POST | `/admin/popup/<id>/edit` | Edit popup |
 | POST | `/admin/popup/<id>/toggle` | Toggle popup active status |
 | POST | `/admin/popup/<id>/delete` | Delete popup |
+
+### Advertisement Management
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/admin/ads` | List all advertisements |
+| GET/POST | `/admin/ad/add` | Add new advertisement |
+| GET/POST | `/admin/ad/<id>/edit` | Edit advertisement |
+| POST | `/admin/ad/<id>/delete` | Delete advertisement |
+| GET/POST | `/admin/ads/settings` | Global ad settings |
 
 ---
 

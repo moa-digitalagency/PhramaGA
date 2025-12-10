@@ -21,7 +21,6 @@ UrgenceGabon.com is built on a Flask-based architecture with PostgreSQL as the d
 |  +--------------------------------------------------------------+ |
 |  |              Gunicorn WSGI Server                             | |
 |  |              (Port 5000, --reload)                            | |
-|  +--------------------------------------------------------------+ |
 +------------------------------------------------------------------+
                               |
                               v
@@ -46,6 +45,10 @@ UrgenceGabon.com is built on a Flask-based architecture with PostgreSQL as the d
 |  |  | Pharmacy  | |  Admin    | | Emergency | | Submissions |  |  |
 |  |  |  Model    | |  Model    | | Contact   | |   Models    |  |  |
 |  |  +-----------+ +-----------+ +-----------+ +-------------+  |  |
+|  |  +-----------+ +-----------+                                |  |
+|  |  |Advertisement| |AdSettings|                               |  |
+|  |  |  Model     | |  Model   |                                |  |
+|  |  +-----------+ +-----------+                                |  |
 |  +------------------------------------------------------------+  |
 |                              |                                    |
 |                              v                                    |
@@ -72,7 +75,8 @@ urgence-gabon/
 │   ├── pharmacy.py           # Pharmacy model
 │   ├── emergency_contact.py  # Emergency contacts
 │   ├── submission.py         # User submissions (4 types)
-│   └── site_settings.py      # Site config & popups
+│   ├── site_settings.py      # Site config & popups
+│   └── advertisement.py      # Ads & ad settings models
 │
 ├── routes/                   # Blueprint Routes
 │   ├── __init__.py
@@ -97,7 +101,10 @@ urgence-gabon/
 │       ├── emergency_contact_form.html
 │       ├── settings.html
 │       ├── popups.html
-│       └── popup_form.html
+│       ├── popup_form.html
+│       ├── ads.html          # Advertisement list
+│       ├── ad_form.html      # Advertisement form
+│       └── ad_settings.html  # Ad settings
 │
 ├── static/                   # Static Assets
 │   ├── css/style.css
@@ -105,7 +112,8 @@ urgence-gabon/
 │   ├── favicon.svg
 │   └── uploads/              # User uploads
 │       ├── settings/         # Logo, favicon, OG images
-│       └── popups/           # Popup images
+│       ├── popups/           # Popup images
+│       └── ads/              # Advertisement images
 │
 ├── utils/                    # Utilities
 │   ├── __init__.py
@@ -214,6 +222,28 @@ urgence-gabon/
                          | created_at          |
                          | updated_at          |
                          +---------------------+
+
++---------------------+  +---------------------+
+|   Advertisement     |  |    AdSettings       |
++---------------------+  +---------------------+
+| id (PK)             |  | id (PK)             |
+| title               |  | ads_enabled         |
+| description         |  | trigger_type        |
+| media_type          |  | time_delay          |
+| image_filename      |  | time_repeat         |
+| video_url           |  | time_interval       |
+| cta_text            |  | page_count          |
+| cta_url             |  | refresh_show        |
+| skip_delay          |  | refresh_count       |
+| is_active           |  | default_skip_delay  |
+| priority            |  | max_ads_per_session |
+| start_date          |  | cooldown_after_skip |
+| end_date            |  | cooldown_after_click|
+| view_count          |  | show_on_mobile      |
+| click_count         |  | show_on_desktop     |
+| created_at          |  | updated_at          |
+| updated_at          |  +---------------------+
++---------------------+
 ```
 
 ## Key Components
@@ -239,12 +269,14 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 - Handles all public-facing routes
 - API endpoints for pharmacy data
 - Community submission endpoints
+- Advertisement API endpoints
 
 **Admin Blueprint** (`routes/admin.py`):
 - Protected by `@login_required` decorator
 - CRUD operations for all entities
 - Dashboard with analytics
 - Submission review workflow
+- Advertisement management
 
 ### 3. Service Layer (services/pharmacy_service.py)
 
@@ -265,6 +297,16 @@ Flask-Login integration:
 - Session-based authentication
 - Password hashing with werkzeug
 
+### 5. Advertisement System (models/advertisement.py)
+
+Intelligent advertising system with:
+- Advertisement model for individual ads (title, description, media, CTA)
+- AdSettings model for global configuration
+- Trigger types: time-based, page-count, refresh
+- Skip delay with countdown
+- Priority-based random selection
+- View/click tracking
+
 ## Environment Variables
 
 | Variable | Description | Required |
@@ -284,9 +326,9 @@ Flask-Login integration:
 ### Establishment Types
 ```python
 ETABLISSEMENT_TYPES = [
-    ('pharmacie_generale', 'Pharmacie générale'),
-    ('depot_pharmaceutique', 'Dépôt pharmaceutique'),
-    ('pharmacie_hospitaliere', 'Pharmacie hospitalière'),
+    ('pharmacie_generale', 'Pharmacie generale'),
+    ('depot_pharmaceutique', 'Depot pharmaceutique'),
+    ('pharmacie_hospitaliere', 'Pharmacie hospitaliere'),
 ]
 ```
 
@@ -295,12 +337,12 @@ ETABLISSEMENT_TYPES = [
 LOCATION_CATEGORIES = [
     ('standard', 'Emplacement standard'),
     ('gare', 'Proche de la gare'),
-    ('hopital', 'Proche de l\'hôpital'),
-    ('aeroport', 'Proche de l\'aéroport'),
+    ('hopital', 'Proche de l\'hopital'),
+    ('aeroport', 'Proche de l\'aeroport'),
     ('centre_commercial', 'Centre commercial'),
-    ('marche', 'Proche du marché'),
+    ('marche', 'Proche du marche'),
     ('centre_ville', 'Centre-ville'),
-    ('zone_residentielle', 'Zone résidentielle'),
+    ('zone_residentielle', 'Zone residentielle'),
 ]
 ```
 
@@ -310,11 +352,20 @@ EMERGENCY_SERVICE_TYPES = [
     ('police', 'Police'),
     ('pompiers', 'Pompiers'),
     ('ambulance', 'Ambulance / SAMU'),
-    ('hopital', 'Hôpital'),
+    ('hopital', 'Hopital'),
     ('clinique', 'Clinique'),
-    ('sos_medecins', 'SOS Médecins'),
+    ('sos_medecins', 'SOS Medecins'),
     ('protection_civile', 'Protection Civile'),
     ('autre', 'Autre'),
+]
+```
+
+### Advertisement Trigger Types
+```python
+TRIGGER_TYPES = [
+    ('time', 'Time-based'),      # Show after X seconds
+    ('page_count', 'Page count'), # Show after X pages viewed
+    ('refresh', 'On refresh'),    # Show on page refresh
 ]
 ```
 

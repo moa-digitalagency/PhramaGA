@@ -39,6 +39,13 @@ UrgenceGabon.com provides a comprehensive, community-driven platform that addres
 - New pharmacy registration suggestions
 - Admin verification workflow ensuring data accuracy
 
+### 5. Intelligent Advertising System
+- Non-intrusive popup advertisements
+- Configurable display triggers (time, page count, refresh)
+- Skip button with countdown
+- Support for images and video embeds
+- Performance tracking (views, clicks, CTR)
+
 ## Key Features
 
 ### For Citizens
@@ -62,6 +69,18 @@ UrgenceGabon.com provides a comprehensive, community-driven platform that addres
 | Submission Workflow | Review and approve community input | Leverage community knowledge |
 | SEO Management | Meta tags and Open Graph settings | Maximize online visibility |
 | Custom Messaging | Popup announcements system | Communicate with users effectively |
+| Ad Management | Create and schedule advertisements | Generate revenue non-intrusively |
+
+### For Advertisers
+
+| Feature | Description | Benefit |
+|---------|-------------|---------|
+| Image Ads | Upload custom ad images | Visual brand promotion |
+| Video Ads | Embed YouTube/Facebook videos | Engaging multimedia content |
+| Scheduling | Set start/end dates for campaigns | Time-sensitive promotions |
+| Priority Weighting | Control ad display frequency | Featured placement |
+| Analytics | Track views, clicks, and CTR | Measure campaign performance |
+| Non-Intrusive | Configurable skip delays | User-friendly experience |
 
 ## Platform Statistics
 
@@ -97,6 +116,7 @@ UrgenceGabon.com provides a comprehensive, community-driven platform that addres
 - JSON response format
 - Query parameters for filtering and search
 - Submission endpoints for community contributions
+- Advertisement API for ad delivery and tracking
 
 ### Performance
 - Optimized database queries with indexing
@@ -110,6 +130,7 @@ UrgenceGabon.com provides a comprehensive, community-driven platform that addres
 3. **Multi-Language Ready**: Infrastructure supports French and future translations
 4. **Open Data Contribution**: Public can improve data quality
 5. **Emergency Focus**: Unique emphasis on duty pharmacies and emergency contacts
+6. **Monetization Ready**: Built-in advertising system for sustainable revenue
 
 ## Use Cases
 
@@ -125,12 +146,19 @@ A visitor to Gabon needs to find a pharmacy that offers specific services. They 
 ### Scenario 4: Community Contribution
 A local resident notices a pharmacy has moved locations. They submit the new GPS coordinates through the platform, which are verified by administrators and updated for all users.
 
+### Scenario 5: Advertiser Campaign
+A pharmaceutical company launches a new product and creates a video advertisement campaign targeting pharmacy visitors, with scheduling for the product launch week.
+
 ## Business Model Opportunities
 
 ### Monetization Pathways
 
 1. **Premium Listings**: Enhanced pharmacy profiles with photos and featured placement
-2. **Advertising**: Pharmaceutical and healthcare advertising integration
+2. **Advertising**: Built-in intelligent advertising system with:
+   - Image and video ad support
+   - Configurable display triggers
+   - Performance analytics
+   - Priority-based rotation
 3. **API Access**: Commercial API access for healthcare applications
 4. **Partnership Programs**: Integration with health insurance providers
 5. **Data Services**: Anonymized analytics for healthcare sector insights
@@ -162,7 +190,7 @@ A local resident notices a pharmacy has moved locations. They submit the new GPS
 
 ## Conclusion
 
-UrgenceGabon.com represents a significant advancement in healthcare and emergency services accessibility for Gabonese citizens. By centralizing pharmacy information, streamlining emergency service access, and leveraging community contributions, the platform addresses critical gaps in the healthcare information infrastructure.
+UrgenceGabon.com represents a significant advancement in healthcare and emergency services accessibility for Gabonese citizens. By centralizing pharmacy information, streamlining emergency service access, leveraging community contributions, and providing sustainable revenue through intelligent advertising, the platform addresses critical gaps in the healthcare information infrastructure.
 
 The platform is positioned for growth through partnerships, expanded coverage, and enhanced features that will continue to serve the pharmaceutical and emergency needs of Gabon's population.
 

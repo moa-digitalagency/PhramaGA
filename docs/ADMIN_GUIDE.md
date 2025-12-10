@@ -57,7 +57,7 @@ The admin dashboard provides a comprehensive view of:
 - Click the duty badge to toggle on/off instantly
 
 #### Scheduled Duty Period
-1. Click "Gérer la garde" on the pharmacy
+1. Click "Gerer la garde" on the pharmacy
 2. Select the start date
 3. The system automatically sets a 7-day duty period
 4. Click "Activer" to confirm
@@ -90,7 +90,7 @@ When users send suggestions:
 
 1. Go to "Suggestions" section
 2. Read the message and category
-3. Click "Répondre" to provide a response
+3. Click "Repondre" to provide a response
 4. Or click "Archiver" to archive without response
 
 ### New Pharmacy Proposals
@@ -118,9 +118,9 @@ When users propose new pharmacies:
    - Police
    - Pompiers (Fire)
    - Ambulance/SAMU
-   - Hôpital (Hospital)
+   - Hopital (Hospital)
    - Clinique
-   - SOS Médecins
+   - SOS Medecins
    - Protection Civile
    - Autre (Other)
 3. Enter contact details:
@@ -143,7 +143,7 @@ When users propose new pharmacies:
 
 ### General Settings
 
-Navigate to "Paramètres" to configure:
+Navigate to "Parametres" to configure:
 
 1. **Site Name**: Displayed in header and SEO
 2. **Site Description**: Meta description for search engines
@@ -206,6 +206,93 @@ When multiple popups are active:
 1. Popups display in order of their "ordering" value
 2. Lower numbers appear first
 3. Users can navigate between popups if multiple are active
+
+## Advertisement Management
+
+### Overview
+
+The advertising system allows you to display non-intrusive ads to users. Ads appear as popups with configurable triggers and behavior.
+
+### Accessing Ad Management
+
+In the admin sidebar under "Configuration":
+- **Publicites**: Manage individual advertisements
+- **Reglages Pubs**: Configure global ad settings
+
+### Creating an Advertisement
+
+1. Navigate to "Publicites" in the admin menu
+2. Click "Ajouter une publicite"
+3. Fill in the content:
+   - **Titre**: Ad headline
+   - **Description**: Ad body text
+   - **Type de media**: Image or Video
+   - **Image**: Upload an image file (for image type)
+   - **URL Video**: YouTube, Facebook, or other video URL (for video type)
+4. Configure the call-to-action:
+   - **Texte du bouton**: CTA button text (e.g., "En savoir plus")
+   - **URL de destination**: Link when user clicks CTA
+5. Set display options:
+   - **Delai "Passer"**: Seconds before skip button becomes active (default: 5)
+   - **Priorite**: Higher priority = more likely to be shown
+   - **Date de debut/fin**: Schedule when ad is active
+   - **Actif**: Enable/disable the ad
+6. Click "Enregistrer"
+
+### Editing/Deleting Ads
+
+- Click edit (pencil) to modify an ad
+- Click delete (trash) to remove an ad
+
+### Ad Statistics
+
+Each ad displays:
+- **Vues**: Number of times the ad was shown
+- **Clics**: Number of CTA button clicks
+- **Taux de clic**: Click-through rate percentage
+
+### Global Ad Settings
+
+Navigate to "Reglages Pubs" to configure how ads are triggered:
+
+#### Enable/Disable Ads
+- **Activer les publicites**: Master toggle for all ads
+
+#### Trigger Configuration
+
+1. **Type de declenchement**:
+   - **Temps**: Show ads after a time delay
+   - **Nombre de pages**: Show after user visits X pages
+   - **Rafraichissement**: Show when page is refreshed
+
+2. **Time-based Settings** (when trigger = Temps):
+   - **Delai initial**: Seconds before first ad appears
+   - **Repeter**: Show ads multiple times
+   - **Intervalle**: Seconds between repeated ads
+
+3. **Page Count Settings** (when trigger = Nombre de pages):
+   - **Nombre de pages**: Pages to visit before ad appears
+
+4. **Refresh Settings** (when trigger = Rafraichissement):
+   - **Afficher au rafraichissement**: Enable refresh trigger
+   - **Nombre de rafraichissements**: Refreshes before ad shows
+
+#### Display Controls
+
+- **Delai "Passer" par defaut**: Default skip button delay (seconds)
+- **Maximum par session**: Max ads per user session
+- **Pause apres "Passer"**: Cooldown after user skips (seconds)
+- **Pause apres clic**: Cooldown after user clicks CTA (seconds)
+- **Afficher sur mobile**: Show ads on mobile devices
+- **Afficher sur desktop**: Show ads on desktop
+
+### Best Practices for Ads
+
+1. **Non-Intrusive**: Use reasonable delays and limits
+2. **Quality Content**: Create relevant, valuable ads
+3. **Mobile Optimization**: Test ads on mobile devices
+4. **Track Performance**: Monitor view/click rates
+5. **Schedule Wisely**: Use date ranges for time-sensitive campaigns
 
 ## Analytics & Statistics
 
@@ -284,6 +371,13 @@ See the 10 most-viewed pharmacies with:
 - Clear browser cache
 - Restart the application workflow
 - Check for JavaScript errors in browser console
+
+### Ads Not Showing
+
+- Verify "Activer les publicites" is enabled in ad settings
+- Check that at least one ad is active and within date range
+- Confirm trigger settings are configured correctly
+- Check mobile/desktop display settings
 
 ## Support
 
