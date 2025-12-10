@@ -70,7 +70,8 @@ class PharmacyService:
             horaires=data.get('horaires'),
             services=data.get('services'),
             proprietaire=data.get('proprietaire'),
-            type_etablissement=data.get('type_etablissement'),
+            type_etablissement=data.get('type_etablissement', 'pharmacie_generale'),
+            categorie_emplacement=data.get('categorie_emplacement', 'standard'),
             is_garde=data.get('is_garde', False),
             is_gare=data.get('is_gare', False),
             is_verified=data.get('is_verified', False),
@@ -94,6 +95,7 @@ class PharmacyService:
         pharmacy.services = data.get('services', pharmacy.services)
         pharmacy.proprietaire = data.get('proprietaire', pharmacy.proprietaire)
         pharmacy.type_etablissement = data.get('type_etablissement', pharmacy.type_etablissement)
+        pharmacy.categorie_emplacement = data.get('categorie_emplacement', pharmacy.categorie_emplacement)
         pharmacy.is_garde = data.get('is_garde', pharmacy.is_garde)
         pharmacy.is_gare = data.get('is_gare', pharmacy.is_gare)
         pharmacy.is_verified = data.get('is_verified', pharmacy.is_verified)

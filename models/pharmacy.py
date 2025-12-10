@@ -2,14 +2,24 @@ from extensions import db
 from datetime import datetime, timedelta
 
 
-PHARMACY_CATEGORIES = [
-    ('generale', 'Pharmacie générale'),
+ETABLISSEMENT_TYPES = [
+    ('pharmacie_generale', 'Pharmacie générale'),
+    ('pharmacie_garde_24h', 'Pharmacie de garde 24h/24'),
+    ('pharmacie_garde_principale', 'Pharmacie de garde principale'),
+    ('pharmacie_generale_24h', 'Pharmacie générale 24h/24'),
+    ('depot_pharmaceutique', 'Dépôt pharmaceutique'),
+    ('pharmacie_hospitaliere', 'Pharmacie hospitalière'),
+]
+
+LOCATION_CATEGORIES = [
+    ('standard', 'Emplacement standard'),
     ('gare', 'Proche de la gare'),
     ('hopital', 'Proche de l\'hôpital'),
     ('aeroport', 'Proche de l\'aéroport'),
     ('centre_commercial', 'Centre commercial'),
     ('marche', 'Proche du marché'),
-    ('depot', 'Dépôt pharmaceutique'),
+    ('centre_ville', 'Centre-ville'),
+    ('zone_residentielle', 'Zone résidentielle'),
 ]
 
 class Pharmacy(db.Model):
@@ -23,8 +33,8 @@ class Pharmacy(db.Model):
     horaires = db.Column(db.String(200))
     services = db.Column(db.Text)
     proprietaire = db.Column(db.String(200))
-    type_etablissement = db.Column(db.String(100))
-    categorie = db.Column(db.String(50), default='generale')
+    type_etablissement = db.Column(db.String(100), default='pharmacie_generale')
+    categorie_emplacement = db.Column(db.String(50), default='standard')
     is_garde = db.Column(db.Boolean, default=False)
     garde_start_date = db.Column(db.DateTime)
     garde_end_date = db.Column(db.DateTime)
@@ -58,8 +68,8 @@ class Pharmacy(db.Model):
             'horaires': self.horaires or '',
             'services': self.services or '',
             'proprietaire': self.proprietaire or '',
-            'type_etablissement': self.type_etablissement or '',
-            'categorie': self.categorie or 'generale',
+            'type_etablissement': self.type_etablissement or 'pharmacie_generale',
+            'categorie_emplacement': self.categorie_emplacement or 'standard',
             'is_garde': self.is_currently_garde,
             'is_gare': self.is_gare,
             'lat': self.latitude,

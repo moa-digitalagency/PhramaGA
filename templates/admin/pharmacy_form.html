@@ -113,21 +113,37 @@
                                   placeholder="Decrivez les services proposes...">{{ pharmacy.services if pharmacy else '' }}</textarea>
                     </div>
                     
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Proprietaire</label>
+                        <input type="text" name="proprietaire" value="{{ pharmacy.proprietaire if pharmacy else '' }}"
+                               class="form-input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white">
+                    </div>
+                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Proprietaire</label>
-                            <input type="text" name="proprietaire" value="{{ pharmacy.proprietaire if pharmacy else '' }}"
-                                   class="form-input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white">
-                        </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Type d'etablissement</label>
                             <select name="type_etablissement"
                                     class="form-input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white">
-                                <option value="Pharmacie generale" {% if pharmacy and pharmacy.type_etablissement == 'Pharmacie generale' %}selected{% endif %}>Pharmacie generale</option>
-                                <option value="Pharmacie de garde 24h/24" {% if pharmacy and pharmacy.type_etablissement == 'Pharmacie de garde 24h/24' %}selected{% endif %}>Pharmacie de garde 24h/24</option>
-                                <option value="Pharmacie de garde principal" {% if pharmacy and pharmacy.type_etablissement == 'Pharmacie de garde principal' %}selected{% endif %}>Pharmacie de garde principal</option>
-                                <option value="Pharmacie generale 24h/24" {% if pharmacy and pharmacy.type_etablissement == 'Pharmacie generale 24h/24' %}selected{% endif %}>Pharmacie generale 24h/24</option>
-                                <option value="Depot pharmaceutique" {% if pharmacy and pharmacy.type_etablissement == 'Depot pharmaceutique' %}selected{% endif %}>Depot pharmaceutique</option>
+                                <option value="pharmacie_generale" {% if pharmacy and pharmacy.type_etablissement == 'pharmacie_generale' %}selected{% endif %}>Pharmacie generale</option>
+                                <option value="pharmacie_garde_24h" {% if pharmacy and pharmacy.type_etablissement == 'pharmacie_garde_24h' %}selected{% endif %}>Pharmacie de garde 24h/24</option>
+                                <option value="pharmacie_garde_principale" {% if pharmacy and pharmacy.type_etablissement == 'pharmacie_garde_principale' %}selected{% endif %}>Pharmacie de garde principale</option>
+                                <option value="pharmacie_generale_24h" {% if pharmacy and pharmacy.type_etablissement == 'pharmacie_generale_24h' %}selected{% endif %}>Pharmacie generale 24h/24</option>
+                                <option value="depot_pharmaceutique" {% if pharmacy and pharmacy.type_etablissement == 'depot_pharmaceutique' %}selected{% endif %}>Depot pharmaceutique</option>
+                                <option value="pharmacie_hospitaliere" {% if pharmacy and pharmacy.type_etablissement == 'pharmacie_hospitaliere' %}selected{% endif %}>Pharmacie hospitaliere</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Categorie d'emplacement</label>
+                            <select name="categorie_emplacement"
+                                    class="form-input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white">
+                                <option value="standard" {% if pharmacy and pharmacy.categorie_emplacement == 'standard' %}selected{% endif %}>Emplacement standard</option>
+                                <option value="gare" {% if pharmacy and pharmacy.categorie_emplacement == 'gare' %}selected{% endif %}>Proche de la gare</option>
+                                <option value="hopital" {% if pharmacy and pharmacy.categorie_emplacement == 'hopital' %}selected{% endif %}>Proche de l'hopital</option>
+                                <option value="aeroport" {% if pharmacy and pharmacy.categorie_emplacement == 'aeroport' %}selected{% endif %}>Proche de l'aeroport</option>
+                                <option value="centre_commercial" {% if pharmacy and pharmacy.categorie_emplacement == 'centre_commercial' %}selected{% endif %}>Centre commercial</option>
+                                <option value="marche" {% if pharmacy and pharmacy.categorie_emplacement == 'marche' %}selected{% endif %}>Proche du marche</option>
+                                <option value="centre_ville" {% if pharmacy and pharmacy.categorie_emplacement == 'centre_ville' %}selected{% endif %}>Centre-ville</option>
+                                <option value="zone_residentielle" {% if pharmacy and pharmacy.categorie_emplacement == 'zone_residentielle' %}selected{% endif %}>Zone residentielle</option>
                             </select>
                         </div>
                     </div>
