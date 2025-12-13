@@ -1,38 +1,37 @@
-# UrgenceGabon.com - API Documentation
+# Documentation de l'API
 
-## Overview
+Cette API permet d'accéder aux données des pharmacies et des services d'urgence au Gabon. Toutes les réponses sont au format JSON.
 
-The UrgenceGabon.com API provides programmatic access to pharmacy data, statistics, advertisements, and submission endpoints. All public endpoints return JSON responses.
+## Accès
 
-**Base URL**: `https://your-domain.com`
+**URL de base :** `https://votre-domaine.com`
 
-## Authentication
+Les endpoints publics sont accessibles sans authentification. Les endpoints admin nécessitent une connexion préalable via `/admin/login`.
 
-Public API endpoints do not require authentication. Admin endpoints require session-based authentication through the `/admin/login` route.
+---
 
-## Public API Endpoints
+## Endpoints publics
 
-### 1. Get Pharmacies
+### Liste des pharmacies
 
-Retrieve a list of pharmacies with optional filtering.
+Récupère la liste des pharmacies avec possibilité de filtrer.
 
-**Endpoint**: `GET /api/pharmacies`
+**Requête :** `GET /api/pharmacies`
 
-**Query Parameters**:
+**Paramètres (optionnels) :**
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `search` | string | No | Search term for name, neighborhood, or services |
-| `ville` | string | No | Filter by city name |
-| `garde` | string | No | Set to `true` to show only on-duty pharmacies |
-| `gare` | string | No | Set to `true` to show only pharmacies near train station |
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| search | string | Recherche dans le nom, quartier ou services |
+| ville | string | Filtrer par ville |
+| garde | string | "true" pour les pharmacies de garde uniquement |
 
-**Example Request**:
-```http
+**Exemple :**
+```
 GET /api/pharmacies?ville=Libreville&garde=true
 ```
 
-**Response**:
+**Réponse :**
 ```json
 [
   {
@@ -58,41 +57,18 @@ GET /api/pharmacies?ville=Libreville&garde=true
 ]
 ```
 
-**Response Fields**:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | integer | Unique pharmacy identifier |
-| `code` | string | Pharmacy code |
-| `nom` | string | Pharmacy name |
-| `ville` | string | City |
-| `quartier` | string | Neighborhood/district |
-| `telephone` | string | Phone number(s) |
-| `bp` | string | Postal box number |
-| `horaires` | string | Operating hours |
-| `services` | string | Services offered |
-| `proprietaire` | string | Owner name |
-| `type_etablissement` | string | Establishment type |
-| `categorie_emplacement` | string | Location category |
-| `is_garde` | boolean | Currently on emergency duty |
-| `lat` | float | Latitude coordinate |
-| `lng` | float | Longitude coordinate |
-| `location_validated` | boolean | Location verified by admin |
-| `is_verified` | boolean | Information verified |
-| `garde_end_date` | string/null | End date of duty period (ISO format) |
-
 ---
 
-### 2. Get Statistics
+### Statistiques
 
-Retrieve platform statistics.
+Récupère les statistiques générales de la plateforme.
 
-**Endpoint**: `GET /api/stats`
+**Requête :** `GET /api/stats`
 
-**Response**:
+**Réponse :**
 ```json
 {
-  "total": 87,
+  "total": 89,
   "pharmacies_garde": 15,
   "pharmacies_gare": 1,
   "locations_validated": 10,
@@ -105,31 +81,51 @@ Retrieve platform statistics.
 }
 ```
 
-**Response Fields**:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `total` | integer | Total number of pharmacies |
-| `pharmacies_garde` | integer | Pharmacies currently on duty |
-| `pharmacies_gare` | integer | Pharmacies near train station |
-| `locations_validated` | integer | Verified GPS locations |
-| `par_ville` | object | Pharmacy count by city |
-
 ---
 
-### 3. Get Active Popups
+### Contacts d'urgence
 
-Retrieve currently active popup messages.
+Récupère la liste des numéros d'urgence.
 
-**Endpoint**: `GET /api/popups`
+**Requête :** `GET /api/emergency-contacts`
 
-**Response**:
+**Paramètres (optionnels) :**
+
+| Paramètre | Type | Description |
+|-----------|------|-------------|
+| ville | string | Filtrer par ville |
+
+**Réponse :**
 ```json
 [
   {
     "id": 1,
-    "title": "Bienvenue sur UrgenceGabon.com",
-    "description": "Decouvrez la premiere plateforme...",
+    "ville": null,
+    "service_type": "police",
+    "label": "Police Secours (National)",
+    "phone_numbers": "1730 / 177",
+    "address": "",
+    "notes": "Numéro national d'urgence police",
+    "is_national": true
+  }
+]
+```
+
+---
+
+### Popups actifs
+
+Récupère les messages popup à afficher.
+
+**Requête :** `GET /api/popups`
+
+**Réponse :**
+```json
+[
+  {
+    "id": 1,
+    "title": "Bienvenue sur PharmaciesGabon.com",
+    "description": "Découvrez la première plateforme...",
     "warning_text": "Le projet est encore en construction...",
     "image_url": "",
     "is_active": true,
@@ -141,16 +137,13 @@ Retrieve currently active popup messages.
 
 ---
 
-### 4. Record Pharmacy View
+### Enregistrer une consultation
 
-Record a view/click on a pharmacy (for analytics).
+Comptabilise une vue sur une pharmacie (pour les statistiques).
 
-**Endpoint**: `POST /api/pharmacy/<id>/view`
+**Requête :** `POST /api/pharmacy/<id>/view`
 
-**URL Parameters**:
-- `id` (integer): Pharmacy ID
-
-**Response**:
+**Réponse :**
 ```json
 {
   "success": true
@@ -159,148 +152,107 @@ Record a view/click on a pharmacy (for analytics).
 
 ---
 
-### 5. Submit Location Correction
+### Soumettre une localisation GPS
 
-Submit GPS coordinates for a pharmacy location.
+Propose des coordonnées pour une pharmacie.
 
-**Endpoint**: `POST /api/pharmacy/<id>/submit-location`
+**Requête :** `POST /api/pharmacy/<id>/submit-location`
 
-**URL Parameters**:
-- `id` (integer): Pharmacy ID
-
-**Request Body**:
+**Corps de la requête :**
 ```json
 {
   "latitude": 0.4162,
   "longitude": 9.4673,
   "name": "Jean Dupont",
   "phone": "+241 06 00 00 00",
-  "comment": "Coordonnees precises du batiment"
+  "comment": "Coordonnées exactes du bâtiment"
 }
 ```
 
-**Request Fields**:
+**Champs :**
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `latitude` | float | Yes | GPS latitude |
-| `longitude` | float | Yes | GPS longitude |
-| `name` | string | No | Submitter's name |
-| `phone` | string | No | Submitter's phone |
-| `comment` | string | No | Additional comments |
+| Champ | Obligatoire | Description |
+|-------|-------------|-------------|
+| latitude | oui | Latitude GPS |
+| longitude | oui | Longitude GPS |
+| name | non | Nom du contributeur |
+| phone | non | Téléphone du contributeur |
+| comment | non | Commentaire |
 
-**Response**:
+**Réponse :**
 ```json
 {
   "success": true,
-  "message": "Localisation soumise avec succes"
-}
-```
-
-**Error Response** (400):
-```json
-{
-  "success": false,
-  "error": "Coordonnees manquantes"
+  "message": "Localisation soumise avec succès"
 }
 ```
 
 ---
 
-### 6. Submit Information Correction
+### Soumettre une correction
 
-Submit a correction for pharmacy information.
+Propose une modification d'information.
 
-**Endpoint**: `POST /api/pharmacy/<id>/submit-info`
+**Requête :** `POST /api/pharmacy/<id>/submit-info`
 
-**URL Parameters**:
-- `id` (integer): Pharmacy ID
-
-**Request Body**:
+**Corps de la requête :**
 ```json
 {
   "field_name": "telephone",
   "proposed_value": "011 72 00 00",
   "name": "Marie Martin",
   "phone": "+241 06 00 00 00",
-  "comment": "Nouveau numero depuis janvier 2024"
+  "comment": "Nouveau numéro depuis janvier 2024"
 }
 ```
 
-**Request Fields**:
+**Champs modifiables :** telephone, horaires, services, quartier, bp, proprietaire
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `field_name` | string | Yes | Field to update (telephone, horaires, etc.) |
-| `proposed_value` | string | Yes | New proposed value |
-| `name` | string | No | Submitter's name |
-| `phone` | string | No | Submitter's phone |
-| `comment` | string | No | Additional comments |
-
-**Valid Field Names**:
-- `telephone`
-- `horaires`
-- `services`
-- `quartier`
-- `bp`
-- `proprietaire`
-
-**Response**:
+**Réponse :**
 ```json
 {
   "success": true,
-  "message": "Information soumise avec succes"
+  "message": "Information soumise avec succès"
 }
 ```
 
 ---
 
-### 7. Submit Suggestion
+### Envoyer une suggestion
 
-Submit a general suggestion or feedback.
+Envoie un commentaire ou une idée.
 
-**Endpoint**: `POST /api/suggestions`
+**Requête :** `POST /api/suggestions`
 
-**Request Body**:
+**Corps de la requête :**
 ```json
 {
   "category": "amelioration",
-  "subject": "Ajout de fonctionnalite",
-  "message": "Il serait utile d'avoir une fonction de recherche par medicament...",
+  "subject": "Ajout de fonctionnalité",
+  "message": "Il serait utile d'avoir une fonction de recherche par médicament...",
   "name": "Pierre Obame",
-  "email": "pierre@example.com",
+  "email": "pierre@exemple.com",
   "phone": "+241 06 00 00 00"
 }
 ```
 
-**Request Fields**:
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `category` | string | Yes | Suggestion category |
-| `subject` | string | Yes | Subject line |
-| `message` | string | Yes | Detailed message |
-| `name` | string | No | Submitter's name |
-| `email` | string | No | Submitter's email |
-| `phone` | string | No | Submitter's phone |
-
-**Response**:
+**Réponse :**
 ```json
 {
   "success": true,
-  "message": "Suggestion envoyee avec succes"
+  "message": "Suggestion envoyée avec succès"
 }
 ```
 
 ---
 
-### 8. Submit New Pharmacy Proposal
+### Proposer une pharmacie
 
-Propose a new pharmacy to be added to the database.
+Suggère l'ajout d'une nouvelle pharmacie.
 
-**Endpoint**: `POST /api/pharmacy-proposal`
+**Requête :** `POST /api/pharmacy-proposal`
 
-**Request Body**:
+**Corps de la requête :**
 ```json
 {
   "nom": "Pharmacie du Soleil",
@@ -317,68 +269,31 @@ Propose a new pharmacy to be added to the database.
   "latitude": 0.4200,
   "longitude": 9.4700,
   "name": "Jean Obiang",
-  "email": "jean@example.com",
+  "email": "jean@exemple.com",
   "phone": "+241 06 00 00 00",
-  "comment": "Pharmacie ouverte recemment"
+  "comment": "Pharmacie ouverte récemment"
 }
 ```
 
-**Request Fields**:
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `nom` | string | Yes | Pharmacy name |
-| `ville` | string | Yes | City |
-| `quartier` | string | No | Neighborhood |
-| `telephone` | string | No | Phone number |
-| `bp` | string | No | Postal box |
-| `horaires` | string | No | Operating hours |
-| `services` | string | No | Services offered |
-| `proprietaire` | string | No | Owner name |
-| `type_etablissement` | string | No | Establishment type |
-| `categorie_emplacement` | string | No | Location category |
-| `is_garde` | boolean | No | On-duty status |
-| `latitude` | float | No | GPS latitude |
-| `longitude` | float | No | GPS longitude |
-| `name` | string | No | Submitter's name |
-| `email` | string | No | Submitter's email |
-| `phone` | string | No | Submitter's phone |
-| `comment` | string | No | Additional comments |
-
-**Establishment Types**:
-- `pharmacie_generale` - General Pharmacy
-- `depot_pharmaceutique` - Pharmaceutical Depot
-- `pharmacie_hospitaliere` - Hospital Pharmacy
-
-**Location Categories**:
-- `standard` - Standard location
-- `gare` - Near train station
-- `hopital` - Near hospital
-- `aeroport` - Near airport
-- `centre_commercial` - Shopping center
-- `marche` - Near market
-- `centre_ville` - City center
-- `zone_residentielle` - Residential area
-
-**Response**:
+**Réponse :**
 ```json
 {
   "success": true,
-  "message": "Proposition de pharmacie envoyee avec succes"
+  "message": "Proposition de pharmacie envoyée avec succès"
 }
 ```
 
 ---
 
-## Advertisement API Endpoints
+## Endpoints publicitaires
 
-### 9. Get Ad Settings
+### Configuration des publicités
 
-Retrieve global advertisement settings.
+Récupère les paramètres globaux des pubs.
 
-**Endpoint**: `GET /api/ads/settings`
+**Requête :** `GET /api/ads/settings`
 
-**Response**:
+**Réponse :**
 ```json
 {
   "ads_enabled": true,
@@ -386,222 +301,132 @@ Retrieve global advertisement settings.
   "time_delay": 60,
   "time_repeat": true,
   "time_interval": 300,
-  "page_count": 3,
-  "refresh_show": false,
-  "refresh_count": 1,
   "default_skip_delay": 5,
   "max_ads_per_session": 10,
-  "cooldown_after_skip": 60,
-  "cooldown_after_click": 300,
   "show_on_mobile": true,
   "show_on_desktop": true
 }
 ```
 
-**Response Fields**:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `ads_enabled` | boolean | Whether ads are globally enabled |
-| `trigger_type` | string | Trigger type: "time", "page_count", or "refresh" |
-| `time_delay` | integer | Seconds before first ad (time trigger) |
-| `time_repeat` | boolean | Whether to show repeated ads |
-| `time_interval` | integer | Seconds between repeated ads |
-| `page_count` | integer | Pages before ad shows (page_count trigger) |
-| `refresh_show` | boolean | Show ad on page refresh |
-| `refresh_count` | integer | Refreshes before ad shows |
-| `default_skip_delay` | integer | Default skip button delay (seconds) |
-| `max_ads_per_session` | integer | Maximum ads per user session |
-| `cooldown_after_skip` | integer | Pause after user skips (seconds) |
-| `cooldown_after_click` | integer | Pause after user clicks CTA (seconds) |
-| `show_on_mobile` | boolean | Display ads on mobile devices |
-| `show_on_desktop` | boolean | Display ads on desktop |
-
 ---
 
-### 10. Get Random Ad
+### Obtenir une publicité
 
-Retrieve a random active advertisement based on priority weighting.
+Récupère une publicité aléatoire (pondérée par priorité).
 
-**Endpoint**: `GET /api/ads/random`
+**Requête :** `GET /api/ads/random`
 
-**Response** (when ads available):
+**Réponse (si disponible) :**
 ```json
 {
   "id": 1,
-  "title": "Special Offer",
-  "description": "Visit our partner pharmacy for 20% discount",
+  "title": "Offre spéciale",
+  "description": "Visitez notre partenaire...",
   "media_type": "image",
   "image_url": "/static/uploads/ads/abc123.jpg",
   "video_url": "",
   "cta_text": "En savoir plus",
-  "cta_url": "https://example.com/offer",
+  "cta_url": "https://exemple.com/offre",
   "skip_delay": 5,
   "is_active": true,
   "priority": 10
 }
 ```
 
-**Response** (when no ads available):
+**Réponse (si aucune pub disponible) :**
 ```json
 null
 ```
 
-**Response Fields**:
+---
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | integer | Advertisement ID |
-| `title` | string | Ad headline |
-| `description` | string | Ad body text |
-| `media_type` | string | "image" or "video" |
-| `image_url` | string/null | URL to ad image |
-| `video_url` | string | Video embed URL (YouTube, etc.) |
-| `cta_text` | string | Call-to-action button text |
-| `cta_url` | string | CTA destination URL |
-| `skip_delay` | integer | Seconds before skip button activates |
-| `is_active` | boolean | Ad active status |
-| `priority` | integer | Display priority weight |
+### Enregistrer une vue de pub
+
+**Requête :** `POST /api/ads/<id>/view`
+
+### Enregistrer un clic de pub
+
+**Requête :** `POST /api/ads/<id>/click`
 
 ---
 
-### 11. Record Ad View
+## Endpoints admin
 
-Record when an advertisement is displayed to a user.
+Tous ces endpoints nécessitent une authentification préalable.
 
-**Endpoint**: `POST /api/ads/<id>/view`
+### Authentification
 
-**URL Parameters**:
-- `id` (integer): Advertisement ID
+**Connexion :** `POST /admin/login` (formulaire avec username et password)
 
-**Response**:
-```json
-{
-  "success": true
-}
-```
+**Déconnexion :** `GET /admin/logout`
 
----
+### Pharmacies
 
-### 12. Record Ad Click
+| Méthode | URL | Description |
+|---------|-----|-------------|
+| GET | /admin/ | Tableau de bord |
+| GET/POST | /admin/pharmacy/add | Ajouter |
+| GET/POST | /admin/pharmacy/<id>/edit | Modifier |
+| POST | /admin/pharmacy/<id>/delete | Supprimer |
+| POST | /admin/pharmacy/<id>/toggle-garde | Activer/désactiver garde |
 
-Record when a user clicks an advertisement's CTA button.
+### Soumissions
 
-**Endpoint**: `POST /api/ads/<id>/click`
+| Méthode | URL | Description |
+|---------|-----|-------------|
+| POST | /admin/location-submission/<id>/approve | Approuver localisation |
+| POST | /admin/location-submission/<id>/reject | Refuser localisation |
+| POST | /admin/info-submission/<id>/approve | Approuver correction |
+| POST | /admin/info-submission/<id>/reject | Refuser correction |
+| POST | /admin/suggestion/<id>/respond | Répondre à suggestion |
+| POST | /admin/pharmacy-proposal/<id>/approve | Approuver proposition |
+| POST | /admin/pharmacy-proposal/<id>/reject | Refuser proposition |
 
-**URL Parameters**:
-- `id` (integer): Advertisement ID
+### Contacts d'urgence
 
-**Response**:
-```json
-{
-  "success": true
-}
-```
+| Méthode | URL | Description |
+|---------|-----|-------------|
+| GET | /admin/emergency-contacts | Liste |
+| GET/POST | /admin/emergency-contact/add | Ajouter |
+| GET/POST | /admin/emergency-contact/<id>/edit | Modifier |
+| POST | /admin/emergency-contact/<id>/delete | Supprimer |
 
----
+### Paramètres et popups
 
-## Admin API Endpoints
+| Méthode | URL | Description |
+|---------|-----|-------------|
+| GET/POST | /admin/settings | Paramètres du site |
+| GET | /admin/popups | Liste des popups |
+| GET/POST | /admin/popup/add | Ajouter popup |
+| GET/POST | /admin/popup/<id>/edit | Modifier popup |
+| POST | /admin/popup/<id>/delete | Supprimer popup |
 
-All admin endpoints require authentication. Access is session-based after logging in at `/admin/login`.
+### Publicités
 
-### Authentication
-
-**Login**: `POST /admin/login`
-
-Form data:
-- `username`: Admin username
-- `password`: Admin password
-
-**Logout**: `GET /admin/logout`
-
-### Pharmacy Management
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/admin/` | Admin dashboard |
-| GET/POST | `/admin/pharmacy/add` | Add new pharmacy |
-| GET/POST | `/admin/pharmacy/<id>/edit` | Edit pharmacy |
-| POST | `/admin/pharmacy/<id>/delete` | Delete pharmacy |
-| POST | `/admin/pharmacy/<id>/toggle-garde` | Toggle duty status |
-| POST | `/admin/pharmacy/<id>/validate-location` | Validate GPS location |
-| POST | `/admin/pharmacy/<id>/invalidate-location` | Invalidate GPS location |
-| POST | `/admin/pharmacy/<id>/update-coordinates` | Update GPS coordinates |
-| POST | `/admin/pharmacy/<id>/set-garde` | Set duty period with dates |
-
-### Submission Management
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/admin/location-submission/<id>/approve` | Approve location submission |
-| POST | `/admin/location-submission/<id>/reject` | Reject location submission |
-| POST | `/admin/info-submission/<id>/approve` | Approve info submission |
-| POST | `/admin/info-submission/<id>/reject` | Reject info submission |
-| POST | `/admin/suggestion/<id>/respond` | Respond to suggestion |
-| POST | `/admin/suggestion/<id>/archive` | Archive suggestion |
-| POST | `/admin/pharmacy-proposal/<id>/approve` | Approve pharmacy proposal |
-| POST | `/admin/pharmacy-proposal/<id>/reject` | Reject pharmacy proposal |
-
-### Emergency Contacts
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/admin/emergency-contacts` | List all contacts |
-| GET/POST | `/admin/emergency-contact/add` | Add new contact |
-| GET/POST | `/admin/emergency-contact/<id>/edit` | Edit contact |
-| POST | `/admin/emergency-contact/<id>/delete` | Delete contact |
-
-### Site Settings & Popups
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET/POST | `/admin/settings` | Site settings |
-| GET | `/admin/popups` | List popups |
-| GET/POST | `/admin/popup/add` | Add popup |
-| GET/POST | `/admin/popup/<id>/edit` | Edit popup |
-| POST | `/admin/popup/<id>/toggle` | Toggle popup active status |
-| POST | `/admin/popup/<id>/delete` | Delete popup |
-
-### Advertisement Management
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/admin/ads` | List all advertisements |
-| GET/POST | `/admin/ad/add` | Add new advertisement |
-| GET/POST | `/admin/ad/<id>/edit` | Edit advertisement |
-| POST | `/admin/ad/<id>/delete` | Delete advertisement |
-| GET/POST | `/admin/ads/settings` | Global ad settings |
+| Méthode | URL | Description |
+|---------|-----|-------------|
+| GET | /admin/ads | Liste des pubs |
+| GET/POST | /admin/ad/add | Ajouter pub |
+| GET/POST | /admin/ad/<id>/edit | Modifier pub |
+| POST | /admin/ad/<id>/delete | Supprimer pub |
+| GET/POST | /admin/ads/settings | Configuration globale |
 
 ---
 
-## Error Handling
+## Gestion des erreurs
 
-All API endpoints return standard HTTP status codes:
+Toutes les erreurs suivent ce format :
 
-| Code | Description |
-|------|-------------|
-| 200 | Success |
-| 400 | Bad Request - Missing or invalid parameters |
-| 404 | Not Found - Resource doesn't exist |
-| 401 | Unauthorized - Authentication required |
-| 500 | Internal Server Error |
-
-Error responses follow this format:
 ```json
 {
   "success": false,
-  "error": "Error message description"
+  "error": "Description de l'erreur"
 }
 ```
 
----
-
-## Rate Limiting
-
-Currently, no rate limiting is implemented. Please use the API responsibly.
-
----
-
-## CORS
-
-The API does not currently enable CORS for external domains. All requests should originate from the same domain.
+Codes HTTP utilisés :
+- 200 : Succès
+- 400 : Paramètres manquants ou invalides
+- 401 : Authentification requise
+- 404 : Ressource introuvable
+- 500 : Erreur serveur

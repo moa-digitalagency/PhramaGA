@@ -1,384 +1,254 @@
-# UrgenceGabon.com - Admin Guide
+# Guide d'administration
 
-## Getting Started
+Ce guide explique comment utiliser le panneau d'administration pour gérer le site.
 
-### Accessing the Admin Panel
+## Connexion
 
-1. Navigate to `/admin` on your domain
-2. Enter your admin credentials (configured via `ADMIN_USERNAME` and `ADMIN_PASSWORD` environment secrets)
-3. Click "Connexion" to access the dashboard
+1. Allez sur `/admin`
+2. Entrez votre identifiant et mot de passe (configurés dans les variables d'environnement)
+3. Cliquez sur "Connexion"
 
-### Dashboard Overview
+## Tableau de bord
 
-The admin dashboard provides a comprehensive view of:
+La page d'accueil admin affiche :
 
-- **Total Pharmacies**: Count of all registered pharmacies
-- **Pending Submissions**: Location corrections, info updates, suggestions, and proposals awaiting review
-- **Analytics**: View statistics for the last 7 and 30 days
-- **Top Pharmacies**: Most viewed pharmacies
-- **Distribution Charts**: Pharmacies by city and type
+- **Statistiques principales** : nombre de pharmacies, pharmacies de garde, soumissions en attente
+- **Graphiques** : fréquentation sur 7 et 30 jours, répartition par ville et par type
+- **Pharmacies populaires** : les plus consultées
 
-## Managing Pharmacies
+## Gestion des pharmacies
 
-### Adding a New Pharmacy
+### Ajouter une pharmacie
 
-1. Click "Ajouter une pharmacie" in the dashboard
-2. Fill in the required fields:
-   - **Code**: Unique identifier (e.g., LBV001)
-   - **Nom**: Pharmacy name
-   - **Ville**: Select city from dropdown
-   - **Quartier**: Neighborhood/address
-3. Add optional information:
-   - Phone numbers
-   - Postal box (BP)
-   - Operating hours
-   - Services offered
-   - Owner name
-4. Set location category and establishment type
-5. Optionally add GPS coordinates
-6. Click "Enregistrer"
+1. Cliquez sur "Ajouter une pharmacie"
+2. Remplissez les champs :
+   - Code (identifiant court, ex: LBV001)
+   - Nom
+   - Ville
+   - Quartier/adresse
+   - Téléphone
+   - Horaires
+   - Services proposés
+3. Optionnel : ajoutez les coordonnées GPS
+4. Cliquez sur "Enregistrer"
 
-### Editing a Pharmacy
+### Modifier une pharmacie
 
-1. Find the pharmacy in the dashboard list
-2. Click the edit icon (pencil)
-3. Modify the desired fields
-4. Click "Enregistrer"
+1. Trouvez la pharmacie dans la liste
+2. Cliquez sur l'icône crayon
+3. Modifiez les champs souhaités
+4. Enregistrez
 
-### Deleting a Pharmacy
+### Supprimer une pharmacie
 
-1. Find the pharmacy in the dashboard
-2. Click the delete icon (trash)
-3. Confirm the deletion
+1. Cliquez sur l'icône poubelle
+2. Confirmez la suppression
 
-### Managing Duty Status (Garde)
+### Gérer les gardes
 
-#### Quick Toggle
-- Click the duty badge to toggle on/off instantly
+**Activation rapide :** Cliquez sur le badge "garde" pour activer/désactiver instantanément.
 
-#### Scheduled Duty Period
-1. Click "Gerer la garde" on the pharmacy
-2. Select the start date
-3. The system automatically sets a 7-day duty period
-4. Click "Activer" to confirm
+**Avec période programmée :**
+1. Cliquez sur "Gérer la garde"
+2. Sélectionnez la date de début
+3. Le système propose automatiquement une durée de 7 jours
+4. Confirmez
 
-## Reviewing Submissions
+## Soumissions des utilisateurs
 
-### Location Submissions
+Les visiteurs peuvent soumettre des corrections. Vous devez les valider.
 
-When users submit GPS coordinates:
+### Localisations GPS
 
-1. Go to "Localisations en attente" section
-2. Review the submitted coordinates on the map
-3. Compare with the current location
-4. Click "Approuver" to update the pharmacy location
-5. Or click "Rejeter" to decline
+Un utilisateur a proposé des coordonnées pour une pharmacie.
 
-### Information Corrections
+1. Allez dans "Localisations en attente"
+2. Comparez sur la carte la position actuelle et celle proposée
+3. Si correct : cliquez sur "Approuver" (les coordonnées sont mises à jour)
+4. Sinon : cliquez sur "Rejeter"
 
-When users submit information updates:
+### Corrections d'informations
 
-1. Go to "Corrections en attente" section
-2. Review the current vs. proposed value
-3. Verify the information accuracy
-4. Click "Approuver" to apply the change
-5. Or click "Rejeter" to decline
+Un utilisateur signale qu'un numéro ou un horaire est faux.
+
+1. Allez dans "Corrections en attente"
+2. Vérifiez l'information (valeur actuelle vs proposée)
+3. Approuvez ou refusez
 
 ### Suggestions
 
-When users send suggestions:
+Un utilisateur envoie une idée ou un commentaire.
 
-1. Go to "Suggestions" section
-2. Read the message and category
-3. Click "Repondre" to provide a response
-4. Or click "Archiver" to archive without response
-
-### New Pharmacy Proposals
+1. Lisez le message
+2. Répondez si nécessaire
+3. Archivez une fois traité
 
-When users propose new pharmacies:
+### Nouvelles pharmacies
 
-1. Go to "Propositions" section
-2. Review all submitted information
-3. Verify the pharmacy doesn't already exist
-4. Click "Approuver" to create the pharmacy
-5. Or click "Rejeter" to decline
+Un utilisateur propose d'ajouter une pharmacie.
 
-## Emergency Contacts Management
+1. Vérifiez qu'elle n'existe pas déjà
+2. Contrôlez les informations fournies
+3. Si valide : approuvez (la pharmacie est créée automatiquement)
+4. Sinon : refusez
 
-### Viewing Contacts
+## Contacts d'urgence
 
-1. Navigate to "Contacts d'urgence" in the admin menu
-2. View all national and city-specific contacts
-3. Contacts are sorted by ordering number
+### Consulter la liste
 
-### Adding an Emergency Contact
+Menu "Contacts d'urgence" : affiche tous les numéros (nationaux en premier, puis par ville).
 
-1. Click "Ajouter un contact"
-2. Select the service type:
-   - Police
-   - Pompiers (Fire)
-   - Ambulance/SAMU
-   - Hopital (Hospital)
-   - Clinique
-   - SOS Medecins
-   - Protection Civile
-   - Autre (Other)
-3. Enter contact details:
-   - Label (display name)
-   - Phone numbers
-   - Address (optional)
-   - Notes (optional)
-4. Choose scope:
-   - Check "National" for country-wide service
-   - Or select a specific city
-5. Set ordering number (lower = appears first)
-6. Enable/disable with "Actif" checkbox
-7. Click "Enregistrer"
+### Ajouter un contact
 
-### Editing/Deleting Contacts
-
-- Click edit (pencil) or delete (trash) icons on the contact row
-
-## Site Settings
-
-### General Settings
+1. Cliquez sur "Ajouter un contact"
+2. Choisissez le type de service (police, pompiers, hôpital...)
+3. Renseignez le nom, le(s) numéro(s), l'adresse si pertinent
+4. Indiquez si c'est un service national ou local (avec ville)
+5. Définissez l'ordre d'affichage (1 = premier)
+6. Enregistrez
 
-Navigate to "Parametres" to configure:
+### Modifier ou supprimer
 
-1. **Site Name**: Displayed in header and SEO
-2. **Site Description**: Meta description for search engines
-3. **Contact Email**: Public contact email
-4. **Contact Phone**: Public contact phone
+Utilisez les icônes crayon ou poubelle sur chaque ligne.
 
-### Branding
+## Paramètres du site
 
-Upload custom assets:
+### Informations générales
 
-1. **Logo**: Site logo displayed in header
-2. **Favicon**: Browser tab icon
-3. **OG Image**: Image for social media sharing
+- Nom du site
+- Description (pour le référencement)
+- Email et téléphone de contact
 
-To upload:
-1. Click "Choose file"
-2. Select an image (PNG, JPG, SVG, ICO, WEBP)
-3. Click "Enregistrer"
+### Apparence
 
-To remove:
-1. Check "Supprimer le logo/favicon/image"
-2. Click "Enregistrer"
+Uploadez vos fichiers :
+- Logo (affiché dans l'en-tête)
+- Favicon (icône du navigateur)
+- Image de partage (pour les réseaux sociaux)
 
-### SEO Settings
+Pour supprimer un fichier : cochez "Supprimer" puis enregistrez.
 
-Configure search engine optimization:
+### Référencement (SEO)
 
-1. **OG Title**: Title for social media shares
-2. **OG Description**: Description for social media shares
-3. **Meta Keywords**: Keywords for search engines
-4. **Google Analytics ID**: Your GA tracking ID
-5. **Header Code**: Custom HTML/JS for the header
+- Titre Open Graph
+- Description Open Graph
+- Mots-clés
+- ID Google Analytics
+- Code personnalisé à insérer dans l'en-tête
 
-## Popup Messages
+## Popups
 
-### Creating a Popup
+Les popups sont des messages affichés aux visiteurs.
 
-1. Navigate to "Popups" in the admin menu
-2. Click "Nouveau popup"
-3. Fill in:
-   - **Title**: Popup header
-   - **Description**: Main message content
-   - **Warning Text**: Optional warning box (yellow background)
-   - **Image**: Optional image
-4. Configure behavior:
-   - **Actif**: Enable/disable the popup
-   - **Afficher une seule fois**: Show only once per user
-   - **Ordre**: Display order (lower = first)
-5. Click "Enregistrer"
+### Créer un popup
 
-### Managing Popups
+1. Menu "Popups" puis "Nouveau popup"
+2. Renseignez :
+   - Titre
+   - Description (texte principal)
+   - Avertissement (optionnel, apparaît en encadré jaune)
+   - Image (optionnel)
+3. Options :
+   - Actif : active ou non le popup
+   - Afficher une seule fois : le visiteur ne le verra qu'une fois
+   - Ordre : si plusieurs popups, lequel s'affiche en premier
+4. Enregistrez
 
-- **Toggle**: Click the active/inactive badge to toggle status
-- **Edit**: Click the edit icon
-- **Delete**: Click the delete icon
+### Gérer les popups
 
-### Popup Display Order
+- Cliquez sur le badge pour activer/désactiver
+- Modifiez ou supprimez avec les icônes
 
-When multiple popups are active:
-1. Popups display in order of their "ordering" value
-2. Lower numbers appear first
-3. Users can navigate between popups if multiple are active
+## Publicités
 
-## Advertisement Management
+### Créer une publicité
 
-### Overview
+1. Menu "Publicités" puis "Ajouter"
+2. Contenu :
+   - Titre
+   - Description
+   - Type de média : image ou vidéo
+   - Fichier image OU URL vidéo
+3. Appel à l'action :
+   - Texte du bouton ("En savoir plus", "Profiter"...)
+   - URL de destination
+4. Options :
+   - Délai avant "Passer" (en secondes)
+   - Priorité (plus élevée = plus souvent affichée)
+   - Dates de début et fin
+   - Actif ou non
+5. Enregistrez
 
-The advertising system allows you to display non-intrusive ads to users. Ads appear as popups with configurable triggers and behavior.
+### Statistiques
 
-### Accessing Ad Management
+Chaque pub affiche :
+- Nombre de vues
+- Nombre de clics
+- Taux de clic
 
-In the admin sidebar under "Configuration":
-- **Publicites**: Manage individual advertisements
-- **Reglages Pubs**: Configure global ad settings
+### Configuration globale
 
-### Creating an Advertisement
+Menu "Réglages pubs" :
 
-1. Navigate to "Publicites" in the admin menu
-2. Click "Ajouter une publicite"
-3. Fill in the content:
-   - **Titre**: Ad headline
-   - **Description**: Ad body text
-   - **Type de media**: Image or Video
-   - **Image**: Upload an image file (for image type)
-   - **URL Video**: YouTube, Facebook, or other video URL (for video type)
-4. Configure the call-to-action:
-   - **Texte du bouton**: CTA button text (e.g., "En savoir plus")
-   - **URL de destination**: Link when user clicks CTA
-5. Set display options:
-   - **Delai "Passer"**: Seconds before skip button becomes active (default: 5)
-   - **Priorite**: Higher priority = more likely to be shown
-   - **Date de debut/fin**: Schedule when ad is active
-   - **Actif**: Enable/disable the ad
-6. Click "Enregistrer"
+**Activation**
+- Activer/désactiver toutes les pubs d'un coup
 
-### Editing/Deleting Ads
+**Déclencheur**
+- Temps : la pub s'affiche après X secondes
+- Nombre de pages : après X pages visitées
+- Rechargement : quand la page est rafraîchie
 
-- Click edit (pencil) to modify an ad
-- Click delete (trash) to remove an ad
+**Limites**
+- Maximum par session : combien de pubs au total
+- Pause après "Passer" : combien de secondes avant la prochaine
+- Pause après clic : idem après un clic sur le bouton
+- Affichage mobile/desktop : activer ou non selon l'appareil
 
-### Ad Statistics
+## Bonnes pratiques
 
-Each ad displays:
-- **Vues**: Number of times the ad was shown
-- **Clics**: Number of CTA button clicks
-- **Taux de clic**: Click-through rate percentage
+### Qualité des données
 
-### Global Ad Settings
+- Vérifiez toujours avant d'approuver une soumission
+- Complétez un maximum de champs quand vous ajoutez une pharmacie
+- Validez les GPS sur la carte
 
-Navigate to "Reglages Pubs" to configure how ads are triggered:
+### Gestion des gardes
 
-#### Enable/Disable Ads
-- **Activer les publicites**: Master toggle for all ads
+- Planifiez les gardes en début de semaine
+- Assurez une couverture géographique équilibrée
+- Pensez à désactiver les gardes expirées
 
-#### Trigger Configuration
+### Relations avec les utilisateurs
 
-1. **Type de declenchement**:
-   - **Temps**: Show ads after a time delay
-   - **Nombre de pages**: Show after user visits X pages
-   - **Rafraichissement**: Show when page is refreshed
+- Répondez aux suggestions (même brièvement)
+- Traitez rapidement les corrections valides
+- Utilisez les popups pour les annonces importantes
 
-2. **Time-based Settings** (when trigger = Temps):
-   - **Delai initial**: Seconds before first ad appears
-   - **Repeter**: Show ads multiple times
-   - **Intervalle**: Seconds between repeated ads
+### Sécurité
 
-3. **Page Count Settings** (when trigger = Nombre de pages):
-   - **Nombre de pages**: Pages to visit before ad appears
+- Utilisez un mot de passe fort
+- Déconnectez-vous après chaque session
+- Ne partagez pas vos identifiants
 
-4. **Refresh Settings** (when trigger = Rafraichissement):
-   - **Afficher au rafraichissement**: Enable refresh trigger
-   - **Nombre de rafraichissements**: Refreshes before ad shows
+## Problèmes courants
 
-#### Display Controls
+**Je ne peux pas me connecter**
+- Vérifiez les variables ADMIN_USERNAME et ADMIN_PASSWORD
+- Effacez les cookies du navigateur
 
-- **Delai "Passer" par defaut**: Default skip button delay (seconds)
-- **Maximum par session**: Max ads per user session
-- **Pause apres "Passer"**: Cooldown after user skips (seconds)
-- **Pause apres clic**: Cooldown after user clicks CTA (seconds)
-- **Afficher sur mobile**: Show ads on mobile devices
-- **Afficher sur desktop**: Show ads on desktop
+**La carte ne s'affiche pas**
+- Vérifiez votre connexion internet
+- Rechargez la page
 
-### Best Practices for Ads
+**L'upload d'image échoue**
+- Formats acceptés : PNG, JPG, JPEG, GIF, WEBP, SVG, ICO
+- Taille maximale : 10 Mo
 
-1. **Non-Intrusive**: Use reasonable delays and limits
-2. **Quality Content**: Create relevant, valuable ads
-3. **Mobile Optimization**: Test ads on mobile devices
-4. **Track Performance**: Monitor view/click rates
-5. **Schedule Wisely**: Use date ranges for time-sensitive campaigns
+**Mes modifications n'apparaissent pas**
+- Videz le cache du navigateur
+- Rechargez la page
 
-## Analytics & Statistics
-
-### Dashboard Statistics
-
-The dashboard shows:
-
-- **Total Views**: All-time pharmacy page views
-- **Views Today**: Today's view count
-- **Views This Week**: Current week's views
-- **Views This Month**: Current month's views
-
-### Charts
-
-- **7-Day Trend**: Daily views for the past week
-- **30-Day Trend**: Daily views for the past month
-- **Distribution by City**: Pharmacy count per city
-- **Distribution by Type**: Pharmacy types breakdown
-
-### Top Pharmacies
-
-See the 10 most-viewed pharmacies with:
-- Pharmacy name
-- City
-- Total view count
-
-## Best Practices
-
-### Data Quality
-
-1. **Verify Before Approving**: Always verify community submissions
-2. **Complete Information**: Fill in all available fields when adding pharmacies
-3. **GPS Accuracy**: Validate GPS coordinates using the map preview
-4. **Regular Updates**: Periodically review and update pharmacy information
-
-### Duty Management
-
-1. **Weekly Planning**: Set up duty schedules at the start of each week
-2. **Multiple Pharmacies**: Ensure adequate coverage across areas
-3. **Communication**: Notify pharmacies when enabling duty status
-
-### User Engagement
-
-1. **Respond to Suggestions**: Regular responses encourage more contributions
-2. **Quick Approvals**: Fast turnaround on valid submissions builds trust
-3. **Popup Updates**: Use popups for important announcements
-
-### Security
-
-1. **Strong Password**: Use a secure admin password
-2. **Regular Sessions**: Log out when finished
-3. **Trusted Access**: Only share admin credentials with authorized personnel
-
-## Troubleshooting
-
-### Cannot Log In
-
-- Verify username and password in environment secrets
-- Check if `ADMIN_USERNAME` and `ADMIN_PASSWORD` are set
-- Clear browser cookies and try again
-
-### Map Not Loading
-
-- Check internet connection
-- Ensure GPS coordinates are valid numbers
-- Refresh the page
-
-### Image Upload Fails
-
-- Verify file is an allowed type (PNG, JPG, JPEG, GIF, WEBP, SVG, ICO)
-- Check file size (should be under 10MB)
-- Try a different file format
-
-### Changes Not Appearing
-
-- Clear browser cache
-- Restart the application workflow
-- Check for JavaScript errors in browser console
-
-### Ads Not Showing
-
-- Verify "Activer les publicites" is enabled in ad settings
-- Check that at least one ad is active and within date range
-- Confirm trigger settings are configured correctly
-- Check mobile/desktop display settings
-
-## Support
-
-For technical issues or feature requests, use the platform's suggestion system or contact the development team.
+**Les pubs ne s'affichent pas**
+- Vérifiez que "Activer les publicités" est coché
+- Vérifiez qu'au moins une pub est active
+- Contrôlez les dates de diffusion

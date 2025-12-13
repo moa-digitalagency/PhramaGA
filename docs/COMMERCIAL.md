@@ -1,199 +1,91 @@
-# UrgenceGabon.com - Commercial Overview
+# PharmaciesGabon.com - Présentation du projet
 
-## Executive Summary
+## Le problème qu'on résout
 
-UrgenceGabon.com is Gabon's premier digital pharmacy locator and emergency services platform, designed to connect citizens with essential pharmaceutical and healthcare services across the nation. The platform serves as a centralized hub for pharmacy information, emergency duty schedules, and healthcare emergency contacts.
+Au Gabon, trouver une pharmacie ouverte en pleine nuit relève parfois du parcours du combattant. Les informations sont éparpillées, souvent périmées, et quand on a besoin d'un médicament en urgence, chaque minute compte.
 
-## The Challenge
+C'est pareil pour les numéros d'urgence. Entre les services nationaux et locaux, les différents opérateurs téléphoniques, il faut savoir où chercher. Et en situation de stress, ce n'est pas évident.
 
-In Gabon, accessing pharmaceutical and emergency services presents significant challenges:
+## Ce qu'on propose
 
-- **Fragmented Information**: Pharmacy locations, hours, and services are scattered across various sources
-- **Emergency Pharmacy Access**: Finding on-duty pharmacies (pharmacies de garde) during nights and weekends is difficult
-- **Geographic Coverage**: Information about pharmacies outside major cities is often unavailable
-- **Outdated Data**: Contact information and operating hours frequently change without public notice
-- **Emergency Response**: Quick access to emergency service contacts is crucial but not always available
+PharmaciesGabon.com centralise tout ça en un seul endroit :
 
-## Our Solution
+- **Toutes les pharmacies du pays** avec leurs coordonnées, horaires et services
+- **Les pharmacies de garde** identifiables instantanément
+- **Une carte interactive** pour se repérer et trouver son chemin
+- **Les numéros d'urgence** organisés par ville et par service
+- **Un système participatif** où chacun peut signaler des erreurs ou des manques
 
-UrgenceGabon.com provides a comprehensive, community-driven platform that addresses these challenges through:
+## Comment ça fonctionne
 
-### 1. Centralized Pharmacy Database
-- Complete directory of pharmacies across all major Gabonese cities
-- Detailed information including location, contact details, operating hours, and services
-- GPS coordinates with interactive map integration
+L'utilisateur arrive sur le site, tape le nom de sa ville ou de son quartier, et voit immédiatement les pharmacies disponibles. Un code couleur simple permet de repérer celles qui sont ouvertes 24h/24.
 
-### 2. Real-Time Duty Pharmacy Information
-- Clear identification of pharmacies currently on emergency duty
-- Scheduled duty period tracking with automatic status updates
-- 24/7 accessibility for urgent pharmaceutical needs
+En cliquant sur une pharmacie, il obtient tous les détails : téléphone, horaires, services proposés. Un bouton permet d'appeler directement. Un autre ouvre l'itinéraire sur la carte.
 
-### 3. Emergency Services Integration
-- National emergency contact directory (Police, Fire, SAMU, Hospitals)
-- City-specific emergency services with local numbers
-- One-click calling functionality
+Pour les urgences, une section dédiée liste les numéros essentiels : police, pompiers, SAMU, hôpitaux. D'abord les numéros nationaux, puis ceux spécifiques à chaque ville.
 
-### 4. Community-Driven Data Quality
-- Public submission system for location corrections
-- Information update proposals from users
-- New pharmacy registration suggestions
-- Admin verification workflow ensuring data accuracy
+## Ce qui nous différencie
 
-### 5. Intelligent Advertising System
-- Non-intrusive popup advertisements
-- Configurable display triggers (time, page count, refresh)
-- Skip button with countdown
-- Support for images and video embeds
-- Performance tracking (views, clicks, CTR)
+**Première plateforme de ce type au Gabon.** Avant nous, ces informations n'existaient nulle part de façon centralisée et à jour.
 
-## Key Features
+**Données maintenues par la communauté.** Les utilisateurs peuvent proposer des corrections ou ajouter des pharmacies manquantes. Un administrateur valide avant publication.
 
-### For Citizens
+**Pensé pour le mobile.** La majorité des gens accèdent à internet depuis leur téléphone. L'interface s'adapte à tous les écrans.
 
-| Feature | Description | Benefit |
-|---------|-------------|---------|
-| Smart Search | Search by name, neighborhood, or services | Find the right pharmacy instantly |
-| City Filter | Filter by specific cities | Navigate efficiently in your area |
-| Duty Status | Real-time on-duty pharmacy indicators | Access 24/7 emergency services |
-| Interactive Map | OpenStreetMap integration with GPS | Navigate directly to pharmacies |
-| Mobile-Responsive | Fully responsive design | Access anywhere, on any device |
-| Direct Calling | Click-to-call phone numbers | Instant connection to pharmacies |
+**Gratuit et accessible.** Pas besoin de créer un compte pour chercher une pharmacie ou un numéro d'urgence.
 
-### For Administrators
+## Chiffres actuels
 
-| Feature | Description | Benefit |
-|---------|-------------|---------|
-| Comprehensive Dashboard | Analytics and pending submissions | Data-driven decision making |
-| Pharmacy Management | Full CRUD operations | Maintain accurate records |
-| Duty Scheduling | Flexible duty period management | Streamline emergency coverage |
-| Submission Workflow | Review and approve community input | Leverage community knowledge |
-| SEO Management | Meta tags and Open Graph settings | Maximize online visibility |
-| Custom Messaging | Popup announcements system | Communicate with users effectively |
-| Ad Management | Create and schedule advertisements | Generate revenue non-intrusively |
+- 89 pharmacies référencées
+- 9 villes couvertes
+- 18 contacts d'urgence
+- Couverture de toutes les grandes villes : Libreville, Port-Gentil, Franceville, Oyem, Mouila, Makokou, Koulamoutou, Moanda
 
-### For Advertisers
+## Possibilités de revenus
 
-| Feature | Description | Benefit |
-|---------|-------------|---------|
-| Image Ads | Upload custom ad images | Visual brand promotion |
-| Video Ads | Embed YouTube/Facebook videos | Engaging multimedia content |
-| Scheduling | Set start/end dates for campaigns | Time-sensitive promotions |
-| Priority Weighting | Control ad display frequency | Featured placement |
-| Analytics | Track views, clicks, and CTR | Measure campaign performance |
-| Non-Intrusive | Configurable skip delays | User-friendly experience |
+Le projet inclut un système publicitaire respectueux des utilisateurs :
 
-## Platform Statistics
+- Publicités en popup avec délai configurable
+- Support images et vidéos
+- Planification par dates
+- Statistiques de performance (vues, clics)
+- Paramètres anti-abus (limite par session, temps de pause)
 
-- **87+ Pharmacies** catalogued across Gabon
-- **9+ Cities** covered including Libreville, Port-Gentil, and Franceville
-- **18+ Emergency Contacts** for national and local services
-- **Real-time Updates** through community contributions
+D'autres pistes sont envisageables :
+- Profils premium pour les pharmacies (photos, mise en avant)
+- API payante pour les applications de santé
+- Partenariats avec les assurances ou le ministère de la Santé
 
-## Cities Covered
+## Cas d'usage concrets
 
-| City | Region | Pharmacies |
-|------|--------|------------|
-| Libreville | Estuaire (Capital) | 70+ |
-| Port-Gentil | Ogooue-Maritime | 8+ |
-| Franceville | Haut-Ogooue | 2+ |
-| Oyem | Woleu-Ntem | 1+ |
-| Mouila | Ngounie | 1+ |
-| Makokou | Ogooue-Ivindo | 1+ |
-| Koulamoutou | Ogooue-Lolo | 1+ |
-| Moanda | Haut-Ogooue | 2+ |
+**Urgence nocturne**
+Marie a de la fièvre et a besoin de paracétamol à 23h. Elle ouvre le site, filtre sur les pharmacies de garde à Libreville, et en trouve trois ouvertes. Elle appelle la plus proche pour vérifier le stock, puis suit l'itinéraire.
 
-## Technical Specifications
+**Nouveau dans une ville**
+Paul vient d'arriver à Port-Gentil pour le travail. Il ne connaît rien de la ville. Sur le site, il repère les pharmacies près de son nouveau logement et note les numéros d'urgence locaux au cas où.
 
-### Architecture
-- **Backend**: Python Flask framework with SQLAlchemy ORM
-- **Database**: PostgreSQL for reliable data persistence
-- **Frontend**: Modern HTML5, Tailwind CSS, and vanilla JavaScript
-- **Maps**: Leaflet.js with OpenStreetMap tiles
-- **Security**: Flask-Login authentication with hashed passwords
+**Pharmacie mal référencée**
+Une pharmacie a changé de numéro de téléphone. Un client habituel le remarque et soumet la correction via le site. L'administrateur vérifie et met à jour. Tout le monde en profite.
 
-### API Capabilities
-- RESTful API endpoints for data access
-- JSON response format
-- Query parameters for filtering and search
-- Submission endpoints for community contributions
-- Advertisement API for ad delivery and tracking
+## Évolutions possibles
 
-### Performance
-- Optimized database queries with indexing
-- Responsive design for all device sizes
-- Fast server response with Gunicorn WSGI
+**Court terme :**
+- Application mobile native
+- Notifications pour les changements de garde
+- Vérification des stocks en temps réel
 
-## Competitive Advantages
+**Moyen terme :**
+- Extension à plus de villes et zones rurales
+- Rappels de prise de médicaments
+- Intégration avec les mutuelles
 
-1. **First Mover**: The only comprehensive pharmacy and emergency services platform for Gabon
-2. **Community-Driven**: Leverages local knowledge for data accuracy
-3. **Multi-Language Ready**: Infrastructure supports French and future translations
-4. **Open Data Contribution**: Public can improve data quality
-5. **Emergency Focus**: Unique emphasis on duty pharmacies and emergency contacts
-6. **Monetization Ready**: Built-in advertising system for sustainable revenue
-
-## Use Cases
-
-### Scenario 1: Night Emergency
-A parent needs medication for their sick child at 2 AM. They open UrgenceGabon.com, filter for duty pharmacies in Libreville, and immediately find three open options with directions.
-
-### Scenario 2: Relocation
-Someone moving to Port-Gentil uses the platform to identify pharmacies near their new residence, checking services offered and operating hours before their move.
-
-### Scenario 3: Tourist
-A visitor to Gabon needs to find a pharmacy that offers specific services. They search by service type and locate the nearest option with one-click navigation.
-
-### Scenario 4: Community Contribution
-A local resident notices a pharmacy has moved locations. They submit the new GPS coordinates through the platform, which are verified by administrators and updated for all users.
-
-### Scenario 5: Advertiser Campaign
-A pharmaceutical company launches a new product and creates a video advertisement campaign targeting pharmacy visitors, with scheduling for the product launch week.
-
-## Business Model Opportunities
-
-### Monetization Pathways
-
-1. **Premium Listings**: Enhanced pharmacy profiles with photos and featured placement
-2. **Advertising**: Built-in intelligent advertising system with:
-   - Image and video ad support
-   - Configurable display triggers
-   - Performance analytics
-   - Priority-based rotation
-3. **API Access**: Commercial API access for healthcare applications
-4. **Partnership Programs**: Integration with health insurance providers
-5. **Data Services**: Anonymized analytics for healthcare sector insights
-
-### Partnership Opportunities
-
-- Ministry of Health collaboration for official pharmacy registry
-- Pharmaceutical distribution networks
-- Health insurance companies
-- Telehealth service providers
-- Emergency services coordination
-
-## Future Roadmap
-
-### Phase 1: Enhancement
-- Mobile application development (iOS/Android)
-- SMS notifications for duty pharmacy changes
-- Medication availability checking
-
-### Phase 2: Expansion
-- Integration with more cities and rural areas
-- Pharmacy stock management features
-- Prescription reminder system
-
-### Phase 3: Ecosystem
-- Telehealth integration
-- Medication delivery coordination
-- Health insurance integration
+**Long terme :**
+- Téléconsultation intégrée
+- Livraison de médicaments
+- Dossier pharmaceutique partagé
 
 ## Conclusion
 
-UrgenceGabon.com represents a significant advancement in healthcare and emergency services accessibility for Gabonese citizens. By centralizing pharmacy information, streamlining emergency service access, leveraging community contributions, and providing sustainable revenue through intelligent advertising, the platform addresses critical gaps in the healthcare information infrastructure.
+PharmaciesGabon.com répond à un besoin réel et quotidien. La plateforme est fonctionnelle, évolutive, et ouverte aux partenariats.
 
-The platform is positioned for growth through partnerships, expanded coverage, and enhanced features that will continue to serve the pharmaceutical and emergency needs of Gabon's population.
-
----
-
-**For partnership inquiries or more information, please contact us through the platform's suggestion system.**
+Pour en savoir plus ou discuter d'une collaboration, utilisez le formulaire de contact intégré au site.
