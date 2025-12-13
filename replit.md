@@ -10,6 +10,14 @@ Preferred communication style: Simple, everyday language (French).
 
 ## Recent Changes (December 2025)
 
+### Code Quality Refactoring
+- Split `static/js/app.js` (1631 lines) into 7 modular files for better maintainability
+- Split `routes/admin.py` (973 lines) into 8 modular files under `routes/admin/`
+- Added error handling with `.catch()` to all async fetch operations
+- Replaced innerHTML with DOM creation methods where possible for XSS prevention
+- Added `escapeHtml` utility function for user-generated content
+
+### Previous Changes
 - Implemented comprehensive advertising system with non-abusive display controls:
   - Advertisement model with media upload (images) or video links (YouTube/Facebook/Vimeo)
   - Multiple trigger types: time-based, page navigation, refresh count, or combined
@@ -63,7 +71,14 @@ Preferred communication style: Simple, everyday language (French).
 - **Template Engine**: Jinja2 templates served by Flask
 - **CSS Framework**: Tailwind CSS via CDN for responsive styling
 - **Mapping Library**: Leaflet.js with OpenStreetMap tiles for interactive pharmacy locations
-- **JavaScript**: Vanilla JS (`static/js/app.js`) handles map, filtering, tabs, and modals
+- **JavaScript**: Modular vanilla JS architecture:
+  - `static/js/config.js` - Constants (city centers, colors, type definitions)
+  - `static/js/map.js` - Map initialization and display functions
+  - `static/js/pharmacy.js` - Pharmacy card and detail functions
+  - `static/js/forms.js` - Form handling (location, info, suggestions)
+  - `static/js/popups.js` - Popup system (phone, welcome, messages)
+  - `static/js/ads.js` - Advertisement display system
+  - `static/js/app.js` - Main orchestrator (~200 lines)
 - **Design**: Mobile-first with bottom navigation bar for mobile, top tabs for desktop
 
 ### Backend Architecture
@@ -71,6 +86,17 @@ Preferred communication style: Simple, everyday language (French).
 - **Database**: PostgreSQL with Flask-SQLAlchemy ORM
 - **Authentication**: Session-based admin authentication with password hashing
 - **API Pattern**: JSON endpoints for pharmacy data with filtering support
+- **Routes**: Modular blueprint structure:
+  - `routes/public.py` - Public-facing routes
+  - `routes/admin/` - Admin routes package:
+    - `__init__.py` - Blueprint and shared utilities
+    - `auth.py` - Login/logout routes
+    - `dashboard.py` - Admin dashboard
+    - `pharmacy.py` - Pharmacy CRUD operations
+    - `submissions.py` - Submission approvals
+    - `emergency.py` - Emergency contacts management
+    - `settings.py` - Site settings and popups
+    - `ads.py` - Advertisement management
 
 ### Data Models
 
