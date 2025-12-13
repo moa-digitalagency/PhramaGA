@@ -13,44 +13,44 @@ logger = logging.getLogger(__name__)
 
 def create_app():
     app = Flask(__name__)
-    
+
     session_secret = os.environ.get("SESSION_SECRET")
     if not session_secret:
         raise RuntimeError("SESSION_SECRET environment variable is required")
-    
+
     database_url = os.environ.get('DATABASE_URL')
     if not database_url:
         raise RuntimeError("DATABASE_URL environment variable is required")
-    
+
     app.secret_key = session_secret
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
-    
+
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         "pool_recycle": 300,
         "pool_pre_ping": True,
     }
-    
+
     app.config['SESSION_COOKIE_SECURE'] = True
     app.config['SESSION_COOKIE_HTTPONLY'] = True
     app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-    
+
     app.config['WTF_CSRF_TIME_LIMIT'] = 3600
-    
+
     db.init_app(app)
     csrf.init_app(app)
     init_login_manager(app)
-    
+
     app.register_blueprint(public_bp)
     app.register_blueprint(admin_bp)
-    
+
     register_error_handlers(app)
-    
+
     with app.app_context():
         db.create_all()
         create_default_admin()
-    
+
     return app
 
 

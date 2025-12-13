@@ -60,11 +60,13 @@ pip install -r requirements.txt
 
 3. Configurez les variables d'environnement :
 ```bash
-export DATABASE_URL="postgresql://user:password@localhost/pharmacies_gabon"
-export SESSION_SECRET="votre-secret-securise"
+export DATABASE_URL="postgresql://your_user:your_password@your_host/your_database"
+export SESSION_SECRET="your-secure-secret-key"
 export ADMIN_USERNAME="admin"
-export ADMIN_PASSWORD="votre-mot-de-passe-securise"
+export ADMIN_PASSWORD="your-secure-password"
 ```
+
+> **Note**: Remplacez les valeurs ci-dessus par vos propres informations de connexion sécurisées.
 
 4. Initialisez la base de données avec les données de démonstration :
 ```bash

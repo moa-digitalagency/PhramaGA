@@ -131,24 +131,24 @@ def init_demo_data(force=False):
             Pharmacy.query.delete()
             db.session.commit()
             print("Existing pharmacies cleared.")
-        
+
         quartier_offsets = {}
         count = 0
-        
+
         for idx, row in enumerate(PHARMACIES_DATA):
             ville = row.get('ville', '')
             quartier = row.get('quartier', '')
-            
+
             base_coords = CITY_COORDINATES.get(ville, {"lat": 0.4162, "lng": 9.4673})
-            
+
             offset_key = f"{ville}_{quartier}"
             if offset_key not in quartier_offsets:
                 quartier_offsets[offset_key] = len(quartier_offsets)
-            
+
             offset_idx = quartier_offsets[offset_key] + idx
             lat_offset = (offset_idx % 50) * 0.002 - 0.05
             lng_offset = (offset_idx // 50 % 50) * 0.002 - 0.05
-            
+
             pharmacy = Pharmacy(
                 code=row.get('id', f'PH{idx+1:03d}'),
                 nom=row.get('nom', ''),
@@ -168,13 +168,13 @@ def init_demo_data(force=False):
             )
             db.session.add(pharmacy)
             count += 1
-        
+
         db.session.commit()
         print(f"Successfully imported {count} pharmacies!")
-        
+
         EmergencyContact.query.delete()
         db.session.commit()
-        
+
         emergency_count = 0
         for contact_data in EMERGENCY_CONTACTS_DATA:
             contact = EmergencyContact(
@@ -189,13 +189,13 @@ def init_demo_data(force=False):
             )
             db.session.add(contact)
             emergency_count += 1
-        
+
         db.session.commit()
         print(f"Successfully imported {emergency_count} emergency contacts!")
-        
+
         PopupMessage.query.delete()
         db.session.commit()
-        
+
         welcome_popup = PopupMessage(
             title="Bienvenue sur PharmaciesGabon.com",
             description="Découvrez la première plateforme qui réunit toutes les pharmacies du Gabon ! Trouvez aussi facilement la pharmacie de garde la plus proche et les contacts d'urgence où que vous soyez.",
@@ -213,12 +213,12 @@ def init_superadmin():
     with app.app_context():
         admin_username = os.environ.get('ADMIN_USERNAME')
         admin_password = os.environ.get('ADMIN_PASSWORD')
-        
+
         if not admin_username or not admin_password:
             print("Warning: ADMIN_USERNAME and/or ADMIN_PASSWORD not set in environment.")
             print("Superadmin creation skipped. Set these secrets to create an admin account.")
             return False
-        
+
         existing_admin = Admin.query.filter_by(username=admin_username).first()
         if existing_admin:
             print(f"Admin '{admin_username}' already exists. Updating password...")
@@ -231,7 +231,7 @@ def init_superadmin():
             db.session.add(admin)
             db.session.commit()
             print(f"Superadmin '{admin_username}' created successfully!")
-        
+
         return True
 
 

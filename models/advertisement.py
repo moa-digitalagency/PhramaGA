@@ -7,33 +7,33 @@ class Advertisement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
-    
+
     media_type = db.Column(db.String(20), default='image')
     image_filename = db.Column(db.String(255))
     video_url = db.Column(db.String(500))
-    
+
     cta_text = db.Column(db.String(100), default='En savoir plus')
     cta_url = db.Column(db.String(500))
-    
+
     skip_delay = db.Column(db.Integer, default=5)
-    
+
     is_active = db.Column(db.Boolean, default=True)
     priority = db.Column(db.Integer, default=0)
-    
+
     start_date = db.Column(db.DateTime)
     end_date = db.Column(db.DateTime)
-    
+
     view_count = db.Column(db.Integer, default=0)
     click_count = db.Column(db.Integer, default=0)
-    
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+
     def get_image_url(self):
         if self.image_filename:
             return f'/static/uploads/ads/{self.image_filename}'
         return None
-    
+
     def is_currently_active(self):
         if not self.is_active:
             return False
@@ -43,7 +43,7 @@ class Advertisement(db.Model):
         if self.end_date and now > self.end_date:
             return False
         return True
-    
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -62,32 +62,32 @@ class Advertisement(db.Model):
 
 class AdSettings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    
+
     ads_enabled = db.Column(db.Boolean, default=True)
-    
+
     trigger_type = db.Column(db.String(50), default='time')
-    
+
     time_delay = db.Column(db.Integer, default=60)
     time_repeat = db.Column(db.Boolean, default=True)
     time_interval = db.Column(db.Integer, default=300)
-    
+
     page_count = db.Column(db.Integer, default=3)
-    
+
     refresh_show = db.Column(db.Boolean, default=False)
     refresh_count = db.Column(db.Integer, default=1)
-    
+
     default_skip_delay = db.Column(db.Integer, default=5)
-    
+
     max_ads_per_session = db.Column(db.Integer, default=10)
-    
+
     cooldown_after_skip = db.Column(db.Integer, default=60)
     cooldown_after_click = db.Column(db.Integer, default=300)
-    
+
     show_on_mobile = db.Column(db.Boolean, default=True)
     show_on_desktop = db.Column(db.Boolean, default=True)
-    
+
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
+
     @staticmethod
     def get_settings():
         settings = AdSettings.query.first()
@@ -96,7 +96,7 @@ class AdSettings(db.Model):
             db.session.add(settings)
             db.session.commit()
         return settings
-    
+
     def to_dict(self):
         return {
             'ads_enabled': self.ads_enabled,
