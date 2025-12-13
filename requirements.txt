@@ -19,3 +19,15 @@ psycopg2-binary
 werkzeug
 python-dotenv
 flask-wtf
+email_validator
+flask
+flask-sqlalchemy
+gunicorn
+psycopg2-binary
+email-validator
+flask
+flask-login
+flask-sqlalchemy
+gunicorn
+psycopg2-binary
+werkzeug
