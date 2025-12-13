@@ -1,6 +1,6 @@
 import os
 import uuid
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app, abort
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
 from models.admin import Admin
@@ -11,9 +11,20 @@ from models.site_settings import SiteSettings, PopupMessage
 from models.advertisement import Advertisement, AdSettings
 from services.pharmacy_service import PharmacyService
 from utils.helpers import safe_float, CITY_COORDINATES
-from extensions import db
+from extensions import db, csrf
 from datetime import datetime, timedelta
 from sqlalchemy import func
+
+
+def get_json_or_400():
+    """Safely get JSON from request, return 400 if invalid."""
+    try:
+        data = request.get_json(force=False, silent=True)
+        if data is None:
+            abort(400, description='Invalid JSON data')
+        return data
+    except Exception:
+        abort(400, description='Invalid JSON data')
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'ico'}
 
@@ -329,45 +340,55 @@ def admin_toggle_verified(id):
 
 @admin_bp.route('/pharmacy/<int:id>/update-coordinates', methods=['POST'])
 @login_required
+@csrf.exempt
 def admin_update_coordinates(id):
     pharmacy = PharmacyService.get_pharmacy_by_id(id)
-    data = request.get_json()
+    data = get_json_or_400()
     latitude = safe_float(data.get('latitude'))
     longitude = safe_float(data.get('longitude'))
     
     if latitude is not None and longitude is not None:
-        PharmacyService.update_coordinates(pharmacy, latitude, longitude)
-        return jsonify({'success': True})
+        try:
+            PharmacyService.update_coordinates(pharmacy, latitude, longitude)
+            return jsonify({'success': True})
+        except Exception:
+            db.session.rollback()
+            return jsonify({'success': False, 'error': 'Erreur lors de la mise à jour'}), 500
     
     return jsonify({'success': False, 'error': 'Coordonnées invalides'}), 400
 
 
 @admin_bp.route('/pharmacy/<int:id>/set-garde', methods=['POST'])
 @login_required
+@csrf.exempt
 def admin_set_garde(id):
     pharmacy = PharmacyService.get_pharmacy_by_id(id)
-    data = request.get_json()
+    data = get_json_or_400()
     
-    start_date_str = data.get('start_date')
-    if start_date_str:
-        start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
-        end_date = start_date + timedelta(days=7)
+    try:
+        start_date_str = data.get('start_date')
+        if start_date_str:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+            end_date = start_date + timedelta(days=7)
+            
+            pharmacy.is_garde = True
+            pharmacy.garde_start_date = start_date
+            pharmacy.garde_end_date = end_date
+        else:
+            pharmacy.is_garde = False
+            pharmacy.garde_start_date = None
+            pharmacy.garde_end_date = None
         
-        pharmacy.is_garde = True
-        pharmacy.garde_start_date = start_date
-        pharmacy.garde_end_date = end_date
-    else:
-        pharmacy.is_garde = False
-        pharmacy.garde_start_date = None
-        pharmacy.garde_end_date = None
-    
-    db.session.commit()
-    
-    return jsonify({
-        'success': True, 
-        'is_garde': pharmacy.is_garde,
-        'garde_end_date': pharmacy.garde_end_date.isoformat() if pharmacy.garde_end_date else None
-    })
+        db.session.commit()
+        
+        return jsonify({
+            'success': True, 
+            'is_garde': pharmacy.is_garde,
+            'garde_end_date': pharmacy.garde_end_date.isoformat() if pharmacy.garde_end_date else None
+        })
+    except Exception:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': 'Erreur lors de la mise à jour'}), 500
 
 
 @admin_bp.route('/location-submission/<int:id>/approve', methods=['POST'])
@@ -439,18 +460,22 @@ def reject_info_submission(id):
 
 @admin_bp.route('/suggestion/<int:id>/respond', methods=['POST'])
 @login_required
+@csrf.exempt
 def respond_suggestion(id):
     suggestion = Suggestion.query.get_or_404(id)
-    data = request.get_json()
+    data = get_json_or_400()
     
-    suggestion.admin_response = data.get('response', '')
-    suggestion.status = 'resolved'
-    suggestion.reviewed_at = datetime.utcnow()
-    suggestion.reviewed_by_admin_id = current_user.id
-    
-    db.session.commit()
-    
-    return jsonify({'success': True})
+    try:
+        suggestion.admin_response = data.get('response', '')
+        suggestion.status = 'resolved'
+        suggestion.reviewed_at = datetime.utcnow()
+        suggestion.reviewed_by_admin_id = current_user.id
+        
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': 'Erreur lors de la mise à jour'}), 500
 
 
 @admin_bp.route('/suggestion/<int:id>/archive', methods=['POST'])

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify, request
+from flask import Blueprint, render_template, jsonify, request, abort
 from markupsafe import Markup
 from services.pharmacy_service import PharmacyService
 from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal
@@ -6,9 +6,20 @@ from models.pharmacy import Pharmacy
 from models.emergency_contact import EmergencyContact
 from models.site_settings import PopupMessage, SiteSettings
 from models.advertisement import Advertisement, AdSettings
-from extensions import db
+from extensions import db, csrf
 
 public_bp = Blueprint('public', __name__)
+
+
+def get_json_or_400():
+    """Safely get JSON from request, return 400 if invalid."""
+    try:
+        data = request.get_json(force=False, silent=True)
+        if data is None:
+            abort(400, description='Invalid JSON data')
+        return data
+    except Exception:
+        abort(400, description='Invalid JSON data')
 
 
 @public_bp.route('/')
@@ -70,18 +81,24 @@ def get_stats():
 
 
 @public_bp.route('/api/pharmacy/<int:id>/view', methods=['POST'])
+@csrf.exempt
 def record_view(id):
     pharmacy = Pharmacy.query.get_or_404(id)
-    view = PharmacyView(pharmacy_id=pharmacy.id)
-    db.session.add(view)
-    db.session.commit()
-    return jsonify({'success': True})
+    try:
+        view = PharmacyView(pharmacy_id=pharmacy.id)
+        db.session.add(view)
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': 'Erreur lors de l\'enregistrement'}), 500
 
 
 @public_bp.route('/api/pharmacy/<int:id>/submit-location', methods=['POST'])
+@csrf.exempt
 def submit_location(id):
     pharmacy = Pharmacy.query.get_or_404(id)
-    data = request.get_json()
+    data = get_json_or_400()
     
     latitude = data.get('latitude')
     longitude = data.get('longitude')
@@ -89,24 +106,30 @@ def submit_location(id):
     if latitude is None or longitude is None:
         return jsonify({'success': False, 'error': 'Coordonnées manquantes'}), 400
     
-    submission = LocationSubmission(
-        pharmacy_id=pharmacy.id,
-        latitude=float(latitude),
-        longitude=float(longitude),
-        submitted_by_name=data.get('name', ''),
-        submitted_by_phone=data.get('phone', ''),
-        comment=data.get('comment', '')
-    )
-    db.session.add(submission)
-    db.session.commit()
-    
-    return jsonify({'success': True, 'message': 'Localisation soumise avec succès'})
+    try:
+        submission = LocationSubmission(
+            pharmacy_id=pharmacy.id,
+            latitude=float(latitude),
+            longitude=float(longitude),
+            submitted_by_name=data.get('name', ''),
+            submitted_by_phone=data.get('phone', ''),
+            comment=data.get('comment', '')
+        )
+        db.session.add(submission)
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Localisation soumise avec succès'})
+    except (ValueError, TypeError):
+        return jsonify({'success': False, 'error': 'Coordonnées invalides'}), 400
+    except Exception:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': 'Erreur lors de la soumission'}), 500
 
 
 @public_bp.route('/api/pharmacy/<int:id>/submit-info', methods=['POST'])
+@csrf.exempt
 def submit_info(id):
     pharmacy = Pharmacy.query.get_or_404(id)
-    data = request.get_json()
+    data = get_json_or_400()
     
     field_name = data.get('field_name')
     proposed_value = data.get('proposed_value')
@@ -114,26 +137,30 @@ def submit_info(id):
     if not field_name or not proposed_value:
         return jsonify({'success': False, 'error': 'Informations manquantes'}), 400
     
-    current_value = getattr(pharmacy, field_name, '') or ''
-    
-    submission = InfoSubmission(
-        pharmacy_id=pharmacy.id,
-        field_name=field_name,
-        current_value=str(current_value),
-        proposed_value=proposed_value,
-        submitted_by_name=data.get('name', ''),
-        submitted_by_phone=data.get('phone', ''),
-        comment=data.get('comment', '')
-    )
-    db.session.add(submission)
-    db.session.commit()
-    
-    return jsonify({'success': True, 'message': 'Information soumise avec succès'})
+    try:
+        current_value = getattr(pharmacy, field_name, '') or ''
+        
+        submission = InfoSubmission(
+            pharmacy_id=pharmacy.id,
+            field_name=field_name,
+            current_value=str(current_value),
+            proposed_value=proposed_value,
+            submitted_by_name=data.get('name', ''),
+            submitted_by_phone=data.get('phone', ''),
+            comment=data.get('comment', '')
+        )
+        db.session.add(submission)
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Information soumise avec succès'})
+    except Exception:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': 'Erreur lors de la soumission'}), 500
 
 
 @public_bp.route('/api/suggestions', methods=['POST'])
+@csrf.exempt
 def submit_suggestion():
-    data = request.get_json()
+    data = get_json_or_400()
     
     category = data.get('category')
     subject = data.get('subject')
@@ -142,23 +169,27 @@ def submit_suggestion():
     if not category or not subject or not message:
         return jsonify({'success': False, 'error': 'Veuillez remplir tous les champs obligatoires'}), 400
     
-    suggestion = Suggestion(
-        category=category,
-        subject=subject,
-        message=message,
-        submitted_by_name=data.get('name', ''),
-        submitted_by_email=data.get('email', ''),
-        submitted_by_phone=data.get('phone', '')
-    )
-    db.session.add(suggestion)
-    db.session.commit()
-    
-    return jsonify({'success': True, 'message': 'Suggestion envoyée avec succès'})
+    try:
+        suggestion = Suggestion(
+            category=category,
+            subject=subject,
+            message=message,
+            submitted_by_name=data.get('name', ''),
+            submitted_by_email=data.get('email', ''),
+            submitted_by_phone=data.get('phone', '')
+        )
+        db.session.add(suggestion)
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Suggestion envoyée avec succès'})
+    except Exception:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': 'Erreur lors de l\'envoi'}), 500
 
 
 @public_bp.route('/api/pharmacy-proposal', methods=['POST'])
+@csrf.exempt
 def submit_pharmacy_proposal():
-    data = request.get_json()
+    data = get_json_or_400()
     
     nom = data.get('nom')
     ville = data.get('ville')
@@ -166,29 +197,32 @@ def submit_pharmacy_proposal():
     if not nom or not ville:
         return jsonify({'success': False, 'error': 'Le nom et la ville sont obligatoires'}), 400
     
-    proposal = PharmacyProposal(
-        nom=nom,
-        ville=ville,
-        quartier=data.get('quartier', ''),
-        telephone=data.get('telephone', ''),
-        bp=data.get('bp', ''),
-        horaires=data.get('horaires', ''),
-        services=data.get('services', ''),
-        proprietaire=data.get('proprietaire', ''),
-        type_etablissement=data.get('type_etablissement', 'pharmacie_generale'),
-        categorie_emplacement=data.get('categorie_emplacement', 'standard'),
-        is_garde=data.get('is_garde', False),
-        latitude=data.get('latitude'),
-        longitude=data.get('longitude'),
-        submitted_by_name=data.get('name', ''),
-        submitted_by_email=data.get('email', ''),
-        submitted_by_phone=data.get('phone', ''),
-        comment=data.get('comment', '')
-    )
-    db.session.add(proposal)
-    db.session.commit()
-    
-    return jsonify({'success': True, 'message': 'Proposition de pharmacie envoyée avec succès'})
+    try:
+        proposal = PharmacyProposal(
+            nom=nom,
+            ville=ville,
+            quartier=data.get('quartier', ''),
+            telephone=data.get('telephone', ''),
+            bp=data.get('bp', ''),
+            horaires=data.get('horaires', ''),
+            services=data.get('services', ''),
+            proprietaire=data.get('proprietaire', ''),
+            type_etablissement=data.get('type_etablissement', 'pharmacie_generale'),
+            categorie_emplacement=data.get('categorie_emplacement', 'standard'),
+            is_garde=data.get('is_garde', False),
+            latitude=data.get('latitude'),
+            longitude=data.get('longitude'),
+            submitted_by_name=data.get('name', ''),
+            submitted_by_email=data.get('email', ''),
+            submitted_by_phone=data.get('phone', ''),
+            comment=data.get('comment', '')
+        )
+        db.session.add(proposal)
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Proposition de pharmacie envoyée avec succès'})
+    except Exception:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': 'Erreur lors de l\'envoi'}), 500
 
 
 @public_bp.route('/api/popups')
@@ -235,16 +269,26 @@ def get_random_ad():
 
 
 @public_bp.route('/api/ads/<int:id>/view', methods=['POST'])
+@csrf.exempt
 def record_ad_view(id):
     ad = Advertisement.query.get_or_404(id)
-    ad.view_count = (ad.view_count or 0) + 1
-    db.session.commit()
-    return jsonify({'success': True})
+    try:
+        ad.view_count = (ad.view_count or 0) + 1
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception:
+        db.session.rollback()
+        return jsonify({'success': False}), 500
 
 
 @public_bp.route('/api/ads/<int:id>/click', methods=['POST'])
+@csrf.exempt
 def record_ad_click(id):
     ad = Advertisement.query.get_or_404(id)
-    ad.click_count = (ad.click_count or 0) + 1
-    db.session.commit()
-    return jsonify({'success': True})
+    try:
+        ad.click_count = (ad.click_count or 0) + 1
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception:
+        db.session.rollback()
+        return jsonify({'success': False}), 500
