@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+app.py - Application principale Flask
+Ce fichier configure et initialise l'application Flask, incluant la base de données,
+l'authentification, les routes et les gestionnaires d'erreurs.
+"""
+
 import os
 import logging
 from flask import Flask, jsonify, render_template

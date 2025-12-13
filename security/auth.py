@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+security/auth.py - Authentification et gestion utilisateurs
+Ce fichier initialise le gestionnaire de connexion Flask-Login
+et crée le compte administrateur par défaut.
+"""
+
 import os
 import logging
 from extensions import login_manager, db

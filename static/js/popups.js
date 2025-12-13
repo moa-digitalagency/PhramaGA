@@ -1,3 +1,15 @@
+/**
+ * UrgenceGabon.com
+ * By MOA Digital Agency LLC
+ * Developed by: Aisance KALONJI
+ * Contact: moa@myoneart.com
+ * Website: www.myoneart.com
+ *
+ * static/js/popups.js - Popups et modales
+ * Ce fichier gère les popups: sélection de numéro de téléphone,
+ * messages de bienvenue et notifications.
+ */
+
 function handlePhoneClick(phoneString, event) {
     if (event) {
         event.stopPropagation();

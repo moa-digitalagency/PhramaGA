@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+routes/admin/settings.py - Paramètres du site
+Ce fichier gère les paramètres globaux du site (logo, favicon, SEO)
+et les popups/messages d'accueil.
+"""
+
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required
 from models.site_settings import SiteSettings, PopupMessage

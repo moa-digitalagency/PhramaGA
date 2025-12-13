@@ -1,3 +1,15 @@
+/**
+ * UrgenceGabon.com
+ * By MOA Digital Agency LLC
+ * Developed by: Aisance KALONJI
+ * Contact: moa@myoneart.com
+ * Website: www.myoneart.com
+ *
+ * static/js/forms.js - Formulaires de soumission
+ * Ce fichier gère les formulaires: soumission de localisation GPS,
+ * correction d'informations, suggestions et propositions de pharmacies.
+ */
+
 function showComplementInfo(pharmacyId) {
     const modal = document.getElementById('pharmacyModal');
     const title = document.getElementById('modalTitle');

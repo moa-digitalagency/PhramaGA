@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+routes/admin/submissions.py - Gestion des soumissions
+Ce fichier gère l'approbation/rejet des soumissions utilisateurs:
+localisations GPS, corrections d'info, suggestions et propositions de pharmacies.
+"""
+
 from flask import jsonify
 from flask_login import login_required, current_user
 from models.pharmacy import Pharmacy

@@ -1,3 +1,15 @@
+/**
+ * UrgenceGabon.com
+ * By MOA Digital Agency LLC
+ * Developed by: Aisance KALONJI
+ * Contact: moa@myoneart.com
+ * Website: www.myoneart.com
+ *
+ * static/js/app.js - Application principale
+ * Ce fichier gère la logique principale: navigation par onglets, filtrage par ville,
+ * recherche de pharmacies et initialisation de l'application.
+ */
+
 window.pharmacies = [];
 window.currentTab = 'pharmacies';
 window.currentCity = '';

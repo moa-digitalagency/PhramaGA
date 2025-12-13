@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+models/emergency_contact.py - Modèle Contacts d'urgence
+Ce fichier définit le modèle EmergencyContact pour les numéros d'urgence
+(police, pompiers, hôpitaux, etc.) nationaux et par ville.
+"""
+
 from extensions import db
 from datetime import datetime
 

@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+routes/admin/__init__.py - Module administration
+Ce fichier initialise le blueprint admin et fournit les fonctions utilitaires
+pour l'upload de fichiers et la validation des données.
+"""
+
 import os
 import uuid
 from flask import Blueprint, request, abort

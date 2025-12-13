@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+models/advertisement.py - Modèles Publicités
+Ce fichier définit les modèles Advertisement pour les publicités (image/vidéo)
+et AdSettings pour la configuration du système publicitaire.
+"""
+
 from extensions import db
 from datetime import datetime
 import json

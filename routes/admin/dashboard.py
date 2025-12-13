@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+routes/admin/dashboard.py - Tableau de bord administrateur
+Ce fichier affiche le dashboard avec statistiques, soumissions en attente,
+graphiques de vues et activités récentes.
+"""
+
 from flask import render_template
 from flask_login import login_required
 from models.pharmacy import Pharmacy

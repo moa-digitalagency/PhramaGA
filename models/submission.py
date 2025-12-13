@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+models/submission.py - Modèles de soumissions utilisateurs
+Ce fichier définit les modèles pour les soumissions de localisation GPS,
+corrections d'informations, suggestions et propositions de nouvelles pharmacies.
+"""
+
 from extensions import db
 from datetime import datetime
 

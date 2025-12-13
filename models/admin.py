@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+models/admin.py - Modèle Administrateur
+Ce fichier définit le modèle Admin pour l'authentification et la gestion
+des comptes administrateurs avec hashage sécurisé des mots de passe.
+"""
+
 from extensions import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash

@@ -1,3 +1,15 @@
+/**
+ * UrgenceGabon.com
+ * By MOA Digital Agency LLC
+ * Developed by: Aisance KALONJI
+ * Contact: moa@myoneart.com
+ * Website: www.myoneart.com
+ *
+ * static/js/pharmacy.js - Affichage des pharmacies
+ * Ce fichier gère le rendu des cartes pharmacie, les badges de type/statut,
+ * le modal de détail et les interactions utilisateur.
+ */
+
 function getTypeBadge(pharmacy) {
     const typeStyle = getTypeStyle(pharmacy);
     return `<span class="flex-shrink-0 px-2 py-1 ${typeStyle.bg} ${typeStyle.text} text-xs font-medium rounded-full">

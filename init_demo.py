@@ -1,4 +1,16 @@
 #!/usr/bin/env python3
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+init_demo.py - Données de démonstration
+Ce fichier contient les données initiales pour les pharmacies, contacts d'urgence
+et autres informations de démonstration pour le Gabon.
+"""
+
 import os
 import sys
 

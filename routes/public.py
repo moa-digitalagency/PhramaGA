@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+routes/public.py - Routes publiques
+Ce fichier définit les routes accessibles au public: page d'accueil, API pharmacies,
+soumissions de localisation/info, suggestions, popups et publicités.
+"""
+
 from flask import Blueprint, render_template, jsonify, request, abort
 from markupsafe import Markup
 from services.pharmacy_service import PharmacyService

@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+models/pharmacy.py - Modèle Pharmacie
+Ce fichier définit le modèle Pharmacy avec les types d'établissement,
+catégories d'emplacement, statut de garde et coordonnées GPS.
+"""
+
 from extensions import db
 from datetime import datetime, timedelta
 

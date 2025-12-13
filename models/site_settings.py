@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+models/site_settings.py - Modèles Paramètres du site
+Ce fichier définit les modèles SiteSettings pour la configuration du site
+(logo, favicon, SEO) et PopupMessage pour les messages d'accueil.
+"""
+
 from extensions import db
 from datetime import datetime
 

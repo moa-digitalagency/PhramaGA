@@ -1,3 +1,14 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+routes/admin/auth.py - Authentification administrateur
+Ce fichier gère la connexion et déconnexion des administrateurs.
+"""
+
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from models.admin import Admin

@@ -1,4 +1,16 @@
 #!/usr/bin/env python3
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+init_db.py - Initialisation de la base de données
+Ce fichier crée les tables de la base de données et initialise le compte
+administrateur à partir des variables d'environnement.
+"""
+
 import os
 from app import app
 from extensions import db

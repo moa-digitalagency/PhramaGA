@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+utils/helpers.py - Fonctions utilitaires
+Ce fichier contient les coordonnées GPS des villes du Gabon
+et des fonctions helper comme safe_float pour la conversion de données.
+"""
+
 CITY_COORDINATES = {
     "Libreville": {"lat": 0.4162, "lng": 9.4673},
     "Port-Gentil": {"lat": -0.7193, "lng": 8.7815},

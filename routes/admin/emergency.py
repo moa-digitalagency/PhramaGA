@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+routes/admin/emergency.py - Gestion des contacts d'urgence
+Ce fichier gère le CRUD des contacts d'urgence: police, pompiers,
+hôpitaux et autres services d'urgence par ville.
+"""
+
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
 from models.emergency_contact import EmergencyContact, EMERGENCY_SERVICE_TYPES

@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+services/pharmacy_service.py - Service Pharmacie
+Ce fichier contient la logique métier pour la gestion des pharmacies:
+recherche, filtrage, CRUD et statistiques.
+"""
+
 from datetime import datetime
 from extensions import db
 from models.pharmacy import Pharmacy

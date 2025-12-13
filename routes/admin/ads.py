@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+routes/admin/ads.py - Gestion des publicités
+Ce fichier gère le CRUD des publicités (images/vidéos) et les paramètres
+de déclenchement du système publicitaire.
+"""
+
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required
 from models.advertisement import Advertisement, AdSettings

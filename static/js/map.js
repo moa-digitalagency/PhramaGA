@@ -1,3 +1,15 @@
+/**
+ * UrgenceGabon.com
+ * By MOA Digital Agency LLC
+ * Developed by: Aisance KALONJI
+ * Contact: moa@myoneart.com
+ * Website: www.myoneart.com
+ *
+ * static/js/map.js - Carte interactive Leaflet
+ * Ce fichier gère la carte: initialisation, markers colorés par type,
+ * géolocalisation et affichage des pharmacies les plus proches.
+ */
+
 window.map = null;
 window.markers = [];
 

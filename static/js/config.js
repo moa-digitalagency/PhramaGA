@@ -1,3 +1,15 @@
+/**
+ * UrgenceGabon.com
+ * By MOA Digital Agency LLC
+ * Developed by: Aisance KALONJI
+ * Contact: moa@myoneart.com
+ * Website: www.myoneart.com
+ *
+ * static/js/config.js - Configuration globale
+ * Ce fichier contient les constantes de configuration: coordonnées des villes,
+ * couleurs par ville, types d'établissement et catégories d'emplacement.
+ */
+
 const CITY_CENTERS = {
     "Libreville": [0.4162, 9.4673],
     "Port-Gentil": [-0.7193, 8.7815],

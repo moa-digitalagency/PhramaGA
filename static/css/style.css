@@ -1,3 +1,15 @@
+/*
+ * UrgenceGabon.com
+ * By MOA Digital Agency LLC
+ * Developed by: Aisance KALONJI
+ * Contact: moa@myoneart.com
+ * Website: www.myoneart.com
+ *
+ * static/css/style.css - Styles personnalisés
+ * Ce fichier contient les styles CSS personnalisés pour les composants UI:
+ * scrollbars, cartes pharmacie, onglets, modal, carte Leaflet et animations.
+ */
+
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
 }

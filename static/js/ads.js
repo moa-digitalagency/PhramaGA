@@ -1,3 +1,15 @@
+/**
+ * UrgenceGabon.com
+ * By MOA Digital Agency LLC
+ * Developed by: Aisance KALONJI
+ * Contact: moa@myoneart.com
+ * Website: www.myoneart.com
+ *
+ * static/js/ads.js - Système publicitaire
+ * Ce fichier gère le système de publicités: déclenchement par temps/pages,
+ * affichage des pubs (image/vidéo), compteurs et cooldowns.
+ */
+
 let adSettings = null;
 let adState = {
     adsShown: parseInt(sessionStorage.getItem('adAdsShown') || '0'),

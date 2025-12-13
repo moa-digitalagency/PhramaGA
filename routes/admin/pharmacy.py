@@ -1,3 +1,15 @@
+"""
+UrgenceGabon.com
+By MOA Digital Agency LLC
+Developed by: Aisance KALONJI
+Contact: moa@myoneart.com
+Website: www.myoneart.com
+
+routes/admin/pharmacy.py - Gestion des pharmacies
+Ce fichier gère le CRUD des pharmacies: ajout, modification, suppression,
+gestion du statut de garde et validation des coordonnées GPS.
+"""
+
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from models.pharmacy import Pharmacy
