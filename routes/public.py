@@ -40,8 +40,8 @@ def index():
     favicon_url = SiteSettings.get_favicon_url()
     logo_url = SiteSettings.get_logo_url()
     og_image_url = SiteSettings.get_og_image_url()
-    site_name = SiteSettings.get('site_name', 'Pharmacies Gabon')
-    og_title = SiteSettings.get('og_title', 'Pharmacies Gabon - Trouvez votre pharmacie')
+    site_name = SiteSettings.get('site_name', 'UrgenceGabon.com')
+    og_title = SiteSettings.get('og_title', 'UrgenceGabon.com - Trouvez votre pharmacie')
     og_description = SiteSettings.get('og_description', '')
     
     return render_template('index.html', 

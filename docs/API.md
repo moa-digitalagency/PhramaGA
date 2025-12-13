@@ -124,7 +124,7 @@ Récupère les messages popup à afficher.
 [
   {
     "id": 1,
-    "title": "Bienvenue sur PharmaciesGabon.com",
+    "title": "Bienvenue sur UrgenceGabon.com",
     "description": "Découvrez la première plateforme...",
     "warning_text": "Le projet est encore en construction...",
     "image_url": "",

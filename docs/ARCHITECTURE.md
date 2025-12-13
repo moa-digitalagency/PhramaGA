@@ -21,7 +21,7 @@ Le frontend est servi directement par Flask via des templates Jinja2. Pas de fra
 ## Structure des fichiers
 
 ```
-pharmacies-gabon/
+urgence-gabon/
 │
 ├── app.py                    # Configuration de Flask
 ├── main.py                   # Point d'entrée (importe app)

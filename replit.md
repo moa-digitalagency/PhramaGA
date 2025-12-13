@@ -1,4 +1,4 @@
-# Pharmacies Gabon - Notes techniques
+# UrgenceGabon.com - Notes techniques
 
 Ce fichier contient les informations utiles pour travailler sur le projet.
 

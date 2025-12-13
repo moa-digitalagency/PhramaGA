@@ -1,4 +1,4 @@
-# PharmaciesGabon.com - Présentation du projet
+# UrgenceGabon.com - Présentation du projet
 
 ## Le problème qu'on résout
 
@@ -8,7 +8,7 @@ C'est pareil pour les numéros d'urgence. Entre les services nationaux et locaux
 
 ## Ce qu'on propose
 
-PharmaciesGabon.com centralise tout ça en un seul endroit :
+UrgenceGabon.com centralise tout ça en un seul endroit :
 
 - **Toutes les pharmacies du pays** avec leurs coordonnées, horaires et services
 - **Les pharmacies de garde** identifiables instantanément
@@ -86,6 +86,6 @@ Une pharmacie a changé de numéro de téléphone. Un client habituel le remarqu
 
 ## Conclusion
 
-PharmaciesGabon.com répond à un besoin réel et quotidien. La plateforme est fonctionnelle, évolutive, et ouverte aux partenariats.
+UrgenceGabon.com répond à un besoin réel et quotidien. La plateforme est fonctionnelle, évolutive, et ouverte aux partenariats.
 
 Pour en savoir plus ou discuter d'une collaboration, utilisez le formulaire de contact intégré au site.

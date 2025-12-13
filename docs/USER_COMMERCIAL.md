@@ -1,4 +1,4 @@
-# PharmaciesGabon.com - Guide des fonctionnalités
+# UrgenceGabon.com - Guide des fonctionnalités
 
 Ce document présente tout ce que vous pouvez faire avec la plateforme, que vous soyez un simple visiteur, un pharmacien, un annonceur ou un administrateur.
 

@@ -197,7 +197,7 @@ def init_demo_data(force=False):
         db.session.commit()
 
         welcome_popup = PopupMessage(
-            title="Bienvenue sur PharmaciesGabon.com",
+            title="Bienvenue sur UrgenceGabon.com",
             description="Découvrez la première plateforme qui réunit toutes les pharmacies du Gabon ! Trouvez aussi facilement la pharmacie de garde la plus proche et les contacts d'urgence où que vous soyez.",
             warning_text="Le projet est encore en construction — aidez-nous à le rendre meilleur ! Ajoutez une pharmacie manquante ou corrigez des infos… chaque contribution compte !",
             is_active=True,

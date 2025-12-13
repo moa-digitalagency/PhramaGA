@@ -1,8 +1,8 @@
-# Pharmacies Gabon
+# UrgenceGabon.com
 
 Vous cherchez une pharmacie ouverte à 2h du matin ? Un numéro d'urgence dans une ville que vous ne connaissez pas ? C'est exactement pour ça que ce projet existe.
 
-Pharmacies Gabon rassemble toutes les pharmacies du pays sur une seule plateforme. On y trouve les horaires, les numéros de téléphone, les pharmacies de garde, et même une carte pour s'y rendre directement.
+UrgenceGabon.com rassemble toutes les pharmacies du pays sur une seule plateforme. On y trouve les horaires, les numéros de téléphone, les pharmacies de garde, et même une carte pour s'y rendre directement.
 
 ## Ce que fait l'application
 
@@ -44,7 +44,7 @@ L'application tourne sur Flask (Python) avec une base PostgreSQL. Le frontend ut
 1. Récupérez le code :
 ```bash
 git clone <url-du-repo>
-cd pharmacies-gabon
+cd urgence-gabon
 ```
 
 2. Installez les dépendances :
@@ -78,7 +78,7 @@ gunicorn --bind 0.0.0.0:5000 --reuse-port --reload main:app
 ## Organisation du code
 
 ```
-pharmacies-gabon/
+urgence-gabon/
 ├── app.py                 # Configuration Flask
 ├── main.py                # Point d'entrée
 ├── extensions.py          # Extensions (base de données, etc.)
