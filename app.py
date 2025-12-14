@@ -44,7 +44,7 @@ def create_app():
         "pool_pre_ping": True,
     }
 
-    app.config['SESSION_COOKIE_SECURE'] = True
+    app.config['SESSION_COOKIE_SECURE'] = os.environ.get('USE_HTTPS', 'true').lower() == 'true'
     app.config['SESSION_COOKIE_HTTPONLY'] = True
     app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
