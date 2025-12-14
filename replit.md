@@ -16,6 +16,12 @@ Une application web pour trouver des pharmacies au Gabon. Elle affiche 89 pharma
 
 **Décembre 2025**
 
+Ajout du système de logs d'activité :
+- Nouveau modèle ActivityLog pour tracer toutes les activités (erreurs, authentification)
+- Page admin `/admin/logs` avec filtres par type, niveau, IP, chemin
+- Logging automatique des erreurs 400+ et événements d'authentification
+- Possibilité de nettoyer les anciens logs
+
 Refactoring du code pour une meilleure maintenabilité :
 - Le fichier JS principal (1600+ lignes) a été découpé en 7 modules
 - Les routes admin (970+ lignes) sont maintenant dans 8 fichiers séparés
@@ -55,7 +61,7 @@ Fonctionnalités précédentes :
 - Authentification par session
 - Routes en blueprints :
   - `routes/public.py` : accès public
-  - `routes/admin/` : administration (auth, dashboard, pharmacy, submissions, emergency, settings, ads)
+  - `routes/admin/` : administration (auth, dashboard, pharmacy, submissions, emergency, settings, ads, logs)
 
 ## Modèles de données
 
@@ -68,6 +74,8 @@ Fonctionnalités précédentes :
 **Submission types** : LocationSubmission, InfoSubmission, PharmacyProposal, Suggestion
 
 **Advertisement** : title, description, media_type, image/video, cta_text, cta_url, skip_delay, priority, dates, view/click counts
+
+**ActivityLog** : timestamp, ip_address, user_agent, method, path, status_code, response_time_ms, log_type, log_level, message, details, admin_id
 
 ## Dépendances externes
 
