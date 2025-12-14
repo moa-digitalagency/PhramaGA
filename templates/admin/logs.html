@@ -21,6 +21,14 @@
         body { font-family: 'Inter', sans-serif; }
         .log-row:hover { background-color: #f9fafb; }
     </style>
+    <script>
+        function toggleDetails(id) {
+            const row = document.getElementById('details-' + id);
+            if (row) {
+                row.classList.toggle('hidden');
+            }
+        }
+    </script>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <div class="max-w-7xl mx-auto px-4 py-8">
@@ -37,10 +45,14 @@
             </a>
         </div>
         
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
             <div class="bg-white rounded-xl p-4 shadow-sm border">
                 <p class="text-2xl font-bold text-gray-800">{{ stats.total }}</p>
                 <p class="text-sm text-gray-500">Total logs</p>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border">
+                <p class="text-2xl font-bold text-green-600">{{ stats.success }}</p>
+                <p class="text-sm text-gray-500">Succès</p>
             </div>
             <div class="bg-white rounded-xl p-4 shadow-sm border">
                 <p class="text-2xl font-bold text-blue-600">{{ stats.requests }}</p>
@@ -110,12 +122,14 @@
                             <th class="px-4 py-3 text-left font-medium text-gray-600">Méthode</th>
                             <th class="px-4 py-3 text-left font-medium text-gray-600">Chemin</th>
                             <th class="px-4 py-3 text-left font-medium text-gray-600">Status</th>
+                            <th class="px-4 py-3 text-left font-medium text-gray-600">Temps (ms)</th>
                             <th class="px-4 py-3 text-left font-medium text-gray-600">Message</th>
+                            <th class="px-4 py-3 text-left font-medium text-gray-600">Détails</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         {% for log in logs.items %}
-                        <tr class="log-row">
+                        <tr class="log-row cursor-pointer" onclick="toggleDetails({{ log.id }})">
                             <td class="px-4 py-3 text-gray-600 whitespace-nowrap">
                                 {{ log.timestamp.strftime('%d/%m %H:%M:%S') if log.timestamp else '-' }}
                             </td>
@@ -124,6 +138,8 @@
                                 <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-medium">ERROR</span>
                                 {% elif log.log_level == 'warning' %}
                                 <span class="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs font-medium">WARN</span>
+                                {% elif log.log_level == 'success' %}
+                                <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">SUCCESS</span>
                                 {% else %}
                                 <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">INFO</span>
                                 {% endif %}
@@ -140,16 +156,54 @@
                             <td class="px-4 py-3 text-gray-600 max-w-xs truncate" title="{{ log.path }}">{{ log.path or '-' }}</td>
                             <td class="px-4 py-3">
                                 {% if log.status_code %}
-                                <span class="{% if log.status_code >= 500 %}text-red-600{% elif log.status_code >= 400 %}text-amber-600{% else %}text-green-600{% endif %} font-medium">{{ log.status_code }}</span>
+                                <span class="{% if log.status_code >= 500 %}text-red-600{% elif log.status_code >= 400 %}text-amber-600{% elif log.status_code >= 200 and log.status_code < 300 %}text-green-600{% else %}text-gray-600{% endif %} font-medium">{{ log.status_code }}</span>
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3 text-gray-500 text-xs">
+                                {% if log.response_time_ms %}
+                                <span class="{% if log.response_time_ms > 1000 %}text-red-600{% elif log.response_time_ms > 500 %}text-amber-600{% else %}text-gray-600{% endif %}">{{ '%.0f' % log.response_time_ms }}</span>
                                 {% else %}
                                 -
                                 {% endif %}
                             </td>
                             <td class="px-4 py-3 text-gray-600 max-w-xs truncate" title="{{ log.message }}">{{ log.message or '-' }}</td>
+                            <td class="px-4 py-3">
+                                {% if log.user_agent or log.details %}
+                                <button class="text-blue-600 hover:text-blue-800 text-xs">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </button>
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr id="details-{{ log.id }}" class="hidden bg-gray-50">
+                            <td colspan="10" class="px-4 py-3">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                    <div>
+                                        <p class="font-medium text-gray-700 mb-1">User Agent:</p>
+                                        <p class="text-gray-600 break-all">{{ log.user_agent or 'Non disponible' }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-700 mb-1">Détails:</p>
+                                        <p class="text-gray-600 break-all">{{ log.details or 'Aucun détail' }}</p>
+                                    </div>
+                                    {% if log.admin %}
+                                    <div>
+                                        <p class="font-medium text-gray-700 mb-1">Admin:</p>
+                                        <p class="text-gray-600">{{ log.admin.username }}</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="8" class="px-4 py-8 text-center text-gray-500">Aucun log trouvé</td>
+                            <td colspan="10" class="px-4 py-8 text-center text-gray-500">Aucun log trouvé</td>
                         </tr>
                         {% endfor %}
                     </tbody>

@@ -47,6 +47,7 @@ def view_logs():
     
     stats = {
         'total': ActivityLog.query.count(),
+        'success': ActivityLog.query.filter(ActivityLog.log_level == 'success').count(),
         'errors': ActivityLog.query.filter(ActivityLog.log_level == 'error').count(),
         'warnings': ActivityLog.query.filter(ActivityLog.log_level == 'warning').count(),
         'requests': ActivityLog.query.filter(ActivityLog.log_type == 'request').count(),
