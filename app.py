@@ -86,17 +86,32 @@ def register_request_logging(app):
         else:
             response_time_ms = None
         
-        skip_paths = ['/static/', '/favicon', '/api/pharmacies', '/api/stats', '/api/popups', '/api/ads']
+        skip_paths = ['/static/', '/favicon', '/api/pharmacies', '/api/stats', '/api/popups', '/api/ads/settings', '/api/ads/random']
         if any(request.path.startswith(p) for p in skip_paths):
             return response
         
-        if response.status_code < 400:
+        is_admin_path = request.path.startswith('/admin')
+        is_post_request = request.method == 'POST'
+        is_error = response.status_code >= 400
+        
+        should_log = is_error or (is_admin_path and is_post_request) or (is_post_request and response.status_code < 300)
+        
+        if not should_log:
             return response
         
         try:
             admin_id = None
             if current_user and hasattr(current_user, 'is_authenticated') and current_user.is_authenticated:
                 admin_id = current_user.id
+            
+            if response.status_code >= 500:
+                log_level = 'error'
+            elif response.status_code >= 400:
+                log_level = 'warning'
+            elif response.status_code >= 200 and response.status_code < 300:
+                log_level = 'success'
+            else:
+                log_level = 'info'
             
             log = ActivityLog(
                 ip_address=request.headers.get('X-Forwarded-For', request.remote_addr),
@@ -106,7 +121,7 @@ def register_request_logging(app):
                 status_code=response.status_code,
                 response_time_ms=response_time_ms,
                 log_type='request',
-                log_level='error' if response.status_code >= 500 else 'warning',
+                log_level=log_level,
                 admin_id=admin_id
             )
             db.session.add(log)
