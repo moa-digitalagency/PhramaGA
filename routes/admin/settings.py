@@ -24,8 +24,12 @@ def site_settings():
         settings_keys = [
             'site_name', 'site_description',
             'site_timezone', 'contact_email', 'contact_phone',
-            'og_title', 'og_description',
-            'meta_keywords', 'google_analytics_id', 'header_code'
+            'og_title', 'og_description', 'og_type', 'og_locale',
+            'meta_description', 'meta_keywords', 'meta_author',
+            'twitter_card', 'twitter_handle', 'twitter_title', 'twitter_description',
+            'canonical_url', 'google_site_verification', 'bing_site_verification',
+            'robots_txt', 'structured_data',
+            'google_analytics_id', 'header_code', 'footer_code'
         ]
         
         for key in settings_keys:

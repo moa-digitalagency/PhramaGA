@@ -14,11 +14,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UrgenceGabon.com</title>
+    <title>{{ og_title or 'UrgenceGabon.com' }}</title>
     <link rel="icon" href="{{ favicon_url }}">
+    
+    <meta name="description" content="{{ meta_description or og_description or 'Annuaire des pharmacies au Gabon' }}">
+    <meta name="keywords" content="{{ meta_keywords or 'pharmacie gabon, pharmacie garde, urgence gabon' }}">
+    <meta name="author" content="{{ meta_author or 'MOA Digital Agency LLC' }}">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="French">
+    <meta name="revisit-after" content="1 days">
+    {% if google_site_verification %}<meta name="google-site-verification" content="{{ google_site_verification }}">{% endif %}
+    {% if canonical_url %}<link rel="canonical" href="{{ canonical_url }}">{% endif %}
+    
+    <meta property="og:type" content="{{ og_type or 'website' }}">
+    <meta property="og:locale" content="{{ og_locale or 'fr_FR' }}">
+    <meta property="og:site_name" content="{{ site_name or 'UrgenceGabon.com' }}">
     {% if og_title %}<meta property="og:title" content="{{ og_title }}">{% endif %}
     {% if og_description %}<meta property="og:description" content="{{ og_description }}">{% endif %}
     {% if og_image_url %}<meta property="og:image" content="{{ og_image_url }}">{% endif %}
+    {% if canonical_url %}<meta property="og:url" content="{{ canonical_url }}">{% endif %}
+    
+    <meta name="twitter:card" content="{{ twitter_card or 'summary_large_image' }}">
+    {% if twitter_handle %}<meta name="twitter:site" content="{{ twitter_handle }}">{% endif %}
+    {% if twitter_title %}<meta name="twitter:title" content="{{ twitter_title }}">{% endif %}
+    {% if twitter_description %}<meta name="twitter:description" content="{{ twitter_description }}">{% endif %}
+    {% if og_image_url %}<meta name="twitter:image" content="{{ og_image_url }}">{% endif %}
+    
+    {% if structured_data %}{{ structured_data }}{% endif %}
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

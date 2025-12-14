@@ -49,12 +49,25 @@ def index():
         contacts_by_city[contact.ville].append(contact)
     
     header_code = SiteSettings.get('header_code', '')
+    footer_code = SiteSettings.get('footer_code', '')
     favicon_url = SiteSettings.get_favicon_url()
     logo_url = SiteSettings.get_logo_url()
     og_image_url = SiteSettings.get_og_image_url()
     site_name = SiteSettings.get('site_name', 'UrgenceGabon.com')
     og_title = SiteSettings.get('og_title', 'UrgenceGabon.com - Trouvez votre pharmacie')
-    og_description = SiteSettings.get('og_description', '')
+    og_description = SiteSettings.get('og_description', 'Annuaire complet des pharmacies au Gabon')
+    og_type = SiteSettings.get('og_type', 'website')
+    og_locale = SiteSettings.get('og_locale', 'fr_FR')
+    meta_description = SiteSettings.get('meta_description', og_description)
+    meta_keywords = SiteSettings.get('meta_keywords', 'pharmacie gabon, pharmacie garde, urgence gabon')
+    meta_author = SiteSettings.get('meta_author', 'MOA Digital Agency LLC')
+    twitter_card = SiteSettings.get('twitter_card', 'summary_large_image')
+    twitter_handle = SiteSettings.get('twitter_handle', '')
+    twitter_title = SiteSettings.get('twitter_title', og_title)
+    twitter_description = SiteSettings.get('twitter_description', og_description)
+    canonical_url = SiteSettings.get('canonical_url', '')
+    google_site_verification = SiteSettings.get('google_site_verification', '')
+    structured_data = SiteSettings.get('structured_data', '')
     
     return render_template('index.html', 
                           villes=villes, 
@@ -62,12 +75,25 @@ def index():
                           national_contacts=national_contacts,
                           contacts_by_city=contacts_by_city,
                           header_code=Markup(header_code) if header_code else '',
+                          footer_code=Markup(footer_code) if footer_code else '',
                           favicon_url=favicon_url,
                           logo_url=logo_url,
                           og_image_url=og_image_url,
                           site_name=site_name,
                           og_title=og_title,
-                          og_description=og_description)
+                          og_description=og_description,
+                          og_type=og_type,
+                          og_locale=og_locale,
+                          meta_description=meta_description,
+                          meta_keywords=meta_keywords,
+                          meta_author=meta_author,
+                          twitter_card=twitter_card,
+                          twitter_handle=twitter_handle,
+                          twitter_title=twitter_title,
+                          twitter_description=twitter_description,
+                          canonical_url=canonical_url,
+                          google_site_verification=google_site_verification,
+                          structured_data=Markup(structured_data) if structured_data else '')
 
 
 @public_bp.route('/api/pharmacies')

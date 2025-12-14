@@ -28,7 +28,11 @@ def init_database():
     with app.app_context():
         from models.pharmacy import Pharmacy
         from models.admin import Admin
-        from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion
+        from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal
+        from models.emergency_contact import EmergencyContact
+        from models.site_settings import SiteSettings, PopupMessage
+        from models.advertisement import Advertisement, AdSettings
+        from models.activity_log import ActivityLog
         
         db.create_all()
         print("Database tables created successfully!")
@@ -39,6 +43,13 @@ def init_database():
         print("  - info_submission")
         print("  - pharmacy_view")
         print("  - suggestion")
+        print("  - pharmacy_proposal")
+        print("  - emergency_contact")
+        print("  - site_settings")
+        print("  - popup_message")
+        print("  - advertisement")
+        print("  - ad_settings")
+        print("  - activity_log")
 
 
 def init_admin_from_env():
@@ -68,6 +79,33 @@ def init_admin_from_env():
         return True
 
 
+def init_default_seo_settings():
+    """Initialize default SEO settings if not present."""
+    with app.app_context():
+        from models.site_settings import SiteSettings
+        
+        defaults = {
+            'site_name': 'UrgenceGabon.com',
+            'og_title': 'UrgenceGabon.com - Trouvez votre pharmacie au Gabon',
+            'og_description': 'Annuaire complet des pharmacies au Gabon. Trouvez les pharmacies de garde, numéros d\'urgence et informations de contact.',
+            'meta_description': 'Annuaire des pharmacies au Gabon. Pharmacies de garde 24h/24, numéros d\'urgence, carte interactive. Trouvez la pharmacie la plus proche.',
+            'meta_keywords': 'pharmacie gabon, pharmacie garde libreville, urgence gabon, pharmacie 24h, samu gabon, pompiers gabon',
+            'twitter_handle': '',
+            'canonical_url': '',
+            'google_site_verification': '',
+            'robots_txt': 'User-agent: *\nAllow: /',
+        }
+        
+        for key, value in defaults.items():
+            existing = SiteSettings.query.filter_by(key=key).first()
+            if not existing:
+                SiteSettings.set(key, value)
+                print(f"SEO setting '{key}' initialized.")
+        
+        print("Default SEO settings initialized!")
+
+
 if __name__ == '__main__':
     init_database()
     init_admin_from_env()
+    init_default_seo_settings()
