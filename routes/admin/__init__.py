@@ -67,3 +67,4 @@ from routes.admin import submissions
 from routes.admin import emergency
 from routes.admin import settings
 from routes.admin import ads
+from routes.admin import logs

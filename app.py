@@ -12,7 +12,9 @@ l'authentification, les routes et les gestionnaires d'erreurs.
 
 import os
 import logging
-from flask import Flask, jsonify, render_template
+import time
+from flask import Flask, jsonify, render_template, request, g
+from flask_login import current_user
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from extensions import db, login_manager, csrf
@@ -61,12 +63,59 @@ def create_app():
     app.register_blueprint(admin_bp)
 
     register_error_handlers(app)
+    register_request_logging(app)
 
     with app.app_context():
         db.create_all()
         create_default_admin()
 
     return app
+
+
+def register_request_logging(app):
+    from models.activity_log import ActivityLog
+    
+    @app.before_request
+    def before_request():
+        g.start_time = time.time()
+    
+    @app.after_request
+    def after_request(response):
+        if hasattr(g, 'start_time'):
+            response_time_ms = (time.time() - g.start_time) * 1000
+        else:
+            response_time_ms = None
+        
+        skip_paths = ['/static/', '/favicon', '/api/pharmacies', '/api/stats', '/api/popups', '/api/ads']
+        if any(request.path.startswith(p) for p in skip_paths):
+            return response
+        
+        if response.status_code < 400:
+            return response
+        
+        try:
+            admin_id = None
+            if current_user and hasattr(current_user, 'is_authenticated') and current_user.is_authenticated:
+                admin_id = current_user.id
+            
+            log = ActivityLog(
+                ip_address=request.headers.get('X-Forwarded-For', request.remote_addr),
+                user_agent=request.headers.get('User-Agent', '')[:500] if request.headers.get('User-Agent') else None,
+                method=request.method,
+                path=request.path[:500],
+                status_code=response.status_code,
+                response_time_ms=response_time_ms,
+                log_type='request',
+                log_level='error' if response.status_code >= 500 else 'warning',
+                admin_id=admin_id
+            )
+            db.session.add(log)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            logger.debug(f"Failed to log request: {e}")
+        
+        return response
 
 
 def register_error_handlers(app):

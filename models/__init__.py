@@ -15,5 +15,6 @@ from models.submission import LocationSubmission, InfoSubmission, PharmacyView, 
 from models.emergency_contact import EmergencyContact
 from models.site_settings import SiteSettings, PopupMessage
 from models.advertisement import Advertisement, AdSettings
+from models.activity_log import ActivityLog
 
-__all__ = ['Pharmacy', 'Admin', 'LocationSubmission', 'InfoSubmission', 'PharmacyView', 'Suggestion', 'PharmacyProposal', 'EmergencyContact', 'SiteSettings', 'PopupMessage', 'Advertisement', 'AdSettings']
+__all__ = ['Pharmacy', 'Admin', 'LocationSubmission', 'InfoSubmission', 'PharmacyView', 'Suggestion', 'PharmacyProposal', 'EmergencyContact', 'SiteSettings', 'PopupMessage', 'Advertisement', 'AdSettings', 'ActivityLog']
