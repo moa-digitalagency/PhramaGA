@@ -23,6 +23,7 @@ import string
 
 @admin_bp.route('/location-submission/<int:id>/approve', methods=['POST'])
 @login_required
+@csrf.exempt
 def approve_location_submission(id):
     submission = LocationSubmission.query.get_or_404(id)
     pharmacy = submission.pharmacy
@@ -44,6 +45,7 @@ def approve_location_submission(id):
 
 @admin_bp.route('/location-submission/<int:id>/reject', methods=['POST'])
 @login_required
+@csrf.exempt
 def reject_location_submission(id):
     submission = LocationSubmission.query.get_or_404(id)
     
@@ -58,6 +60,7 @@ def reject_location_submission(id):
 
 @admin_bp.route('/info-submission/<int:id>/approve', methods=['POST'])
 @login_required
+@csrf.exempt
 def approve_info_submission(id):
     submission = InfoSubmission.query.get_or_404(id)
     pharmacy = submission.pharmacy
@@ -76,6 +79,7 @@ def approve_info_submission(id):
 
 @admin_bp.route('/info-submission/<int:id>/reject', methods=['POST'])
 @login_required
+@csrf.exempt
 def reject_info_submission(id):
     submission = InfoSubmission.query.get_or_404(id)
     
@@ -110,6 +114,7 @@ def respond_suggestion(id):
 
 @admin_bp.route('/suggestion/<int:id>/archive', methods=['POST'])
 @login_required
+@csrf.exempt
 def archive_suggestion(id):
     suggestion = Suggestion.query.get_or_404(id)
     
@@ -124,6 +129,7 @@ def archive_suggestion(id):
 
 @admin_bp.route('/pharmacy-proposal/<int:id>/approve', methods=['POST'])
 @login_required
+@csrf.exempt
 def approve_pharmacy_proposal(id):
     proposal = PharmacyProposal.query.get_or_404(id)
     
@@ -160,6 +166,7 @@ def approve_pharmacy_proposal(id):
 
 @admin_bp.route('/pharmacy-proposal/<int:id>/reject', methods=['POST'])
 @login_required
+@csrf.exempt
 def reject_pharmacy_proposal(id):
     proposal = PharmacyProposal.query.get_or_404(id)
     

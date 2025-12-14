@@ -13,7 +13,7 @@ et les popups/messages d'accueil.
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required
 from models.site_settings import SiteSettings, PopupMessage
-from extensions import db
+from extensions import db, csrf
 from routes.admin import admin_bp, allowed_file, get_upload_path, safe_delete_upload, save_upload_file
 
 
@@ -156,6 +156,7 @@ def edit_popup(id):
 
 @admin_bp.route('/popup/<int:id>/toggle', methods=['POST'])
 @login_required
+@csrf.exempt
 def toggle_popup(id):
     popup = PopupMessage.query.get_or_404(id)
     popup.is_active = not popup.is_active

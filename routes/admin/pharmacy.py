@@ -117,6 +117,7 @@ def admin_pharmacy_garde(id):
 
 @admin_bp.route('/pharmacy/<int:id>/toggle-garde', methods=['POST'])
 @login_required
+@csrf.exempt
 def admin_toggle_garde(id):
     pharmacy = PharmacyService.get_pharmacy_by_id(id)
     is_garde = PharmacyService.toggle_garde(pharmacy)
@@ -125,6 +126,7 @@ def admin_toggle_garde(id):
 
 @admin_bp.route('/pharmacy/<int:id>/validate-location', methods=['POST'])
 @login_required
+@csrf.exempt
 def admin_validate_location(id):
     pharmacy = PharmacyService.get_pharmacy_by_id(id)
     PharmacyService.validate_location(pharmacy, current_user.id)
@@ -133,6 +135,7 @@ def admin_validate_location(id):
 
 @admin_bp.route('/pharmacy/<int:id>/invalidate-location', methods=['POST'])
 @login_required
+@csrf.exempt
 def admin_invalidate_location(id):
     pharmacy = PharmacyService.get_pharmacy_by_id(id)
     PharmacyService.invalidate_location(pharmacy)
@@ -141,6 +144,7 @@ def admin_invalidate_location(id):
 
 @admin_bp.route('/pharmacy/<int:id>/toggle-verified', methods=['POST'])
 @login_required
+@csrf.exempt
 def admin_toggle_verified(id):
     pharmacy = PharmacyService.get_pharmacy_by_id(id)
     pharmacy.is_verified = not pharmacy.is_verified
