@@ -44,7 +44,10 @@ def create_app():
         "pool_pre_ping": True,
     }
 
-    app.config['SESSION_COOKIE_SECURE'] = os.environ.get('USE_HTTPS', 'true').lower() == 'true'
+    is_production = os.environ.get('FLASK_ENV', 'production') == 'production'
+    use_https = os.environ.get('USE_HTTPS', 'true').lower() == 'true'
+    
+    app.config['SESSION_COOKIE_SECURE'] = use_https
     app.config['SESSION_COOKIE_HTTPONLY'] = True
     app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 

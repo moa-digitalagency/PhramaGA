@@ -13,6 +13,13 @@ et autres informations de démonstration pour le Gabon.
 
 import os
 import sys
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+env_file = Path('.env')
+if env_file.exists():
+    load_dotenv(env_file)
 
 from app import app
 from extensions import db

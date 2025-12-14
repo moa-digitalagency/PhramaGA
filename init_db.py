@@ -12,8 +12,17 @@ administrateur à partir des variables d'environnement.
 """
 
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+env_file = Path('.env')
+if env_file.exists():
+    load_dotenv(env_file)
+
 from app import app
 from extensions import db
+
 
 def init_database():
     with app.app_context():
@@ -31,6 +40,7 @@ def init_database():
         print("  - pharmacy_view")
         print("  - suggestion")
 
+
 def init_admin_from_env():
     with app.app_context():
         from models.admin import Admin
@@ -40,6 +50,7 @@ def init_admin_from_env():
         
         if not username or not password:
             print("ADMIN_USERNAME and ADMIN_PASSWORD environment variables are required.")
+            print("Add them to your .env file or export them.")
             return False
         
         existing_admin = Admin.query.filter_by(username=username).first()
@@ -55,6 +66,7 @@ def init_admin_from_env():
             print(f"Admin '{username}' created successfully!")
         
         return True
+
 
 if __name__ == '__main__':
     init_database()
