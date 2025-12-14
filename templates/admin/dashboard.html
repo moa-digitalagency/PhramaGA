@@ -637,9 +637,11 @@
                                 </div>
                                 <div class="flex gap-2">
                                     <form action="{{ url_for('admin.approve_location', id=loc.id) }}" method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700">Approuver</button>
                                     </form>
                                     <form action="{{ url_for('admin.reject_location', id=loc.id) }}" method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <button type="submit" class="px-4 py-2 bg-red-100 text-red-600 rounded-xl text-sm font-medium hover:bg-red-200">Rejeter</button>
                                     </form>
                                 </div>
@@ -673,9 +675,11 @@
                                 </div>
                                 <div class="flex gap-2">
                                     <form action="{{ url_for('admin.approve_info', id=info.id) }}" method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700">Approuver</button>
                                     </form>
                                     <form action="{{ url_for('admin.reject_info', id=info.id) }}" method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <button type="submit" class="px-4 py-2 bg-red-100 text-red-600 rounded-xl text-sm font-medium hover:bg-red-200">Rejeter</button>
                                     </form>
                                 </div>

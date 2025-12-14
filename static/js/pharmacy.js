@@ -310,8 +310,7 @@ function bindPharmacyDetailEvents(content, pharmacy) {
     const locateBtn = content.querySelector('.locate-btn');
     if (locateBtn) {
         locateBtn.addEventListener('click', () => {
-            closeModal();
-            locatePharmacy(pharmacy.id, pharmacy.lat, pharmacy.lng);
+            showLocationForm(pharmacy.id);
         });
     }
     
