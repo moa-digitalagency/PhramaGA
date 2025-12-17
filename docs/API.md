@@ -25,6 +25,7 @@ Récupère la liste des pharmacies avec possibilité de filtrer.
 | search | string | Recherche dans le nom, quartier ou services |
 | ville | string | Filtrer par ville |
 | garde | string | "true" pour les pharmacies de garde uniquement |
+| gare | string | "true" pour les pharmacies proches de la gare |
 
 **Exemple :**
 ```
@@ -83,36 +84,6 @@ Récupère les statistiques générales de la plateforme.
 
 ---
 
-### Contacts d'urgence
-
-Récupère la liste des numéros d'urgence.
-
-**Requête :** `GET /api/emergency-contacts`
-
-**Paramètres (optionnels) :**
-
-| Paramètre | Type | Description |
-|-----------|------|-------------|
-| ville | string | Filtrer par ville |
-
-**Réponse :**
-```json
-[
-  {
-    "id": 1,
-    "ville": null,
-    "service_type": "police",
-    "label": "Police Secours (National)",
-    "phone_numbers": "1730 / 177",
-    "address": "",
-    "notes": "Numéro national d'urgence police",
-    "is_national": true
-  }
-]
-```
-
----
-
 ### Popups actifs
 
 Récupère les messages popup à afficher.
@@ -127,7 +98,7 @@ Récupère les messages popup à afficher.
     "title": "Bienvenue sur UrgenceGabon.com",
     "description": "Découvrez la première plateforme...",
     "warning_text": "Le projet est encore en construction...",
-    "image_url": "",
+    "image_url": "/static/uploads/popups/abc123.jpg",
     "is_active": true,
     "show_once": true,
     "ordering": 0
@@ -158,6 +129,11 @@ Propose des coordonnées pour une pharmacie.
 
 **Requête :** `POST /api/pharmacy/<id>/submit-location`
 
+**En-têtes :**
+```
+Content-Type: application/json
+```
+
 **Corps de la requête :**
 ```json
 {
@@ -171,13 +147,13 @@ Propose des coordonnées pour une pharmacie.
 
 **Champs :**
 
-| Champ | Obligatoire | Description |
-|-------|-------------|-------------|
-| latitude | oui | Latitude GPS |
-| longitude | oui | Longitude GPS |
-| name | non | Nom du contributeur |
-| phone | non | Téléphone du contributeur |
-| comment | non | Commentaire |
+| Champ | Obligatoire | Type | Description |
+|-------|-------------|------|-------------|
+| latitude | oui | float | Latitude GPS (-90 à 90) |
+| longitude | oui | float | Longitude GPS (-180 à 180) |
+| name | non | string | Nom du contributeur |
+| phone | non | string | Téléphone du contributeur |
+| comment | non | string | Commentaire libre |
 
 **Réponse :**
 ```json
@@ -236,6 +212,17 @@ Envoie un commentaire ou une idée.
 }
 ```
 
+**Champs :**
+
+| Champ | Obligatoire | Type | Description |
+|-------|-------------|------|-------------|
+| category | oui | string | Catégorie (suggestion, erreur, pharmacie, autre) |
+| subject | oui | string | Sujet |
+| message | oui | string | Contenu du message |
+| name | non | string | Nom du contributeur |
+| email | non | string | Email du contributeur |
+| phone | non | string | Téléphone du contributeur |
+
 **Réponse :**
 ```json
 {
@@ -275,6 +262,12 @@ Suggère l'ajout d'une nouvelle pharmacie.
 }
 ```
 
+**Champs obligatoires :** nom, ville
+
+**Types d'établissement :** pharmacie_generale, depot_pharmaceutique, pharmacie_hospitaliere
+
+**Catégories d'emplacement :** standard, gare, hopital, aeroport, centre_commercial, marche, centre_ville, zone_residentielle
+
 **Réponse :**
 ```json
 {
@@ -301,8 +294,13 @@ Récupère les paramètres globaux des pubs.
   "time_delay": 60,
   "time_repeat": true,
   "time_interval": 300,
+  "page_count": 3,
+  "refresh_show": false,
+  "refresh_count": 1,
   "default_skip_delay": 5,
   "max_ads_per_session": 10,
+  "cooldown_after_skip": 60,
+  "cooldown_after_click": 300,
   "show_on_mobile": true,
   "show_on_desktop": true
 }
@@ -344,21 +342,44 @@ null
 
 **Requête :** `POST /api/ads/<id>/view`
 
+**Réponse :**
+```json
+{
+  "success": true
+}
+```
+
+---
+
 ### Enregistrer un clic de pub
 
 **Requête :** `POST /api/ads/<id>/click`
+
+**Réponse :**
+```json
+{
+  "success": true
+}
+```
 
 ---
 
 ## Endpoints admin
 
-Tous ces endpoints nécessitent une authentification préalable.
+Tous ces endpoints nécessitent une authentification préalable via session.
 
 ### Authentification
 
-**Connexion :** `POST /admin/login` (formulaire avec username et password)
+**Connexion :** `POST /admin/login`
+
+| Champ | Type | Description |
+|-------|------|-------------|
+| username | string | Nom d'utilisateur |
+| password | string | Mot de passe |
 
 **Déconnexion :** `GET /admin/logout`
+
+---
 
 ### Pharmacies
 
@@ -369,6 +390,13 @@ Tous ces endpoints nécessitent une authentification préalable.
 | GET/POST | /admin/pharmacy/<id>/edit | Modifier |
 | POST | /admin/pharmacy/<id>/delete | Supprimer |
 | POST | /admin/pharmacy/<id>/toggle-garde | Activer/désactiver garde |
+| POST | /admin/pharmacy/<id>/set-garde | Définir garde avec dates |
+| POST | /admin/pharmacy/<id>/toggle-verified | Activer/désactiver vérifié |
+| POST | /admin/pharmacy/<id>/validate-location | Valider GPS |
+| POST | /admin/pharmacy/<id>/invalidate-location | Invalider GPS |
+| POST | /admin/pharmacy/<id>/update-coordinates | Mettre à jour GPS |
+
+---
 
 ### Soumissions
 
@@ -379,8 +407,11 @@ Tous ces endpoints nécessitent une authentification préalable.
 | POST | /admin/info-submission/<id>/approve | Approuver correction |
 | POST | /admin/info-submission/<id>/reject | Refuser correction |
 | POST | /admin/suggestion/<id>/respond | Répondre à suggestion |
+| POST | /admin/suggestion/<id>/archive | Archiver suggestion |
 | POST | /admin/pharmacy-proposal/<id>/approve | Approuver proposition |
 | POST | /admin/pharmacy-proposal/<id>/reject | Refuser proposition |
+
+---
 
 ### Contacts d'urgence
 
@@ -391,6 +422,8 @@ Tous ces endpoints nécessitent une authentification préalable.
 | GET/POST | /admin/emergency-contact/<id>/edit | Modifier |
 | POST | /admin/emergency-contact/<id>/delete | Supprimer |
 
+---
+
 ### Paramètres et popups
 
 | Méthode | URL | Description |
@@ -400,6 +433,9 @@ Tous ces endpoints nécessitent une authentification préalable.
 | GET/POST | /admin/popup/add | Ajouter popup |
 | GET/POST | /admin/popup/<id>/edit | Modifier popup |
 | POST | /admin/popup/<id>/delete | Supprimer popup |
+| POST | /admin/popup/<id>/toggle | Activer/désactiver popup |
+
+---
 
 ### Publicités
 
@@ -409,7 +445,16 @@ Tous ces endpoints nécessitent une authentification préalable.
 | GET/POST | /admin/ad/add | Ajouter pub |
 | GET/POST | /admin/ad/<id>/edit | Modifier pub |
 | POST | /admin/ad/<id>/delete | Supprimer pub |
+| POST | /admin/ad/<id>/toggle | Activer/désactiver pub |
 | GET/POST | /admin/ads/settings | Configuration globale |
+
+---
+
+### Journal d'activité
+
+| Méthode | URL | Description |
+|---------|-----|-------------|
+| GET | /admin/logs | Liste des logs |
 
 ---
 
@@ -424,9 +469,59 @@ Toutes les erreurs suivent ce format :
 }
 ```
 
-Codes HTTP utilisés :
-- 200 : Succès
-- 400 : Paramètres manquants ou invalides
-- 401 : Authentification requise
-- 404 : Ressource introuvable
-- 500 : Erreur serveur
+**Codes HTTP utilisés :**
+
+| Code | Description |
+|------|-------------|
+| 200 | Succès |
+| 400 | Paramètres manquants ou invalides |
+| 401 | Authentification requise |
+| 404 | Ressource introuvable |
+| 500 | Erreur serveur |
+
+**Exemples d'erreurs :**
+
+```json
+{
+  "success": false,
+  "error": "Coordonnées manquantes"
+}
+```
+
+```json
+{
+  "success": false,
+  "error": "Invalid JSON data"
+}
+```
+
+```json
+{
+  "success": false,
+  "error": "Ressource non trouvée"
+}
+```
+
+---
+
+## Notes d'implémentation
+
+### Protection CSRF
+
+Les endpoints POST publics sont exemptés de la protection CSRF pour permettre les appels depuis le frontend JavaScript.
+
+Les endpoints admin sont protégés par CSRF via Flask-WTF.
+
+### Validation des données
+
+- Les coordonnées GPS sont validées (conversion en float)
+- Les champs requis retournent une erreur 400 si absents
+- Les données JSON invalides retournent une erreur 400
+
+### Pagination
+
+Les endpoints de liste ne sont pas paginés actuellement. Pour de grands volumes de données, une pagination pourrait être ajoutée ultérieurement.
+
+### Caching
+
+Aucun cache n'est implémenté côté API. Les données sont toujours fraîches depuis la base de données.

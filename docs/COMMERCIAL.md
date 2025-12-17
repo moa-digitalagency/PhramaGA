@@ -1,32 +1,30 @@
 # UrgenceGabon.com - Présentation du projet
 
-## Le problème qu'on résout
+## Le problème
 
-Au Gabon, trouver une pharmacie ouverte en pleine nuit relève parfois du parcours du combattant. Les informations sont éparpillées, souvent périmées, et quand on a besoin d'un médicament en urgence, chaque minute compte.
+Au Gabon, trouver une pharmacie ouverte en pleine nuit reste un défi. Les informations sont dispersées, souvent obsolètes, et quand on a besoin d'un médicament en urgence, chaque minute compte.
 
-C'est pareil pour les numéros d'urgence. Entre les services nationaux et locaux, les différents opérateurs téléphoniques, il faut savoir où chercher. Et en situation de stress, ce n'est pas évident.
+La situation est similaire pour les numéros d'urgence. Entre les services nationaux et locaux, les différents opérateurs téléphoniques, savoir où chercher n'est pas évident, surtout dans une situation de stress.
 
-## Ce qu'on propose
+## La solution
 
-UrgenceGabon.com centralise tout ça en un seul endroit :
+UrgenceGabon.com centralise ces informations en un seul endroit :
 
-- **Toutes les pharmacies du pays** avec leurs coordonnées, horaires et services
-- **Les pharmacies de garde** identifiables instantanément
-- **Une carte interactive** pour se repérer et trouver son chemin
-- **Les numéros d'urgence** organisés par ville et par service
-- **Un système participatif** où chacun peut signaler des erreurs ou des manques
+- Annuaire complet des pharmacies du pays avec coordonnées, horaires et services
+- Identification claire des pharmacies de garde
+- Carte interactive pour localiser les établissements
+- Numéros d'urgence organisés par ville et type de service
+- Système participatif permettant aux utilisateurs de signaler des erreurs ou des manques
 
-## Comment ça fonctionne
+## Fonctionnement
 
-L'utilisateur arrive sur le site, tape le nom de sa ville ou de son quartier, et voit immédiatement les pharmacies disponibles. Un code couleur simple permet de repérer celles qui sont ouvertes 24h/24.
+Le visiteur arrive sur le site, recherche par nom de ville ou de quartier, et voit les pharmacies disponibles. Un code couleur distingue celles de garde. En cliquant sur une pharmacie, il accède aux détails : téléphone, horaires, services. Un bouton permet d'appeler directement, un autre d'ouvrir l'itinéraire sur la carte.
 
-En cliquant sur une pharmacie, il obtient tous les détails : téléphone, horaires, services proposés. Un bouton permet d'appeler directement. Un autre ouvre l'itinéraire sur la carte.
+Pour les urgences, une section dédiée liste les numéros essentiels : police, pompiers, SAMU, hôpitaux. D'abord les numéros nationaux, puis ceux propres à chaque ville.
 
-Pour les urgences, une section dédiée liste les numéros essentiels : police, pompiers, SAMU, hôpitaux. D'abord les numéros nationaux, puis ceux spécifiques à chaque ville.
+## Différenciateurs
 
-## Ce qui nous différencie
-
-**Première plateforme de ce type au Gabon.** Avant nous, ces informations n'existaient nulle part de façon centralisée et à jour.
+**Première plateforme de ce type au Gabon.** Avant ce projet, ces informations n'existaient nulle part de façon centralisée et actualisée.
 
 **Données maintenues par la communauté.** Les utilisateurs peuvent proposer des corrections ou ajouter des pharmacies manquantes. Un administrateur valide avant publication.
 
@@ -34,58 +32,82 @@ Pour les urgences, une section dédiée liste les numéros essentiels : police, 
 
 **Gratuit et accessible.** Pas besoin de créer un compte pour chercher une pharmacie ou un numéro d'urgence.
 
-## Chiffres actuels
+## Chiffres
 
-- 89 pharmacies référencées
+- Plus de 89 pharmacies référencées
 - 9 villes couvertes
-- 18 contacts d'urgence
-- Couverture de toutes les grandes villes : Libreville, Port-Gentil, Franceville, Oyem, Mouila, Makokou, Koulamoutou, Moanda
+- 18+ contacts d'urgence
+- Couverture des grandes villes : Libreville, Port-Gentil, Franceville, Oyem, Mouila, Makokou, Koulamoutou, Moanda
 
-## Possibilités de revenus
+## Sources de revenus
 
-Le projet inclut un système publicitaire respectueux des utilisateurs :
+Le projet intègre un système publicitaire configurable :
 
 - Publicités en popup avec délai configurable
 - Support images et vidéos
-- Planification par dates
-- Statistiques de performance (vues, clics)
-- Paramètres anti-abus (limite par session, temps de pause)
+- Planification par dates de début et fin
+- Statistiques de performance (vues, clics, taux de conversion)
+- Paramètres anti-abus (limite par session, temps de pause entre pubs)
 
-D'autres pistes sont envisageables :
-- Profils premium pour les pharmacies (photos, mise en avant)
-- API payante pour les applications de santé
-- Partenariats avec les assurances ou le ministère de la Santé
+Autres pistes envisageables :
 
-## Cas d'usage concrets
+- Profils premium pour les pharmacies (mise en avant, photos supplémentaires)
+- API payante pour les applications de santé tierces
+- Partenariats avec les assurances santé ou le Ministère de la Santé
 
-**Urgence nocturne**
+## Cas d'usage
+
+### Urgence nocturne
+
 Marie a de la fièvre et a besoin de paracétamol à 23h. Elle ouvre le site, filtre sur les pharmacies de garde à Libreville, et en trouve trois ouvertes. Elle appelle la plus proche pour vérifier le stock, puis suit l'itinéraire.
 
-**Nouveau dans une ville**
-Paul vient d'arriver à Port-Gentil pour le travail. Il ne connaît rien de la ville. Sur le site, il repère les pharmacies près de son nouveau logement et note les numéros d'urgence locaux au cas où.
+### Nouvel arrivant
 
-**Pharmacie mal référencée**
+Paul vient d'arriver à Port-Gentil pour le travail. Il ne connaît pas la ville. Sur le site, il repère les pharmacies proches de son logement et note les numéros d'urgence locaux.
+
+### Correction d'information
+
 Une pharmacie a changé de numéro de téléphone. Un client habituel le remarque et soumet la correction via le site. L'administrateur vérifie et met à jour. Tout le monde en profite.
+
+### Proposition de pharmacie
+
+Un habitant connaît une pharmacie qui n'est pas référencée. Il remplit le formulaire de proposition avec les informations qu'il connaît. L'administrateur vérifie et ajoute l'établissement.
 
 ## Évolutions possibles
 
-**Court terme :**
-- Application mobile native
+### Court terme
+
+- Application mobile native (iOS/Android)
 - Notifications pour les changements de garde
-- Vérification des stocks en temps réel
+- Vérification des stocks en temps réel (avec partenariat pharmacies)
 
-**Moyen terme :**
-- Extension à plus de villes et zones rurales
+### Moyen terme
+
+- Extension aux zones rurales
 - Rappels de prise de médicaments
-- Intégration avec les mutuelles
+- Intégration avec les mutuelles de santé
 
-**Long terme :**
+### Long terme
+
 - Téléconsultation intégrée
-- Livraison de médicaments
+- Livraison de médicaments à domicile
 - Dossier pharmaceutique partagé
 
-## Conclusion
+## Points techniques
 
-UrgenceGabon.com répond à un besoin réel et quotidien. La plateforme est fonctionnelle, évolutive, et ouverte aux partenariats.
+- Application web Flask avec PostgreSQL
+- Interface responsive (mobile-first)
+- Carte interactive Leaflet
+- Hébergement cloud (Replit)
+- Déploiement continu
 
-Pour en savoir plus ou discuter d'une collaboration, utilisez le formulaire de contact intégré au site.
+## Contact
+
+La plateforme est fonctionnelle, évolutive, et ouverte aux partenariats.
+
+Pour toute question ou proposition de collaboration, utilisez le formulaire de contact intégré au site ou contactez :
+
+**MOA Digital Agency LLC**
+- Email : moa@myoneart.com
+- Site : www.myoneart.com
+- Développeur : Aisance KALONJI
