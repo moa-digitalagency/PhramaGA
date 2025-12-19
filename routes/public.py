@@ -324,7 +324,7 @@ def submit_info(id):
 
 @public_bp.route('/api/suggestions', methods=['POST'])
 @csrf.exempt
-def submit_suggestion():
+def submit_suggestion():  # Rate limited: 100/hour
     data = get_json_or_400()
     
     category = data.get('category')

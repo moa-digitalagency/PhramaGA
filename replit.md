@@ -14,7 +14,17 @@ Une application web pour trouver des pharmacies au Gabon. Elle affiche 89 pharma
 
 ## Historique des modifications
 
-**Décembre 2025 (Session 2 - FINAL COMPLETE)**
+**Décembre 2025 (Session 2 - SECURITY & ENDPOINTS COMPLETE)**
+
+Audit de sécurité et corrections :
+- ✅ Audit complet des headers de sécurité
+- ✅ Ajout de 6 headers manquants (CSP, X-Frame-Options, etc.)
+- ✅ Implémentation Flask-Limiter pour rate limiting
+- ✅ Masquage info serveur ("WebServer" au lieu de "gunicorn")
+- ✅ Test complet: 25+ endpoints vérifiés
+- ✅ Création de docs/SECURITY_AUDIT.md et docs/ENDPOINT_VERIFICATION.md
+
+**Décembre 2025 (Session 2 - ENDPOINTS & ENDPOINTS COMPLETE)**
 
 Revue et vérification exhaustive :
 - ✅ Test complet de 25+ endpoints (GET, POST, error handling)

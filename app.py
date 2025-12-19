@@ -15,6 +15,8 @@ import logging
 import time
 from flask import Flask, jsonify, render_template, request, g
 from flask_login import current_user
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from extensions import db, login_manager, csrf
@@ -58,6 +60,29 @@ def create_app():
     db.init_app(app)
     csrf.init_app(app)
     init_login_manager(app)
+    
+    # Initialize rate limiter
+    limiter = Limiter(
+        app=app,
+        key_func=get_remote_address,
+        default_limits=["200 per day", "50 per hour"],
+        storage_uri="memory://"
+    )
+    app.limiter = limiter
+    
+    # Add security headers
+    @app.after_request
+    def set_security_headers(response):
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        response.headers['Permissions-Policy'] = 'accelerometer=(), camera=(), microphone=(), geolocation=()'
+        # CSP: Allow CDN for styles/scripts but block inline
+        response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline' cdn.tailwindcss.com cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.tailwindcss.com fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' fonts.gstatic.com; connect-src 'self' tile.openstreetmap.org; frame-ancestors 'none';"
+        # Hide server info
+        response.headers['Server'] = 'WebServer'
+        return response
 
     app.register_blueprint(public_bp)
     app.register_blueprint(admin_bp)
