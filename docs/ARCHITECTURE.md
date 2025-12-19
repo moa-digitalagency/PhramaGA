@@ -363,6 +363,15 @@ gunicorn --bind 0.0.0.0:5000 main:app
 6. La vue est comptabilisée via /api/ads/{id}/view
 7. Si clic sur le bouton, /api/ads/{id}/click est appelé
 
+### Indexation par moteurs de recherche
+
+1. Un moteur de recherche accède à `/robots.txt`
+2. Il découvre la référence au sitemap : `/sitemap.xml`
+3. Il récupère le fichier sitemap XML qui liste toutes les pages publiques
+4. Chaque page est indexée avec sa date de modification
+5. Les pages `/admin*` sont explicitement bloquées par robots.txt
+6. Les pages publiques sont crawlées et indexables
+
 ## Dépendances principales
 
 **Backend :**

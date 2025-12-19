@@ -278,6 +278,78 @@ Suggère l'ajout d'une nouvelle pharmacie.
 
 ---
 
+## Endpoints SEO et Crawling
+
+### Sitemap XML
+
+Récupère le fichier sitemap pour les moteurs de recherche.
+
+**Requête :** `GET /sitemap.xml`
+
+**Contenu :** Fichier XML conforme au standard sitemaps.org
+
+**Caractéristiques :**
+- Généré dynamiquement à chaque requête
+- Inclut la page d'accueil avec priorité 1.0
+- Inclut toutes les pharmacies actives avec priorité 0.8
+- Exclut automatiquement toutes les pages admin
+- Dates de modification basées sur created_at/updated_at
+
+**Exemple :**
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://votre-domaine.com/</loc>
+    <lastmod>2025-12-19T14:15:00.000000</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://votre-domaine.com/#pharmacy-1</loc>
+    <lastmod>2025-12-19T10:30:00.000000</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>
+```
+
+---
+
+### Robots.txt
+
+Fichier de configuration pour les moteurs de recherche.
+
+**Requête :** `GET /robots.txt`
+
+**Contenu :** Fichier texte conforme à robots.txt standard
+
+**Règles :**
+- Tous les robots : `User-agent: *`
+- Pages autorisées : `Allow: /` (toutes les pages publiques)
+- Pages bloquées : `Disallow: /admin/` et `Disallow: /admin`
+- Référence sitemap : `Sitemap: https://votre-domaine.com/sitemap.xml`
+
+**Exemple :**
+```
+# UrgenceGabon.com - Robots.txt Configuration
+# Generated dynamically to manage search engine crawling
+
+User-agent: *
+Allow: /
+
+# Disallow all admin pages and their subpages
+# This includes: /admin/auth, /admin/dashboard, /admin/pharmacy,
+# /admin/submissions, /admin/emergency, /admin/settings, /admin/ads, /admin/logs
+Disallow: /admin/
+Disallow: /admin
+
+# Reference to the sitemap containing all public pages
+Sitemap: https://votre-domaine.com/sitemap.xml
+```
+
+---
+
 ## Endpoints publicitaires
 
 ### Configuration des publicités

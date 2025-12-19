@@ -14,7 +14,15 @@ Une application web pour trouver des pharmacies au Gabon. Elle affiche 89 pharma
 
 ## Historique des modifications
 
-**Décembre 2025**
+**Décembre 2025 (Session 2)**
+
+Ajout de fonctionnalités SEO :
+- Endpoint `/sitemap.xml` : génère dynamiquement un sitemap XML avec toutes les pharmacies actives
+- Endpoint `/robots.txt` : génère dynamiquement un fichier robots.txt qui bloque `/admin` et référence le sitemap
+- Fonction `is_admin_path()` : valide que aucune page admin ne figure dans le sitemap ou robots.txt
+- Documentation complète dans docs/SEO.md
+
+**Décembre 2025 (Session 1)**
 
 Ajout du système de logs d'activité :
 - Nouveau modèle ActivityLog pour tracer toutes les activités (erreurs, authentification)
@@ -95,6 +103,8 @@ Python :
 
 **Public :**
 - `GET /` : page principale
+- `GET /sitemap.xml` : sitemap dynamique (SEO)
+- `GET /robots.txt` : fichier robots (SEO, crawling)
 - `GET /api/pharmacies` : liste (filtres: search, ville, garde)
 - `GET /api/stats` : statistiques
 - `GET /api/popups` : popups actifs
