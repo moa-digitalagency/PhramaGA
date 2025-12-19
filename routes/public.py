@@ -10,7 +10,7 @@ Ce fichier définit les routes accessibles au public: page d'accueil, API pharma
 soumissions de localisation/info, suggestions, popups et publicités.
 """
 
-from flask import Blueprint, render_template, jsonify, request, abort
+from flask import Blueprint, render_template, jsonify, request, abort, Response, url_for
 from markupsafe import Markup
 from services.pharmacy_service import PharmacyService
 from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal
@@ -19,6 +19,7 @@ from models.emergency_contact import EmergencyContact
 from models.site_settings import PopupMessage, SiteSettings
 from models.advertisement import Advertisement, AdSettings
 from extensions import db, csrf
+from datetime import datetime
 
 public_bp = Blueprint('public', __name__)
 
@@ -32,6 +33,63 @@ def get_json_or_400():
         return data
     except Exception:
         abort(400, description='Invalid JSON data')
+
+
+def generate_sitemap():
+    """Generate dynamic sitemap with all pharmacies and pages."""
+    try:
+        base_url = request.url_root.rstrip('/')
+        
+        sitemap_entries = []
+        
+        # Add home page
+        sitemap_entries.append({
+            'url': base_url + '/',
+            'lastmod': datetime.utcnow().isoformat(),
+            'priority': '1.0',
+            'changefreq': 'daily'
+        })
+        
+        # Add all active pharmacies
+        try:
+            pharmacies = Pharmacy.query.filter_by(is_active=True).all()
+            for pharmacy in pharmacies:
+                lastmod = pharmacy.updated_at or pharmacy.created_at or datetime.utcnow()
+                sitemap_entries.append({
+                    'url': base_url + f'/#pharmacy-{pharmacy.id}',
+                    'lastmod': lastmod.isoformat() if hasattr(lastmod, 'isoformat') else str(lastmod),
+                    'priority': '0.8',
+                    'changefreq': 'weekly'
+                })
+        except Exception:
+            pass  # Continue without pharmacies if database fails
+        
+        # Generate XML
+        xml_lines = [
+            '<?xml version="1.0" encoding="UTF-8"?>',
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        ]
+        
+        for entry in sitemap_entries:
+            xml_lines.append('  <url>')
+            xml_lines.append(f'    <loc>{entry["url"]}</loc>')
+            xml_lines.append(f'    <lastmod>{entry["lastmod"]}</lastmod>')
+            xml_lines.append(f'    <changefreq>{entry["changefreq"]}</changefreq>')
+            xml_lines.append(f'    <priority>{entry["priority"]}</priority>')
+            xml_lines.append('  </url>')
+        
+        xml_lines.append('</urlset>')
+        
+        return '\n'.join(xml_lines)
+    except Exception as e:
+        return f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>'
+
+
+@public_bp.route('/sitemap.xml')
+def sitemap():
+    """Serve dynamic sitemap XML."""
+    sitemap_xml = generate_sitemap()
+    return Response(sitemap_xml, mimetype='application/xml')
 
 
 @public_bp.route('/')
