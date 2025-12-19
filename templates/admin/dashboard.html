@@ -58,7 +58,7 @@
 </head>
 <body class="bg-gray-50 min-h-screen">
     <div class="flex">
-        <aside class="w-72 sidebar-gradient min-h-screen sticky top-0 hidden lg:flex flex-col">
+        <aside id="sidebar" class="w-72 sidebar-gradient min-h-screen sticky top-0 hidden lg:flex flex-col lg:relative fixed inset-y-0 left-0 z-40 lg:z-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
             <div class="p-6 border-b border-white/20">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
@@ -216,10 +216,17 @@
             </div>
         </aside>
         
+        <div id="sidebarOverlay" class="hidden fixed inset-0 bg-black/50 z-30 lg:hidden" onclick="toggleSidebar()"></div>
+        
         <main class="flex-1 min-h-screen">
             <header class="bg-white border-b shadow-sm sticky top-0 z-50">
                 <div class="px-6 py-4 flex items-center justify-between">
                     <div class="lg:hidden flex items-center gap-3">
+                        <button onclick="toggleSidebar()" class="p-2 hover:bg-gray-100 rounded-lg transition mr-2">
+                            <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
+                        </button>
                         <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
                             <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="white">
                                 <path d="M7 12h10v1c0 3-2 6-5 6s-5-3-5-6v-1z"/>
@@ -1440,7 +1447,27 @@
             }
         }
         
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+        
+        // Close sidebar when clicking on a menu item
         document.addEventListener('DOMContentLoaded', function() {
+            const menuItems = document.querySelectorAll('aside a, .admin-tab-btn');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const sidebar = document.getElementById('sidebar');
+                    const overlay = document.getElementById('sidebarOverlay');
+                    if (window.innerWidth < 1024) {
+                        sidebar.classList.add('-translate-x-full');
+                        overlay.classList.add('hidden');
+                    }
+                });
+            });
+            
             // Check for hash in URL to switch to correct tab
             const hash = window.location.hash.replace('#', '');
             if (hash && document.getElementById('tab-' + hash)) {
