@@ -21,7 +21,7 @@
 </head>
 <body class="bg-gray-50 min-h-screen">
     <div class="max-w-6xl mx-auto px-4 py-8">
-        <div class="flex justify-between items-center mb-6">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
             <div>
                 <a href="{{ url_for('admin.admin_dashboard') }}" class="text-emerald-600 hover:text-emerald-700 flex items-center gap-1 text-sm mb-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -29,21 +29,21 @@
                     </svg>
                     Retour au tableau de bord
                 </a>
-                <h1 class="text-2xl font-bold text-gray-800">Gestion des Publicités</h1>
+                <h1 class="text-xl md:text-2xl font-bold text-gray-800">Gestion des Publicités</h1>
             </div>
-            <div class="flex gap-3">
-                <a href="{{ url_for('admin.ad_settings') }}" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center gap-2">
+            <div class="flex flex-col sm:flex-row gap-2">
+                <a href="{{ url_for('admin.ad_settings') }}" class="px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center gap-2 text-sm">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
-                    Paramètres d'affichage
+                    <span class="hidden sm:inline">Paramètres</span>
                 </a>
-                <a href="{{ url_for('admin.add_ad') }}" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition flex items-center gap-2">
+                <a href="{{ url_for('admin.add_ad') }}" class="px-3 sm:px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition flex items-center gap-2 text-sm">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
-                    Nouvelle publicité
+                    <span>Nouvelle</span>
                 </a>
             </div>
         </div>
@@ -58,12 +58,12 @@
         {% endif %}
         {% endwith %}
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
             {% if ads %}
             <div class="divide-y divide-gray-100">
                 {% for ad in ads %}
-                <div class="p-4 hover:bg-gray-50 flex items-center gap-4">
-                    <div class="w-20 h-20 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
+                <div class="p-3 sm:p-4 hover:bg-gray-50 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
                         {% if ad.media_type == 'image' and ad.get_image_url() %}
                         <img src="{{ ad.get_image_url() }}" alt="{{ ad.title }}" class="w-full h-full object-cover">
                         {% elif ad.media_type == 'video' %}
@@ -83,19 +83,19 @@
                     </div>
                     
                     <div class="flex-1 min-w-0">
-                        <h3 class="font-semibold text-gray-800 truncate">{{ ad.title }}</h3>
-                        <p class="text-sm text-gray-500 truncate">{{ ad.description[:100] if ad.description else 'Pas de description' }}...</p>
-                        <div class="flex items-center gap-3 mt-2">
+                        <h3 class="font-semibold text-gray-800 truncate text-sm sm:text-base">{{ ad.title }}</h3>
+                        <p class="text-xs sm:text-sm text-gray-500 line-clamp-1">{{ ad.description[:100] if ad.description else 'Pas de description' }}...</p>
+                        <div class="flex flex-wrap items-center gap-2 mt-2">
                             <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {% if ad.is_currently_active() %}bg-green-100 text-green-700{% else %}bg-gray-100 text-gray-600{% endif %}">
                                 {% if ad.is_currently_active() %}Actif{% else %}Inactif{% endif %}
                             </span>
                             <span class="text-xs text-gray-500">{{ ad.view_count }} vues</span>
                             <span class="text-xs text-gray-500">{{ ad.click_count }} clics</span>
-                            <span class="text-xs text-gray-500">Délai: {{ ad.skip_delay }}s</span>
+                            <span class="text-xs text-gray-500">{{ ad.skip_delay }}s</span>
                         </div>
                     </div>
                     
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 sm:ml-auto">
                         <button onclick="toggleAd({{ ad.id }})" 
                                 class="p-2 rounded-lg transition {% if ad.is_active %}bg-green-100 text-green-600 hover:bg-green-200{% else %}bg-gray-100 text-gray-400 hover:bg-gray-200{% endif %}"
                                 id="toggle-{{ ad.id }}">
