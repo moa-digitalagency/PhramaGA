@@ -1132,6 +1132,7 @@
                                     {% endif %}
                                 </div>
                                 <form action="{{ url_for('admin.mark_suggestion_read', id=sug.id) }}" method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <button type="submit" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-sm font-medium hover:bg-gray-200">Marquer lu</button>
                                 </form>
                             </div>
@@ -1160,6 +1161,7 @@
                 <p id="gardePharmacyName" class="text-sm text-gray-500 mt-1"></p>
             </div>
             <form id="gardeForm" method="POST" class="p-6">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <input type="hidden" id="gardePharmacyId" name="pharmacy_id">
                 <div class="space-y-4">
                     <div>
