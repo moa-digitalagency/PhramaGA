@@ -36,7 +36,7 @@ def get_json_or_400():
 
 
 def generate_sitemap():
-    """Generate dynamic sitemap with all pharmacies and pages."""
+    """Generate dynamic sitemap with all pharmacies and pages (excluding /admin)."""
     try:
         base_url = request.url_root.rstrip('/')
         
@@ -50,7 +50,7 @@ def generate_sitemap():
             'changefreq': 'daily'
         })
         
-        # Add all active pharmacies
+        # Add all active pharmacies (excluding /admin paths)
         try:
             pharmacies = Pharmacy.query.filter_by(is_active=True).all()
             for pharmacy in pharmacies:
@@ -64,7 +64,7 @@ def generate_sitemap():
         except Exception:
             pass  # Continue without pharmacies if database fails
         
-        # Generate XML
+        # Generate XML (note: /admin routes are automatically excluded)
         xml_lines = [
             '<?xml version="1.0" encoding="UTF-8"?>',
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
@@ -85,11 +85,38 @@ def generate_sitemap():
         return f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>'
 
 
+def generate_robots_txt():
+    """Generate dynamic robots.txt with all public pages and sitemap reference."""
+    try:
+        base_url = request.url_root.rstrip('/')
+        sitemap_url = base_url + '/sitemap.xml'
+        
+        robots_lines = [
+            'User-agent: *',
+            'Allow: /',
+            'Disallow: /admin/',
+            'Disallow: /admin',
+            '',
+            f'Sitemap: {sitemap_url}'
+        ]
+        
+        return '\n'.join(robots_lines)
+    except Exception:
+        return 'User-agent: *\nAllow: /\nDisallow: /admin/'
+
+
 @public_bp.route('/sitemap.xml')
 def sitemap():
-    """Serve dynamic sitemap XML."""
+    """Serve dynamic sitemap XML (excluding /admin)."""
     sitemap_xml = generate_sitemap()
     return Response(sitemap_xml, mimetype='application/xml')
+
+
+@public_bp.route('/robots.txt')
+def robots():
+    """Serve dynamic robots.txt (excluding /admin)."""
+    robots_txt = generate_robots_txt()
+    return Response(robots_txt, mimetype='text/plain')
 
 
 @public_bp.route('/')
