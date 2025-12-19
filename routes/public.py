@@ -457,3 +457,23 @@ def record_ad_click(id):
     except Exception:
         db.session.rollback()
         return jsonify({'success': False}), 500
+
+
+@public_bp.route('/api/emergency-contacts')
+def get_emergency_contacts():
+    """Get all active emergency contacts, sorted by national first, then by city."""
+    national_contacts = EmergencyContact.query.filter_by(is_national=True, is_active=True).order_by(EmergencyContact.ordering).all()
+    city_contacts = EmergencyContact.query.filter_by(is_national=False, is_active=True).order_by(EmergencyContact.ordering).all()
+    
+    contacts_data = {
+        'national': [c.to_dict() for c in national_contacts],
+        'by_city': {}
+    }
+    
+    for contact in city_contacts:
+        ville = contact.ville or 'Unknown'
+        if ville not in contacts_data['by_city']:
+            contacts_data['by_city'][ville] = []
+        contacts_data['by_city'][ville].append(contact.to_dict())
+    
+    return jsonify(contacts_data)
