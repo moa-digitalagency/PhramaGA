@@ -13,7 +13,7 @@ soumissions de localisation/info, suggestions, popups et publicités.
 from flask import Blueprint, render_template, jsonify, request, abort, Response, url_for
 from markupsafe import Markup
 from services.pharmacy_service import PharmacyService
-from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal, PageInteraction
+from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal, PageInteraction, UserAction
 from models.pharmacy import Pharmacy
 from models.emergency_contact import EmergencyContact
 from models.site_settings import PopupMessage, SiteSettings
@@ -187,6 +187,28 @@ def stats():
         db.session.query(func.count(PharmacyProposal.id)).scalar() or 0
     )
     
+    call_clicks = db.session.query(func.count(UserAction.id)).filter(
+        UserAction.action_type == 'call_click'
+    ).scalar() or 0
+    
+    itinerary_clicks = db.session.query(func.count(UserAction.id)).filter(
+        UserAction.action_type == 'itinerary_click'
+    ).scalar() or 0
+    
+    location_suggestions = db.session.query(func.count(UserAction.id)).filter(
+        UserAction.action_type == 'location_suggestion'
+    ).scalar() or 0
+    
+    info_complement = db.session.query(func.count(UserAction.id)).filter(
+        UserAction.action_type == 'info_complement'
+    ).scalar() or 0
+    
+    ad_views = db.session.query(func.sum(Advertisement.view_count)).scalar() or 0
+    ad_clicks = db.session.query(func.sum(Advertisement.click_count)).scalar() or 0
+    ad_skips = db.session.query(func.count(UserAction.id)).filter(
+        UserAction.action_type == 'ad_skip'
+    ).scalar() or 0
+    
     top_pharmacies = db.session.query(
         Pharmacy.id, Pharmacy.nom, Pharmacy.ville,
         func.count(PharmacyView.id).label('view_count')
@@ -204,6 +226,13 @@ def stats():
         page_loads=page_loads,
         searches=searches,
         submissions=submissions,
+        call_clicks=call_clicks,
+        itinerary_clicks=itinerary_clicks,
+        location_suggestions=location_suggestions,
+        info_complement=info_complement,
+        ad_views=ad_views,
+        ad_clicks=ad_clicks,
+        ad_skips=ad_skips,
         top_pharmacies=top_pharmacies,
         villes=villes)
 
@@ -541,6 +570,26 @@ def track_interaction():
             tab_name=data.get('tab_name')
         )
         db.session.add(interaction)
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception:
+        db.session.rollback()
+        return jsonify({'success': False}), 500
+
+
+@public_bp.route('/api/action/<action_type>', methods=['POST'])
+@csrf.exempt
+def track_action(action_type):
+    """Track user actions like button clicks."""
+    data = get_json_or_400()
+    
+    try:
+        action = UserAction(
+            action_type=action_type,
+            pharmacy_id=data.get('pharmacy_id'),
+            ad_id=data.get('ad_id')
+        )
+        db.session.add(action)
         db.session.commit()
         return jsonify({'success': True})
     except Exception:

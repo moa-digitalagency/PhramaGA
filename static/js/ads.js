@@ -210,7 +210,18 @@ function getVideoEmbedUrl(url) {
     return null;
 }
 
+function trackAdSkip() {
+    if (adState.currentAdId) {
+        fetch('/api/action/ad_skip', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ad_id: adState.currentAdId })
+        }).catch(e => console.error('Ad skip tracking error:', e));
+    }
+}
+
 function closeAdModal() {
+    trackAdSkip();
     const modal = document.getElementById('adModal');
     modal.classList.add('hidden');
     modal.classList.remove('flex');

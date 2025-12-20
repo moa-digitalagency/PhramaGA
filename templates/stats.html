@@ -134,6 +134,22 @@
                             <span class="text-gray-700">Soumissions (localisations, corrections, suggestions)</span>
                             <span class="text-2xl font-bold text-emerald-600">{{ submissions }}</span>
                         </div>
+                        <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                            <span class="text-gray-700">Clics Appel</span>
+                            <span class="text-2xl font-bold text-blue-600">{{ call_clicks }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                            <span class="text-gray-700">Clics Se rendre</span>
+                            <span class="text-2xl font-bold text-purple-600">{{ itinerary_clicks }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                            <span class="text-gray-700">Suggestions de localisation</span>
+                            <span class="text-2xl font-bold text-orange-600">{{ location_suggestions }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-amber-50 rounded-lg">
+                            <span class="text-gray-700">Complément d'info</span>
+                            <span class="text-2xl font-bold text-amber-600">{{ info_complement }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -144,6 +160,25 @@
                 <p class="text-emerald-800 text-sm leading-relaxed">
                     UrgenceGabon.com est un annuaire complet des pharmacies au Gabon. Ces statistiques montrent l'engagement de la communauté dans l'amélioration constante de notre service.
                 </p>
+            </div>
+        </div>
+
+        <!-- Ads Stats -->
+        <div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Statistiques Publicités</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="p-4 bg-pink-50 rounded-lg border border-pink-200">
+                    <p class="text-gray-600 text-sm">Vues de publicités</p>
+                    <p class="text-3xl font-bold text-pink-600 mt-2">{{ ad_views }}</p>
+                </div>
+                <div class="p-4 bg-red-50 rounded-lg border border-red-200">
+                    <p class="text-gray-600 text-sm">Clics sur CTA</p>
+                    <p class="text-3xl font-bold text-red-600 mt-2">{{ ad_clicks }}</p>
+                </div>
+                <div class="p-4 bg-gray-100 rounded-lg border border-gray-300">
+                    <p class="text-gray-600 text-sm">Publicités sautées</p>
+                    <p class="text-3xl font-bold text-gray-700 mt-2">{{ ad_skips }}</p>
+                </div>
             </div>
         </div>
 

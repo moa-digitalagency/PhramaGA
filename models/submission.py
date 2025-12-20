@@ -187,3 +187,23 @@ class PageInteraction(db.Model):
             'tab_name': self.tab_name or '',
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
+
+
+class UserAction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    action_type = db.Column(db.String(50), nullable=False)
+    pharmacy_id = db.Column(db.Integer, db.ForeignKey('pharmacy.id'))
+    ad_id = db.Column(db.Integer, db.ForeignKey('advertisement.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    
+    pharmacy = db.relationship('Pharmacy', backref='user_actions')
+    ad = db.relationship('Advertisement', backref='user_actions')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'action_type': self.action_type,
+            'pharmacy_id': self.pharmacy_id,
+            'ad_id': self.ad_id,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }

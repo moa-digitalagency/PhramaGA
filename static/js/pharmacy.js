@@ -311,24 +311,61 @@ function buildPharmacyDetailHTML(pharmacy, cityBadgeClass) {
 function bindPharmacyDetailEvents(content, pharmacy) {
     const phoneBtn = content.querySelector('.detail-phone-btn');
     if (phoneBtn && pharmacy.telephone) {
-        phoneBtn.addEventListener('click', (e) => handlePhoneClick(pharmacy.telephone, e));
+        phoneBtn.addEventListener('click', (e) => {
+            fetch('/api/action/call_click', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pharmacy_id: pharmacy.id })
+            }).catch(e => console.error('Tracking error:', e));
+            handlePhoneClick(pharmacy.telephone, e);
+        });
     }
     
     const callBtn = content.querySelector('.call-btn');
     if (callBtn && pharmacy.telephone) {
-        callBtn.addEventListener('click', (e) => handlePhoneClick(pharmacy.telephone, e));
+        callBtn.addEventListener('click', (e) => {
+            fetch('/api/action/call_click', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pharmacy_id: pharmacy.id })
+            }).catch(e => console.error('Tracking error:', e));
+            handlePhoneClick(pharmacy.telephone, e);
+        });
     }
     
     const locateBtn = content.querySelector('.locate-btn');
     if (locateBtn) {
         locateBtn.addEventListener('click', () => {
+            fetch('/api/action/location_suggestion', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pharmacy_id: pharmacy.id })
+            }).catch(e => console.error('Tracking error:', e));
             showLocationForm(pharmacy.id);
         });
     }
     
     const complementBtn = content.querySelector('.complement-btn');
     if (complementBtn) {
-        complementBtn.addEventListener('click', () => showComplementInfo(pharmacy.id));
+        complementBtn.addEventListener('click', () => {
+            fetch('/api/action/info_complement', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pharmacy_id: pharmacy.id })
+            }).catch(e => console.error('Tracking error:', e));
+            showComplementInfo(pharmacy.id);
+        });
+    }
+    
+    const seRendreBtn = content.querySelector('a[href*="google.com/maps"]');
+    if (seRendreBtn) {
+        seRendreBtn.addEventListener('click', () => {
+            fetch('/api/action/itinerary_click', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pharmacy_id: pharmacy.id })
+            }).catch(e => console.error('Tracking error:', e));
+        });
     }
 }
 
