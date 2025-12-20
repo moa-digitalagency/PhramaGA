@@ -28,7 +28,7 @@ def init_database():
     with app.app_context():
         from models.pharmacy import Pharmacy
         from models.admin import Admin
-        from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal
+        from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal, PageInteraction, UserAction
         from models.emergency_contact import EmergencyContact
         from models.site_settings import SiteSettings, PopupMessage
         from models.advertisement import Advertisement, AdSettings
@@ -50,6 +50,8 @@ def init_database():
         print("  - advertisement")
         print("  - ad_settings")
         print("  - activity_log")
+        print("  - page_interaction")
+        print("  - user_action")
 
 
 def init_admin_from_env():
