@@ -20,6 +20,7 @@ from models.site_settings import PopupMessage, SiteSettings
 from models.advertisement import Advertisement, AdSettings
 from extensions import db, csrf
 from datetime import datetime
+from sqlalchemy import func
 
 public_bp = Blueprint('public', __name__)
 
@@ -159,6 +160,52 @@ def robots():
     """Serve dynamic robots.txt (excluding /admin)."""
     robots_txt = generate_robots_txt()
     return Response(robots_txt, mimetype='text/plain')
+
+
+@public_bp.route('/stats')
+def stats():
+    """Display public statistics about the site."""
+    total_pharmacies = Pharmacy.query.count()
+    total_views = db.session.query(func.count(PharmacyView.id)).scalar() or 0
+    total_interactions = db.session.query(func.count(PageInteraction.id)).scalar() or 0
+    
+    page_loads = db.session.query(func.count(PageInteraction.id)).filter(
+        PageInteraction.interaction_type == 'page_load'
+    ).scalar() or 0
+    
+    searches = db.session.query(func.count(PageInteraction.id)).filter(
+        PageInteraction.interaction_type == 'search'
+    ).scalar() or 0
+    
+    submissions = (
+        db.session.query(func.count(LocationSubmission.id)).scalar() or 0
+    ) + (
+        db.session.query(func.count(InfoSubmission.id)).scalar() or 0
+    ) + (
+        db.session.query(func.count(Suggestion.id)).scalar() or 0
+    ) + (
+        db.session.query(func.count(PharmacyProposal.id)).scalar() or 0
+    )
+    
+    top_pharmacies = db.session.query(
+        Pharmacy.id, Pharmacy.nom, Pharmacy.ville,
+        func.count(PharmacyView.id).label('view_count')
+    ).outerjoin(PharmacyView).group_by(Pharmacy.id).order_by(func.count(PharmacyView.id).desc()).limit(10).all()
+    
+    villes = db.session.query(
+        Pharmacy.ville,
+        func.count(Pharmacy.id).label('count')
+    ).group_by(Pharmacy.ville).order_by(func.count(Pharmacy.id).desc()).all()
+    
+    return render_template('stats.html',
+        total_pharmacies=total_pharmacies,
+        total_views=total_views,
+        total_interactions=total_interactions,
+        page_loads=page_loads,
+        searches=searches,
+        submissions=submissions,
+        top_pharmacies=top_pharmacies,
+        villes=villes)
 
 
 @public_bp.route('/')
