@@ -148,6 +148,18 @@ function showPharmacyDetail(pharmacy) {
     
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+    
+    // Record the view
+    recordPharmacyView(pharmacy.id);
+}
+
+function recordPharmacyView(pharmacyId) {
+    fetch(`/api/pharmacy/${pharmacyId}/view`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).catch(error => console.error('Error recording view:', error));
 }
 
 function buildPharmacyDetailHTML(pharmacy, cityBadgeClass) {
