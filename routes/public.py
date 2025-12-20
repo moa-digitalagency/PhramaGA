@@ -13,7 +13,7 @@ soumissions de localisation/info, suggestions, popups et publicités.
 from flask import Blueprint, render_template, jsonify, request, abort, Response, url_for
 from markupsafe import Markup
 from services.pharmacy_service import PharmacyService
-from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal
+from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal, PageInteraction
 from models.pharmacy import Pharmacy
 from models.emergency_contact import EmergencyContact
 from models.site_settings import PopupMessage, SiteSettings
@@ -477,3 +477,25 @@ def get_emergency_contacts():
         contacts_data['by_city'][ville].append(contact.to_dict())
     
     return jsonify(contacts_data)
+
+
+@public_bp.route('/api/track', methods=['POST'])
+@csrf.exempt
+def track_interaction():
+    """Track page interactions, searches, filters, and tab switches."""
+    data = get_json_or_400()
+    
+    try:
+        interaction = PageInteraction(
+            interaction_type=data.get('type', 'page_view'),
+            page=data.get('page', ''),
+            search_query=data.get('search_query'),
+            filter_value=data.get('filter_value'),
+            tab_name=data.get('tab_name')
+        )
+        db.session.add(interaction)
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception:
+        db.session.rollback()
+        return jsonify({'success': False}), 500

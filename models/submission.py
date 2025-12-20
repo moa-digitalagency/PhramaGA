@@ -166,3 +166,24 @@ class PharmacyProposal(db.Model):
             'status': self.status,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
+
+
+class PageInteraction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    interaction_type = db.Column(db.String(50), nullable=False)
+    page = db.Column(db.String(100))
+    search_query = db.Column(db.String(500))
+    filter_value = db.Column(db.String(100))
+    tab_name = db.Column(db.String(50))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'interaction_type': self.interaction_type,
+            'page': self.page,
+            'search_query': self.search_query or '',
+            'filter_value': self.filter_value or '',
+            'tab_name': self.tab_name or '',
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }

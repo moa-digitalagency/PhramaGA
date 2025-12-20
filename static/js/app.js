@@ -21,8 +21,22 @@ function debounce(func, delay) {
     debounceTimer = setTimeout(func, delay);
 }
 
+function trackInteraction(type, data = {}) {
+    fetch('/api/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            type: type,
+            page: window.location.pathname,
+            ...data
+        })
+    }).catch(e => console.error('Tracking error:', e));
+}
+
 function switchTab(tab) {
     window.currentTab = tab;
+    
+    trackInteraction('tab_switch', { tab_name: tab });
     
     document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
     const tabEl = document.getElementById(`tab-${tab}`);
@@ -82,6 +96,8 @@ function switchTab(tab) {
 function filterByCity(city) {
     window.currentCity = city;
     
+    trackInteraction('city_filter', { filter_value: city });
+    
     document.querySelectorAll('.city-filter').forEach(btn => {
         if (btn.dataset.city === city) {
             btn.classList.add('bg-white', 'text-primary-700');
@@ -129,6 +145,10 @@ async function fetchPharmacies(gardeOnly = false) {
     const searchInput = document.getElementById('searchInput');
     const search = searchInput ? searchInput.value : '';
     
+    if (search) {
+        trackInteraction('search', { search_query: search });
+    }
+    
     const params = new URLSearchParams();
     if (search) params.append('search', search);
     if (window.currentCity) params.append('ville', window.currentCity);
@@ -166,6 +186,7 @@ async function fetchPharmacies(gardeOnly = false) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    trackInteraction('page_load', { page: 'home' });
     fetchPharmacies();
     loadActivePopups();
     initAdSystem();

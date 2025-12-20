@@ -13,7 +13,7 @@ graphiques de vues et activités récentes.
 from flask import render_template
 from flask_login import login_required
 from models.pharmacy import Pharmacy
-from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal
+from models.submission import LocationSubmission, InfoSubmission, PharmacyView, Suggestion, PharmacyProposal, PageInteraction
 from extensions import db
 from datetime import datetime, timedelta
 from sqlalchemy import func
@@ -131,6 +131,38 @@ def admin_dashboard():
     views_this_week = period_views.week or 0 if period_views else 0
     views_this_month = period_views.month or 0 if period_views else 0
     
+    page_loads = db.session.query(func.count(PageInteraction.id)).filter(
+        PageInteraction.interaction_type == 'page_load',
+        PageInteraction.created_at >= today_start
+    ).scalar() or 0
+    
+    tab_switches = db.session.query(func.count(PageInteraction.id)).filter(
+        PageInteraction.interaction_type == 'tab_switch',
+        PageInteraction.created_at >= today_start
+    ).scalar() or 0
+    
+    searches = db.session.query(func.count(PageInteraction.id)).filter(
+        PageInteraction.interaction_type == 'search',
+        PageInteraction.created_at >= today_start
+    ).scalar() or 0
+    
+    filters = db.session.query(func.count(PageInteraction.id)).filter(
+        PageInteraction.interaction_type == 'city_filter',
+        PageInteraction.created_at >= today_start
+    ).scalar() or 0
+    
+    total_interactions = db.session.query(func.count(PageInteraction.id)).scalar() or 0
+    
+    interactions_today = page_loads + tab_switches + searches + filters
+    
+    interactions_7_days = db.session.query(func.count(PageInteraction.id)).filter(
+        PageInteraction.created_at >= start_7_days
+    ).scalar() or 0
+    
+    interactions_30_days = db.session.query(func.count(PageInteraction.id)).filter(
+        PageInteraction.created_at >= start_30_days
+    ).scalar() or 0
+    
     return render_template('admin/dashboard.html', 
         pharmacies=pharmacies,
         pending_locations=pending_locations,
@@ -154,5 +186,13 @@ def admin_dashboard():
         approved_proposals=approved_proposals,
         views_today=views_today,
         views_this_week=views_this_week,
-        views_this_month=views_this_month
+        views_this_month=views_this_month,
+        page_loads=page_loads,
+        tab_switches=tab_switches,
+        searches=searches,
+        filters=filters,
+        total_interactions=total_interactions,
+        interactions_today=interactions_today,
+        interactions_7_days=interactions_7_days,
+        interactions_30_days=interactions_30_days
     )
