@@ -1,169 +1,196 @@
-# UrgenceGabon.com - Notes techniques
+# UrgenceGabon.com - Notes techniques et contexte
 
-Ce fichier contient les informations utiles pour travailler sur le projet.
+Une plateforme web moderne pour trouver des pharmacies au Gabon. Interface mobile-first avec recherche, filtrage par ville, carte interactive, et système complet d'administration pour gérer les données.
 
-## Description rapide
+## État actuel du projet
 
-Une application web pour trouver des pharmacies au Gabon. Elle affiche 89 pharmacies réparties dans 9 villes, avec indication des pharmacies de garde (ouvertes 24h/24). Interface responsive pensée pour mobile avec onglets de navigation.
+**Base de données** : PostgreSQL sur Replit
+**Frontend** : Templates Jinja2 + Tailwind CSS + JavaScript vanilla
+**Backend** : Flask (Python) avec SQLAlchemy ORM
+**Déploiement** : Gunicorn sur port 5000
 
-## Préférences de développement
+**Données actuelles** :
+- 89 pharmacies dans 9 villes (Libreville, Port-Gentil, Franceville, etc.)
+- Contacts d'urgence (police, pompiers, hôpitaux, SAMU)
+- Popups personnalisées
+- Système de publicités configurable
 
-- Communication en français, langage simple
-- Code commenté quand nécessaire
-- Tests manuels avant de valider
+## Architecture technique
 
-## Historique des modifications
+**Couche présentation** :
+- `templates/index.html` : Page publique unique (SPA)
+- `templates/admin/` : Pages administration
+- `static/js/` : 7 modules JavaScript (app, map, pharmacy, forms, popups, ads, config)
+- `static/css/style.css` : Styles personnalisés + Tailwind CDN
 
-**Décembre 2025 (Session 2 - FINAL: Security + Endpoints + Database)**
+**Couche application** :
+- `app.py` : Configuration Flask, security headers, rate limiting
+- `routes/public.py` : 25+ endpoints publics (pharmacies, popups, publicités, soumissions)
+- `routes/admin/` : 8 modules (auth, dashboard, pharmacy, submissions, emergency, settings, ads, logs)
+- `extensions.py` : Extensions Flask (SQLAlchemy, Login, CSRF)
 
-Audit complet et corrections :
-- ✅ **Sécurité:** 6 headers de sécurité ajoutés + Rate Limiting (Flask-Limiter)
-- ✅ **Endpoints:** 25+ endpoints testés et vérifiés (GET, POST, error handling)
-- ✅ **Base de données:** Vérification d'intégrité + script de migration SÛRE
-  - Toutes les 13 tables présentes et intactes
-  - Script migrate_db.py pour migrations sans perte de données
-  - Pas de suppression de données - Seulement création/ajout
-- ✅ **Documentation:** 9 fichiers incluant DATABASE_INTEGRITY.md, SECURITY_AUDIT.md, ENDPOINT_VERIFICATION.md
+**Couche métier** :
+- `services/pharmacy_service.py` : Opérations pharmacies (recherche, création, mise à jour, suppression, statistiques)
+- `security/auth.py` : Configuration Flask-Login, création admin par défaut
 
-**Décembre 2025 (Session 2 - ENDPOINTS & ENDPOINTS COMPLETE)**
+**Couche données** :
+- `models/` : 8 fichiers définissant 13 tables
+  - Pharmacies + Contacts d'urgence + Soumissions + Publicités + Logs
+- `init_db.py` : Initialisation intelligente avec vérification d'intégrité et préservation des données
 
-Revue et vérification exhaustive :
-- ✅ Test complet de 25+ endpoints (GET, POST, error handling)
-- ✅ Tous les endpoints testés retournent les bons codes HTTP
-- ✅ Aucun erreur 500 non documentée, aucun JSON mal formé
-- ✅ Correction du endpoint manquant `/api/emergency-contacts`
-  - Ajout de la route GET `/api/emergency-contacts` dans routes/public.py
-  - Retourne JSON valide avec structure {national: [], by_city: {}}
-- ✅ Création de docs/ENDPOINT_VERIFICATION.md (vérification complète)
-- ✅ Création de docs/FINAL_REVIEW.md (revue détaillée)
-- ✅ Documentation exhaustive: 7 fichiers documentant tous les aspects
+## Modèles de données (13 tables)
 
-**Décembre 2025 (Session 2 - Initial)**
+| Modèle | Colonnes clés | Usage |
+|--------|---------------|-------|
+| Admin | id, username, password_hash | Authentification administration |
+| Pharmacy | id, code, nom, ville, quartier, telephone, coordinates, is_garde | Annuaire principal |
+| EmergencyContact | ville, service_type, label, phone_numbers | Numéros d'urgence |
+| LocationSubmission | pharmacy_id, latitude, longitude, status | Soumissions GPS |
+| InfoSubmission | pharmacy_id, field_name, current_value, proposed_value, status | Corrections d'infos |
+| PharmacyProposal | tous les champs pharmacy + status | Propositions de nouvelles pharmas |
+| Suggestion | category, subject, message, status, admin_response | Commentaires/idées |
+| PharmacyView | pharmacy_id, viewed_at | Comptage des vues |
+| Advertisement | title, description, media_type, priority, view_count, click_count | Publicités |
+| AdSettings | configuration globale des pubs | Paramètres système |
+| PopupMessage | title, description, image, is_active, show_once | Messages popup |
+| SiteSettings | clé-valeur (meta, SEO, logo, structure) | Configuration site |
+| ActivityLog | ip_address, method, path, status_code, response_time_ms, log_level | Audit/debug |
 
-Ajout de fonctionnalités SEO :
-- Endpoint `/sitemap.xml` : génère dynamiquement un sitemap XML avec toutes les pharmacies actives
-- Endpoint `/robots.txt` : génère dynamiquement un fichier robots.txt qui bloque `/admin` et référence le sitemap
-- Fonction `is_admin_path()` : valide que aucune page admin ne figure dans le sitemap ou robots.txt
-- Documentation complète dans docs/SEO.md
+## Routes principales
 
-**Décembre 2025 (Session 1)**
+**Routes publiques** (pas d'authentification) :
+- GET `/` - Page d'accueil
+- GET `/sitemap.xml` - Sitemap dynamique
+- GET `/robots.txt` - Robots.txt dynamique
+- GET `/api/pharmacies` - Liste pharmacies (filtres: search, ville, garde)
+- GET `/api/emergency-contacts` - Contacts d'urgence
+- GET `/api/popups` - Messages popup actifs
+- GET `/api/ads/settings` - Configuration publicités
+- GET `/api/ads/random` - Publicité aléatoire
+- POST `/api/pharmacy/<id>/view` - Enregistrer une vue
+- POST `/api/pharmacy/<id>/submit-location` - Soumettre GPS
+- POST `/api/pharmacy/<id>/submit-info` - Soumettre correction
+- POST `/api/suggestions` - Envoyer suggestion
+- POST `/api/pharmacy-proposal` - Proposer pharmacie
+- POST `/api/ads/<id>/view` - Enregistrer vue pub
+- POST `/api/ads/<id>/click` - Enregistrer clic pub
 
-Ajout du système de logs d'activité :
-- Nouveau modèle ActivityLog pour tracer toutes les activités (erreurs, authentification)
-- Page admin `/admin/logs` avec filtres par type, niveau, IP, chemin
-- Logging automatique des erreurs 400+ et événements d'authentification
-- Possibilité de nettoyer les anciens logs
+**Routes administration** (authentification requise) :
+- `/admin/login` - Connexion
+- `/admin/logout` - Déconnexion
+- `/admin/` - Tableau de bord (stats + soumissions en attente)
+- `/admin/pharmacy/*` - CRUD pharmacies
+- `/admin/submissions/*` - Validation des soumissions
+- `/admin/emergency-contacts/*` - CRUD contacts d'urgence
+- `/admin/settings` - Configuration du site
+- `/admin/popups/*` - Gestion popups
+- `/admin/ads/*` - Gestion publicités + configuration
+- `/admin/logs` - Journal d'activité
 
-Refactoring du code pour une meilleure maintenabilité :
-- Le fichier JS principal (1600+ lignes) a été découpé en 7 modules
-- Les routes admin (970+ lignes) sont maintenant dans 8 fichiers séparés
-- Ajout de gestion d'erreurs sur tous les appels asynchrones
-- Protection XSS avec fonction `escapeHtml`
+## Système de gestion des données
 
-Fonctionnalités précédentes :
-- Système publicitaire configurable (images ou vidéos, plusieurs déclencheurs, limites par session)
-- Statistiques avec graphiques Chart.js (vues, répartition par ville et type)
-- Upload de fichiers pour logo, favicon et images (plus d'URLs externes)
-- Correction du bug de duplication admin
-- Fuseau horaire configurable
-- Popups personnalisables avec images
-- Numéros de téléphone cliquables
-- Catégorisation des pharmacies (gare, hôpital, aéroport, etc.)
-- Système de vérification GPS
-- Design mobile-first
+**init_db.py** (source unique de vérité) :
+1. Crée toutes les tables manquantes
+2. Vérifie l'intégrité des données existantes
+3. Ajoute les colonnes manquantes sans perte
+4. Initialise l'admin par défaut
+5. Configure les paramètres SEO par défaut
 
-## Architecture
+Aucun script de migration destructive. Les données existantes sont toujours préservées.
 
-**Frontend :**
-- Templates Jinja2
-- Tailwind CSS (CDN)
-- Leaflet.js pour les cartes
-- JavaScript modulaire :
-  - `config.js` : constantes et configuration
-  - `map.js` : gestion de la carte
-  - `pharmacy.js` : affichage des pharmacies
-  - `forms.js` : formulaires de soumission
-  - `popups.js` : fenêtres modales
-  - `ads.js` : système publicitaire
-  - `app.js` : orchestrateur principal
+## Sécurité
 
-**Backend :**
-- Flask avec Flask-Login
-- PostgreSQL via SQLAlchemy
-- Authentification par session
-- Routes en blueprints :
-  - `routes/public.py` : accès public
-  - `routes/admin/` : administration (auth, dashboard, pharmacy, submissions, emergency, settings, ads, logs)
+**Headers** : X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, CSP
+**Authentification** : Sessions Flask-Login, cookies HttpOnly + SameSite
+**Protection CSRF** : Flask-WTF sur tous les formulaires admin
+**Rate limiting** : 200 requêtes/jour, 50/heure (Flask-Limiter)
+**Validation** : SQLAlchemy (injections SQL impossibles)
+**XSS** : Jinja2 échappe l'HTML, escapeHtml() en JavaScript
+**Uploads** : Extensions limitées (image/svg/ico), noms sécurisés avec UUID
 
-## Modèles de données
+## Développement et préférences
 
-**Admin** : id, username, password_hash
+**Communication** : Français, langage simple
+**Code** : Commenté quand nécessaire
+**Tests** : Validation manuelle avant commit
+**Workflow** : npm non utilisé - vanilla JS modulaire
 
-**Pharmacy** : id, code, nom, ville, quartier, telephone, bp, horaires, services, proprietaire, type_etablissement, categorie_emplacement, is_garde, is_verified, latitude, longitude, location_validated
+## Flux de données clés
 
-**EmergencyContact** : ville, service_type, label, phone_numbers, address, notes, is_national, ordering
+### Recherche de pharmacies
+Utilisateur tape → JS appelle GET /api/pharmacies → PharmacyService filtre → JSON retourné → UI mise à jour
 
-**Submission types** : LocationSubmission, InfoSubmission, PharmacyProposal, Suggestion
+### Soumission d'information
+Utilisateur soumet → JS appelle POST /api/pharmacy/{id}/submit-info → Entry créée (pending) → Admin voit dans dashboard → Approbation met à jour la pharmacie
 
-**Advertisement** : title, description, media_type, image/video, cta_text, cta_url, skip_delay, priority, dates, view/click counts
+### Affichage publicités
+JS charge /api/ads/settings → Timer/compteur déclenché → GET /api/ads/random (pondéré) → Popup s'affiche → Vue comptabilisée
 
-**ActivityLog** : timestamp, ip_address, user_agent, method, path, status_code, response_time_ms, log_type, log_level, message, details, admin_id
+### Indexation SEO
+Moteur de recherche → /robots.txt (bloque /admin) → /sitemap.xml (liste pages publiques) → Crawle pages publiques
+
+## Variables d'environnement requises
+
+```
+DATABASE_URL=postgres://...              # PostgreSQL
+SESSION_SECRET=...                       # Clé secrète Flask (min 32 char)
+ADMIN_USERNAME=admin                     # Par défaut
+ADMIN_PASSWORD=...                       # Défini au démarrage
+```
+
+Optionnelles :
+```
+FLASK_ENV=production                     # Par défaut
+USE_HTTPS=true                           # Par défaut
+```
+
+## Démarrage
+
+```bash
+# Développement avec rechargement automatique
+gunicorn --bind 0.0.0.0:5000 --reuse-port --reload main:app
+
+# Production (pas de rechargement)
+gunicorn --bind 0.0.0.0:5000 main:app
+```
 
 ## Dépendances externes
 
-CDN :
+**Python** :
+- Flask, Flask-SQLAlchemy, Flask-Login, Flask-WTF, Flask-Limiter
+- psycopg2-binary (PostgreSQL)
+- Werkzeug (hashing)
+- python-dotenv (env vars)
+
+**CDN** :
 - Tailwind CSS
-- Leaflet.js 1.9.4
+- Leaflet.js 1.9.4 (cartes)
+- Chart.js (graphiques)
 - Google Fonts (Inter)
-- Chart.js
 
-Python :
-- Flask, Flask-SQLAlchemy, Flask-Login, Flask-WTF
-- psycopg2-binary
-- gunicorn
-- werkzeug
+## Historique des modifications
 
-## Points d'accès API
+**Décembre 2025 (Session 3 - Consolidation)**
+- Fusion check_tables.py + migrate_db.py → init_db.py
+- Stats repositionnées en admin uniquement
+- Documentation complète de l'application
 
-**Public :**
-- `GET /` : page principale
-- `GET /sitemap.xml` : sitemap dynamique (SEO)
-- `GET /robots.txt` : fichier robots (SEO, crawling)
-- `GET /api/pharmacies` : liste (filtres: search, ville, garde)
-- `GET /api/stats` : statistiques
-- `GET /api/popups` : popups actifs
-- `GET /api/emergency-contacts` : contacts d'urgence
-- `POST /api/pharmacy/<id>/view` : enregistrer une vue
-- `POST /api/pharmacy/<id>/submit-location` : soumettre GPS
-- `POST /api/pharmacy/<id>/submit-info` : soumettre correction
-- `POST /api/suggestions` : envoyer suggestion
-- `POST /api/pharmacy-proposal` : proposer pharmacie
+**Décembre 2025 (Session 2 - Audit complet)**
+- Audit sécurité : 6 headers + rate limiting
+- Vérification 25+ endpoints
+- Migration sécurisée sans perte données
+- Documentation exhaustive (9 fichiers)
 
-**Admin (authentification requise) :**
-- `/admin/login`, `/admin/logout`
-- `/admin` : tableau de bord
-- `/admin/pharmacy/add`, `/admin/pharmacy/<id>/edit`, `/admin/pharmacy/<id>/delete`
-- `/admin/pharmacy/<id>/toggle-garde`
-- Gestion des soumissions, contacts d'urgence, paramètres, publicités
+**Décembre 2025 (Session 1)**
+- Système de logs d'activité complet
+- Refactoring JavaScript (7 modules)
+- Routes admin modulaires (8 fichiers)
+- Endpoints SEO (/sitemap.xml, /robots.txt)
 
-## Scripts d'initialisation
-
-`init_db.py` : crée les tables de la base
-
-`init_demo.py` : charge les données de démonstration (pharmacies, contacts, popup)
-
-```bash
-python init_demo.py        # charge les données
-python init_demo.py --force  # efface et recharge
-```
-
-## Variables d'environnement
-
-Obligatoires :
-- `DATABASE_URL` : connexion PostgreSQL
-- `SESSION_SECRET` : clé de session Flask
-- `ADMIN_USERNAME` : identifiant admin
-- `ADMIN_PASSWORD` : mot de passe admin
-
-Automatiques (Replit) :
-- `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`, `PGDATABASE`
+**Sessions précédentes**
+- Système publicitaire configurable
+- Statistiques avec graphiques
+- Upload fichiers sécurisé
+- Catégorisation pharmacies
+- Vérification GPS
+- Design mobile-first
