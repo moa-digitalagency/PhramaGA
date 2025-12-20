@@ -37,16 +37,36 @@ L'onglet "Numéros d'urgence" affiche :
 
 Chaque numéro est cliquable pour un appel direct. Des conseils d'urgence sont aussi affichés : rester calme, indiquer sa localisation, décrire la situation.
 
-### Contribuer
+### Contribuer à la plateforme
 
 Vous connaissez une pharmacie non listée ? Des informations sont fausses ? Vous pouvez aider :
 
-- **Soumettre une localisation GPS** : placez le marqueur sur la carte pour indiquer la position exacte
-- **Corriger une information** : proposez un nouveau numéro de téléphone, de nouveaux horaires, etc.
-- **Suggérer une pharmacie** : décrivez une pharmacie manquante avec les informations disponibles
-- **Envoyer une suggestion** : partagez vos idées pour améliorer le site
+**Soumettre une localisation GPS**
+- Cliquez sur "Proposer coordonnées" pour une pharmacie
+- Placez le marqueur sur la carte pour indiquer la position exacte
+- Ajoutez votre nom et téléphone (optionnel)
+- L'admin valide et met à jour automatiquement
 
-Toutes les contributions sont vérifiées avant publication. Vous pouvez laisser vos coordonnées (optionnel) pour être contacté.
+**Corriger une information**
+- Cliquez sur "Signaler une erreur"
+- Sélectionnez le champ à corriger (téléphone, horaires, services, quartier, BP, propriétaire)
+- Entrez la valeur correcte
+- Ajoutez un commentaire explicatif
+- L'admin vérifie et applique la modification
+
+**Suggérer une pharmacie**
+- Cliquez sur "Proposer une pharmacie"
+- Remplissez les détails connus (nom, ville, téléphone, horaires, services, etc.)
+- Optionnel : localisez sur la carte
+- L'admin vérifie et ajoute à la base de données
+
+**Envoyer une suggestion**
+- Cliquez sur l'onglet "Boîte à suggestions"
+- Catégorisez (amélioration, erreur, nouvelle pharmacie, autre)
+- Décrivez votre idée ou signalementez un problème
+- L'admin peut vous répondre directement
+
+Toutes les contributions sont vérifiées avant prise en compte. Vous pouvez laisser vos coordonnées (optionnel) pour être contacté en cas de question.
 
 ---
 

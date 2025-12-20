@@ -32,12 +32,16 @@ Pour les urgences, une section dédiée liste les numéros essentiels : police, 
 
 **Gratuit et accessible.** Pas besoin de créer un compte pour chercher une pharmacie ou un numéro d'urgence.
 
-## Chiffres
+## Chiffres actuels
 
-- Plus de 89 pharmacies référencées
-- 9 villes couvertes
-- 18+ contacts d'urgence
-- Couverture des grandes villes : Libreville, Port-Gentil, Franceville, Oyem, Mouila, Makokou, Koulamoutou, Moanda
+**État de la base de données** :
+- 89 pharmacies référencées et actualisées
+- 9 villes couvertes : Libreville, Port-Gentil, Franceville, Oyem, Mouila, Makokou, Koulamoutou, Moanda, Ntom
+- 18+ contacts d'urgence (nationaux et locaux)
+- 25+ endpoints publics (API)
+- 30+ endpoints administration
+- 13 tables base de données
+- 100% des données conservées lors des migrations
 
 ## Sources de revenus
 

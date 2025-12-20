@@ -60,30 +60,6 @@ GET /api/pharmacies?ville=Libreville&garde=true
 
 ---
 
-### Statistiques
-
-Récupère les statistiques générales de la plateforme.
-
-**Requête :** `GET /api/stats`
-
-**Réponse :**
-```json
-{
-  "total": 89,
-  "pharmacies_garde": 15,
-  "pharmacies_gare": 1,
-  "locations_validated": 10,
-  "par_ville": {
-    "Libreville": 70,
-    "Port-Gentil": 8,
-    "Franceville": 2,
-    "Oyem": 1
-  }
-}
-```
-
----
-
 ### Popups actifs
 
 Récupère les messages popup à afficher.

@@ -12,22 +12,41 @@ Les identifiants par défaut sont définis dans les variables d'environnement AD
 
 ## Tableau de bord
 
-La page d'accueil affiche :
+La page d'accueil affiche 20+ statistiques :
 
-**Statistiques principales**
-- Nombre total de pharmacies
-- Pharmacies de garde actives
-- Soumissions en attente (localisations, corrections, suggestions, propositions)
+**Statistiques pharmacies**
+- Total pharmacies
+- Pharmacies de garde
+- Pharmacies près gare
+- Pharmacies avec GPS validé
+- Top 10 les plus consultées
+- Récemment modifiées
+
+**Statistiques soumissions**
+- Localisations en attente
+- Corrections en attente
+- Propositions en attente
+- Suggestions en attente
+- Totaux et approuvés par type
+
+**Statistiques vues**
+- Total vues toutes pharmacies
+- Vues par ville (graphique)
+- Vues 7 jours (graphique)
+- Vues 30 jours (graphique)
+- Vues aujourd'hui, semaine, mois
+
+**Interactions utilisateurs**
+- Recherches
+- Filtres appliqués
+- Changements d'onglets
+- Chargements de page
+- Totaux et par période
 
 **Graphiques**
-- Fréquentation sur 7 jours et 30 jours
-- Répartition des pharmacies par ville
-- Répartition par type d'établissement
-- Vues aujourd'hui, cette semaine, ce mois
-
-**Listes**
-- Pharmacies les plus consultées (top 10)
-- Pharmacies récemment modifiées
+- Répartition villes (histogramme)
+- Répartition type d'établissement (pie)
+- Évolution vues 7 et 30 jours (courbes)
 
 ## Gestion des pharmacies
 
