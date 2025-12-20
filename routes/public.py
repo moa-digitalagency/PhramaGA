@@ -243,9 +243,6 @@ def get_pharmacies():
     return jsonify([p.to_dict() for p in pharmacies])
 
 
-@public_bp.route('/api/stats')
-def get_stats():
-    return jsonify(PharmacyService.get_stats())
 
 
 @public_bp.route('/api/pharmacy/<int:id>/view', methods=['POST'])
