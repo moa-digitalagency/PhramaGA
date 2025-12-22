@@ -10,26 +10,12 @@
  * scrollbars, cartes pharmacie, onglets, modal, carte Leaflet et animations.
  */
 
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%);
+header {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     background-image: 
-        linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%),
-        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><defs><pattern id="african" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse"><rect width="200" height="200" fill="none"/><path d="M0,0 L50,50 M50,0 L0,50 M100,0 L150,50 M150,0 L100,50 M0,100 L50,150 M50,100 L0,150 M100,100 L150,150 M150,100 L100,150" stroke="rgba(16,185,129,0.08)" stroke-width="1"/><circle cx="25" cy="25" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><circle cx="75" cy="25" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><circle cx="125" cy="25" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><circle cx="175" cy="25" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><circle cx="25" cy="75" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><circle cx="75" cy="75" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><circle cx="125" cy="75" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><circle cx="175" cy="75" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><circle cx="25" cy="125" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><circle cx="75" cy="125" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><circle cx="125" cy="125" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><circle cx="175" cy="125" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><circle cx="25" cy="175" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><circle cx="75" cy="175" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><circle cx="125" cy="175" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><circle cx="175" cy="175" r="8" fill="none" stroke="rgba(16,185,129,0.06)" stroke-width="1"/><polygon points="50,50 60,40 70,50 60,60" fill="none" stroke="rgba(16,185,129,0.05)" stroke-width="1"/><polygon points="150,50 160,40 170,50 160,60" fill="none" stroke="rgba(16,185,129,0.05)" stroke-width="1"/><polygon points="50,150 60,140 70,150 60,160" fill="none" stroke="rgba(16,185,129,0.05)" stroke-width="1"/><polygon points="150,150 160,140 170,150 160,160" fill="none" stroke="rgba(16,185,129,0.05)" stroke-width="1"/></pattern></defs><rect width="200" height="200" fill="url(%23african)"/></svg>');
-    background-attachment: fixed;
+        linear-gradient(135deg, rgba(16,185,129,1) 0%, rgba(5,150,105,1) 100%),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><defs><pattern id="african" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse"><rect width="200" height="200" fill="none"/><path d="M0,0 L50,50 M50,0 L0,50 M100,0 L150,50 M150,0 L100,50 M0,100 L50,150 M50,100 L0,150 M100,100 L150,150 M150,100 L100,150" stroke="rgba(255,255,255,0.15)" stroke-width="1"/><circle cx="25" cy="25" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="75" cy="25" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="125" cy="25" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="175" cy="25" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="25" cy="75" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="75" cy="75" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="125" cy="75" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="175" cy="75" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="25" cy="125" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="75" cy="125" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="125" cy="125" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="175" cy="125" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="25" cy="175" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="75" cy="175" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="125" cy="175" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="175" cy="175" r="8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><polygon points="50,50 60,40 70,50 60,60" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/><polygon points="150,50 160,40 170,50 160,60" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/><polygon points="50,150 60,140 70,150 60,160" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/><polygon points="150,150 160,140 170,150 160,160" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/></pattern></defs><rect width="200" height="200" fill="url(%23african)"/></svg>');
     background-size: auto, 200px 200px;
-    pointer-events: none;
-    z-index: -1;
-}
-
-#app {
-    position: relative;
-    z-index: 1;
 }
 
 .scrollbar-hide::-webkit-scrollbar {
