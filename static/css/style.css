@@ -11,10 +11,11 @@
  */
 
 header {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%), 
-                repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.25) 40px, rgba(255,255,255,0.25) 45px),
-                repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.25) 40px, rgba(255,255,255,0.25) 45px) !important;
-    background-size: auto, 100% 100%, 100% 100% !important;
+    background: 
+                repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.35) 40px, rgba(255,255,255,0.35) 45px),
+                repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.35) 40px, rgba(255,255,255,0.35) 45px),
+                linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    background-size: 100% 100%, 100% 100%, auto !important;
 }
 
 .scrollbar-hide::-webkit-scrollbar {
