@@ -32,12 +32,20 @@ def admin_login():
         admin = Admin.query.filter_by(username=username).first()
         if admin and admin.check_password(password):
             login_user(admin)
-            ActivityLog.log_auth('LOGIN', f'Connexion réussie: {username}', 
-                               ip_address=get_client_ip(), admin_id=admin.id, success=True)
+            try:
+                ActivityLog.log_auth('LOGIN', f'Connexion réussie: {username}', 
+                                   ip_address=get_client_ip(), admin_id=admin.id, success=True)
+            except Exception as e:
+                import logging
+                logging.error(f"Failed to log login activity: {e}")
             return redirect(url_for('admin.admin_dashboard'))
         
-        ActivityLog.log_auth('LOGIN_FAILED', f'Tentative échouée pour: {username}', 
-                           ip_address=get_client_ip(), success=False)
+        try:
+            ActivityLog.log_auth('LOGIN_FAILED', f'Tentative échouée pour: {username}', 
+                               ip_address=get_client_ip(), success=False)
+        except Exception as e:
+            import logging
+            logging.error(f"Failed to log login failure: {e}")
         flash('Identifiants incorrects', 'error')
     
     return render_template('admin/login.html')
@@ -49,6 +57,10 @@ def admin_logout():
     admin_id = current_user.id
     username = current_user.username
     logout_user()
-    ActivityLog.log_auth('LOGOUT', f'Déconnexion: {username}', 
-                        ip_address=get_client_ip(), admin_id=admin_id, success=True)
+    try:
+        ActivityLog.log_auth('LOGOUT', f'Déconnexion: {username}', 
+                            ip_address=get_client_ip(), admin_id=admin_id, success=True)
+    except Exception as e:
+        import logging
+        logging.error(f"Failed to log logout activity: {e}")
     return redirect(url_for('public.index'))
