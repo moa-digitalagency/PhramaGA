@@ -161,27 +161,32 @@ def register_request_logging(app):
 def register_error_handlers(app):
     @app.errorhandler(400)
     def bad_request(error):
-        if hasattr(error, 'description'):
-            message = error.description
-        else:
-            message = 'Requête invalide'
-        return jsonify({'success': False, 'error': message}), 400
+        message = error.description if hasattr(error, 'description') else 'Requête invalide'
+        if 'application/json' in request.accept_mimetypes and 'text/html' not in request.accept_mimetypes:
+            return jsonify({'success': False, 'error': message}), 400
+        return render_template('errors/400.html', message=message), 400
 
     @app.errorhandler(404)
     def not_found(error):
-        return jsonify({'success': False, 'error': 'Ressource non trouvée'}), 404
+        if 'application/json' in request.accept_mimetypes and 'text/html' not in request.accept_mimetypes:
+            return jsonify({'success': False, 'error': 'Ressource non trouvée'}), 404
+        return render_template('errors/404.html'), 404
 
     @app.errorhandler(500)
     def internal_error(error):
         db.session.rollback()
         logger.error(f"Internal error: {error}")
-        return jsonify({'success': False, 'error': 'Erreur interne du serveur'}), 500
+        if 'application/json' in request.accept_mimetypes and 'text/html' not in request.accept_mimetypes:
+            return jsonify({'success': False, 'error': 'Erreur interne du serveur'}), 500
+        return render_template('errors/500.html'), 500
 
     @app.errorhandler(Exception)
     def handle_exception(error):
         db.session.rollback()
         logger.error(f"Unhandled exception: {error}", exc_info=True)
-        return jsonify({'success': False, 'error': 'Une erreur inattendue est survenue'}), 500
+        if 'application/json' in request.accept_mimetypes and 'text/html' not in request.accept_mimetypes:
+            return jsonify({'success': False, 'error': 'Une erreur inattendue est survenue'}), 500
+        return render_template('errors/500.html'), 500
 
 
 app = create_app()
