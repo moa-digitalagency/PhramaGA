@@ -79,7 +79,7 @@ def create_app():
         response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
         response.headers['Permissions-Policy'] = 'accelerometer=(), camera=(), microphone=(), geolocation=()'
         # CSP: Allow CDN for styles/scripts but block inline
-        response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline' cdn.tailwindcss.com cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.tailwindcss.com fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' fonts.gstatic.com; connect-src 'self' tile.openstreetmap.org; frame-ancestors 'none';"
+        response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline' cdn.tailwindcss.com cdn.jsdelivr.net unpkg.com; style-src 'self' 'unsafe-inline' cdn.tailwindcss.com fonts.googleapis.com unpkg.com; img-src 'self' data: https:; font-src 'self' fonts.gstatic.com; connect-src 'self' tile.openstreetmap.org unpkg.com; frame-ancestors 'none';"
         # Hide server info
         response.headers['Server'] = 'WebServer'
         return response
