@@ -13,6 +13,7 @@ l'authentification, les routes et les gestionnaires d'erreurs.
 import os
 import logging
 import time
+from datetime import datetime
 from flask import Flask, jsonify, render_template, request, g
 from flask_login import current_user
 from flask_limiter import Limiter
@@ -159,6 +160,9 @@ def register_request_logging(app):
 
 
 def register_error_handlers(app):
+    import traceback
+    import sys
+    
     @app.errorhandler(400)
     def bad_request(error):
         message = error.description if hasattr(error, 'description') else 'Requête invalide'
@@ -175,18 +179,48 @@ def register_error_handlers(app):
     @app.errorhandler(500)
     def internal_error(error):
         db.session.rollback()
-        logger.error(f"Internal error: {error}")
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        error_traceback = traceback.format_exception(exc_type, exc_value, exc_traceback)
+        error_message = str(error) or "Erreur interne du serveur"
+        error_details = '\n'.join(error_traceback)
+        
+        logger.error(f"500 Error on {request.path}: {error_message}\n{error_details}")
+        
+        error_info = {
+            'message': error_message,
+            'path': request.path,
+            'method': request.method,
+            'ip': request.headers.get('X-Forwarded-For', request.remote_addr),
+            'timestamp': datetime.utcnow().isoformat(),
+            'traceback': error_traceback if app.debug else None
+        }
+        
         if 'application/json' in request.accept_mimetypes and 'text/html' not in request.accept_mimetypes:
-            return jsonify({'success': False, 'error': 'Erreur interne du serveur'}), 500
-        return render_template('errors/500.html'), 500
+            return jsonify({'success': False, 'error': error_message, 'details': error_info}), 500
+        return render_template('errors/500.html', error_info=error_info, debug=app.debug), 500
 
     @app.errorhandler(Exception)
     def handle_exception(error):
         db.session.rollback()
-        logger.error(f"Unhandled exception: {error}", exc_info=True)
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        error_traceback = traceback.format_exception(exc_type, exc_value, exc_traceback)
+        error_message = str(error) or "Une erreur inattendue est survenue"
+        error_details = '\n'.join(error_traceback)
+        
+        logger.error(f"Exception on {request.path}: {error_message}\n{error_details}")
+        
+        error_info = {
+            'message': error_message,
+            'path': request.path,
+            'method': request.method,
+            'ip': request.headers.get('X-Forwarded-For', request.remote_addr),
+            'timestamp': datetime.utcnow().isoformat(),
+            'traceback': error_traceback if app.debug else None
+        }
+        
         if 'application/json' in request.accept_mimetypes and 'text/html' not in request.accept_mimetypes:
-            return jsonify({'success': False, 'error': 'Une erreur inattendue est survenue'}), 500
-        return render_template('errors/500.html'), 500
+            return jsonify({'success': False, 'error': error_message, 'details': error_info}), 500
+        return render_template('errors/500.html', error_info=error_info, debug=app.debug), 500
 
 
 app = create_app()
