@@ -268,7 +268,7 @@ def check_app_routes():
         
         print(f"\n✅ Total de routes: {len(routes)}")
         
-        critical_routes = ['admin.admin_dashboard', 'admin.auth_login', 'public.index']
+        critical_routes = ['admin.admin_dashboard', 'admin.admin_login', 'public.index']
         for route in critical_routes:
             if route in routes:
                 print(f"✅ {route}: OK")
