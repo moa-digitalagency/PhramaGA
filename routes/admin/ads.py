@@ -16,6 +16,9 @@ from models.advertisement import Advertisement, AdSettings
 from extensions import db, csrf
 from datetime import datetime
 from routes.admin import admin_bp, allowed_file, get_upload_path, safe_delete_upload, save_upload_file
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @admin_bp.route('/ads')
@@ -29,36 +32,50 @@ def list_ads():
 @login_required
 def add_ad():
     if request.method == 'POST':
-        image_filename = None
-        if request.form.get('media_type') == 'image' and 'image_file' in request.files:
-            file = request.files['image_file']
-            image_filename = save_upload_file(file, 'ads', '')
-        
-        start_date = None
-        end_date = None
-        if request.form.get('start_date'):
-            start_date = datetime.strptime(request.form.get('start_date'), '%Y-%m-%dT%H:%M')
-        if request.form.get('end_date'):
-            end_date = datetime.strptime(request.form.get('end_date'), '%Y-%m-%dT%H:%M')
-        
-        ad = Advertisement(
-            title=request.form.get('title'),
-            description=request.form.get('description', ''),
-            media_type=request.form.get('media_type', 'image'),
-            image_filename=image_filename,
-            video_url=request.form.get('video_url', ''),
-            cta_text=request.form.get('cta_text', 'En savoir plus'),
-            cta_url=request.form.get('cta_url', ''),
-            skip_delay=int(request.form.get('skip_delay', 5)) or 5,
-            priority=int(request.form.get('priority', 0)),
-            start_date=start_date,
-            end_date=end_date,
-            is_active=request.form.get('is_active') == 'on'
-        )
-        db.session.add(ad)
-        db.session.commit()
-        flash('Publicité ajoutée avec succès', 'success')
-        return redirect(url_for('admin.list_ads'))
+        try:
+            title = request.form.get('title')
+            if not title:
+                flash('Le titre est obligatoire', 'error')
+                return render_template('admin/ad_form.html', ad=None)
+            
+            image_filename = None
+            if request.form.get('media_type') == 'image' and 'image_file' in request.files:
+                file = request.files['image_file']
+                image_filename = save_upload_file(file, 'ads', '')
+            
+            start_date = None
+            end_date = None
+            if request.form.get('start_date'):
+                start_date = datetime.strptime(request.form.get('start_date'), '%Y-%m-%dT%H:%M')
+            if request.form.get('end_date'):
+                end_date = datetime.strptime(request.form.get('end_date'), '%Y-%m-%dT%H:%M')
+            
+            ad = Advertisement(
+                title=title,
+                description=request.form.get('description', ''),
+                media_type=request.form.get('media_type', 'image'),
+                image_filename=image_filename,
+                video_url=request.form.get('video_url', ''),
+                cta_text=request.form.get('cta_text', 'En savoir plus'),
+                cta_url=request.form.get('cta_url', ''),
+                skip_delay=int(request.form.get('skip_delay', 5) or 5),
+                priority=int(request.form.get('priority', 0) or 0),
+                start_date=start_date,
+                end_date=end_date,
+                is_active=request.form.get('is_active') == 'on'
+            )
+            db.session.add(ad)
+            db.session.commit()
+            flash('Publicité ajoutée avec succès', 'success')
+            return redirect(url_for('admin.list_ads'))
+        except ValueError as e:
+            db.session.rollback()
+            flash(f'Erreur de format: {str(e)}', 'error')
+            logger.error(f"ValueError in add_ad: {e}")
+        except Exception as e:
+            db.session.rollback()
+            flash('Erreur lors de l\'enregistrement. Veuillez vérifier les données.', 'error')
+            logger.error(f"Error in add_ad: {e}")
     
     return render_template('admin/ad_form.html', ad=None)
 
@@ -69,41 +86,55 @@ def edit_ad(id):
     ad = Advertisement.query.get_or_404(id)
     
     if request.method == 'POST':
-        if request.form.get('media_type') == 'image':
-            if 'image_file' in request.files:
-                file = request.files['image_file']
-                if file and file.filename and allowed_file(file.filename):
+        try:
+            title = request.form.get('title')
+            if not title:
+                flash('Le titre est obligatoire', 'error')
+                return render_template('admin/ad_form.html', ad=ad)
+            
+            if request.form.get('media_type') == 'image':
+                if 'image_file' in request.files:
+                    file = request.files['image_file']
+                    if file and file.filename and allowed_file(file.filename):
+                        if ad.image_filename:
+                            safe_delete_upload(ad.image_filename, 'ads')
+                        ad.image_filename = save_upload_file(file, 'ads', '')
+                
+                if request.form.get('remove_image') == 'on':
                     if ad.image_filename:
                         safe_delete_upload(ad.image_filename, 'ads')
-                    ad.image_filename = save_upload_file(file, 'ads', '')
+                        ad.image_filename = None
             
-            if request.form.get('remove_image') == 'on':
-                if ad.image_filename:
-                    safe_delete_upload(ad.image_filename, 'ads')
-                    ad.image_filename = None
-        
-        start_date = None
-        end_date = None
-        if request.form.get('start_date'):
-            start_date = datetime.strptime(request.form.get('start_date'), '%Y-%m-%dT%H:%M')
-        if request.form.get('end_date'):
-            end_date = datetime.strptime(request.form.get('end_date'), '%Y-%m-%dT%H:%M')
-        
-        ad.title = request.form.get('title')
-        ad.description = request.form.get('description', '')
-        ad.media_type = request.form.get('media_type', 'image')
-        ad.video_url = request.form.get('video_url', '')
-        ad.cta_text = request.form.get('cta_text', 'En savoir plus')
-        ad.cta_url = request.form.get('cta_url', '')
-        ad.skip_delay = int(request.form.get('skip_delay', 5)) or 5
-        ad.priority = int(request.form.get('priority', 0))
-        ad.start_date = start_date
-        ad.end_date = end_date
-        ad.is_active = request.form.get('is_active') == 'on'
-        
-        db.session.commit()
-        flash('Publicité mise à jour', 'success')
-        return redirect(url_for('admin.list_ads'))
+            start_date = None
+            end_date = None
+            if request.form.get('start_date'):
+                start_date = datetime.strptime(request.form.get('start_date'), '%Y-%m-%dT%H:%M')
+            if request.form.get('end_date'):
+                end_date = datetime.strptime(request.form.get('end_date'), '%Y-%m-%dT%H:%M')
+            
+            ad.title = title
+            ad.description = request.form.get('description', '')
+            ad.media_type = request.form.get('media_type', 'image')
+            ad.video_url = request.form.get('video_url', '')
+            ad.cta_text = request.form.get('cta_text', 'En savoir plus')
+            ad.cta_url = request.form.get('cta_url', '')
+            ad.skip_delay = int(request.form.get('skip_delay', 5) or 5)
+            ad.priority = int(request.form.get('priority', 0) or 0)
+            ad.start_date = start_date
+            ad.end_date = end_date
+            ad.is_active = request.form.get('is_active') == 'on'
+            
+            db.session.commit()
+            flash('Publicité mise à jour', 'success')
+            return redirect(url_for('admin.list_ads'))
+        except ValueError as e:
+            db.session.rollback()
+            flash(f'Erreur de format: {str(e)}', 'error')
+            logger.error(f"ValueError in edit_ad: {e}")
+        except Exception as e:
+            db.session.rollback()
+            flash('Erreur lors de la mise à jour. Veuillez vérifier les données.', 'error')
+            logger.error(f"Error in edit_ad: {e}")
     
     return render_template('admin/ad_form.html', ad=ad)
 
@@ -112,21 +143,31 @@ def edit_ad(id):
 @login_required
 @csrf.exempt
 def toggle_ad(id):
-    ad = Advertisement.query.get_or_404(id)
-    ad.is_active = not ad.is_active
-    db.session.commit()
-    return jsonify({'success': True, 'is_active': ad.is_active})
+    try:
+        ad = Advertisement.query.get_or_404(id)
+        ad.is_active = not ad.is_active
+        db.session.commit()
+        return jsonify({'success': True, 'is_active': ad.is_active})
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error in toggle_ad: {e}")
+        return jsonify({'success': False, 'error': 'Erreur lors de la mise à jour'}), 500
 
 
 @admin_bp.route('/ad/<int:id>/delete', methods=['POST'])
 @login_required
 def delete_ad(id):
-    ad = Advertisement.query.get_or_404(id)
-    if ad.image_filename:
-        safe_delete_upload(ad.image_filename, 'ads')
-    db.session.delete(ad)
-    db.session.commit()
-    flash('Publicité supprimée', 'success')
+    try:
+        ad = Advertisement.query.get_or_404(id)
+        if ad.image_filename:
+            safe_delete_upload(ad.image_filename, 'ads')
+        db.session.delete(ad)
+        db.session.commit()
+        flash('Publicité supprimée', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Erreur lors de la suppression', 'error')
+        logger.error(f"Error in delete_ad: {e}")
     return redirect(url_for('admin.list_ads'))
 
 
@@ -136,23 +177,32 @@ def ad_settings():
     settings = AdSettings.get_settings()
     
     if request.method == 'POST':
-        settings.ads_enabled = request.form.get('ads_enabled') == 'on'
-        settings.trigger_type = request.form.get('trigger_type', 'time')
-        settings.time_delay = int(request.form.get('time_delay', 60))
-        settings.time_repeat = request.form.get('time_repeat') == 'on'
-        settings.time_interval = int(request.form.get('time_interval', 300))
-        settings.page_count = int(request.form.get('page_count', 3))
-        settings.refresh_show = request.form.get('refresh_show') == 'on'
-        settings.refresh_count = int(request.form.get('refresh_count', 1))
-        settings.default_skip_delay = int(request.form.get('default_skip_delay', 5))
-        settings.max_ads_per_session = int(request.form.get('max_ads_per_session', 10))
-        settings.cooldown_after_skip = int(request.form.get('cooldown_after_skip', 60))
-        settings.cooldown_after_click = int(request.form.get('cooldown_after_click', 300))
-        settings.show_on_mobile = request.form.get('show_on_mobile') == 'on'
-        settings.show_on_desktop = request.form.get('show_on_desktop') == 'on'
-        
-        db.session.commit()
-        flash('Paramètres enregistrés avec succès', 'success')
-        return redirect(url_for('admin.ad_settings'))
+        try:
+            settings.ads_enabled = request.form.get('ads_enabled') == 'on'
+            settings.trigger_type = request.form.get('trigger_type', 'time')
+            settings.time_delay = int(request.form.get('time_delay', 60) or 60)
+            settings.time_repeat = request.form.get('time_repeat') == 'on'
+            settings.time_interval = int(request.form.get('time_interval', 300) or 300)
+            settings.page_count = int(request.form.get('page_count', 3) or 3)
+            settings.refresh_show = request.form.get('refresh_show') == 'on'
+            settings.refresh_count = int(request.form.get('refresh_count', 1) or 1)
+            settings.default_skip_delay = int(request.form.get('default_skip_delay', 5) or 5)
+            settings.max_ads_per_session = int(request.form.get('max_ads_per_session', 10) or 10)
+            settings.cooldown_after_skip = int(request.form.get('cooldown_after_skip', 60) or 60)
+            settings.cooldown_after_click = int(request.form.get('cooldown_after_click', 300) or 300)
+            settings.show_on_mobile = request.form.get('show_on_mobile') == 'on'
+            settings.show_on_desktop = request.form.get('show_on_desktop') == 'on'
+            
+            db.session.commit()
+            flash('Paramètres enregistrés avec succès', 'success')
+            return redirect(url_for('admin.ad_settings'))
+        except ValueError as e:
+            db.session.rollback()
+            flash(f'Erreur de format: {str(e)}', 'error')
+            logger.error(f"ValueError in ad_settings: {e}")
+        except Exception as e:
+            db.session.rollback()
+            flash('Erreur lors de l\'enregistrement des paramètres', 'error')
+            logger.error(f"Error in ad_settings: {e}")
     
     return render_template('admin/ad_settings.html', settings=settings)
