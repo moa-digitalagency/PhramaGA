@@ -1,0 +1,32 @@
+id,nom,ville,quartier,adresse_precision,telephone,latitude,longitude,horaires,services
+PG001,Pharmacie Radoca,Port-Gentil,La Balise,Près du port,011 55 10 72,-0.713589,8.784512,"7j/7, 08h00-20h00",Générale
+PG002,Pharmacie du Grand Village,Port-Gentil,Grand Village,Avenue du Grand Village,011 55 34 83,-0.725142,8.771235,"7j/7, 08h00-21h00",Générale / Garde
+PG003,Pharmacie Banco,Port-Gentil,Banco,Carrefour Banco,011 55 50 45,-0.718521,8.785614,Horaires standards,Parapharmacie
+PG004,Pharmacie Von'Okuwa,Port-Gentil,Centre-ville,Près Hôtel Mandji,011 55 55 32,-0.716645,8.785312,Horaires standards,Générale
+PG005,Pharmacie Andrea,Port-Gentil,Boulevard,Boulevard Léon Mba,077 03 97 96,-0.711854,8.779214,Horaires standards,Générale
+PG006,Pharmacie du Boulevard,Port-Gentil,Boulevard,Face Station Total,011 53 11 03,-0.719321,8.781547,Horaires standards,Générale
+PG007,Pharmacie du Cap,Port-Gentil,Centre-ville,Galerie Casino,011 55 26 80,-0.712541,8.786541,Horaires standards,Générale
+PG008,Pharmacie de Bac Aviation,Port-Gentil,Bac Aviation,Route de l'aéroport,066 51 43 12,-0.713214,8.756214,"24h/24 (selon garde)",Garde
+PG009,Pharmacie du Château,Port-Gentil,Château,Secteur Ikouakoua,074 12 45 67,-0.731245,8.774125,Horaires standards,Proximité
+PG010,Pharmacie Centrale,Port-Gentil,Centre-ville,Parking Rétro,011 55 21 64,-0.715847,8.783214,Horaires standards,Générale
+PG011,Pharmacie de la Mosquée,Port-Gentil,Mosquée,Face Grande Mosquée,065 41 22 10,-0.721458,8.778541,Horaires standards,Générale
+LBV001,Grande Pharmacie des Forestiers,Libreville,Centre-Ville,Galerie Mbolo,011 72 23 52,0.407425,9.443673,08h-20h,Générale
+LBV002,Pharmacie Sainte-Marie,Libreville,Bd Triomphal,Face à Mbolo,011 74 00 52,0.406850,9.444210,07h30-21h,Générale
+LBV003,La Nouvelle Pharmacie d'Awondo,Libreville,Louis,Av. Jean-Jacques Boucavel,066 15 80 00,0.421689,9.433842,24h/24,Garde
+LBV004,Pharmacie des Facultés,Libreville,Sobraga,Près Ambassade Cameroun,011 44 37 38,0.419214,9.450841,07h30-21h30,Générale
+LBV005,Pharmacie d'Akébé,Libreville,Akébé,Rond-point de l'Église,011 72 01 38,0.398512,9.462314,08h-20h,Générale
+LBV006,Pharmacie Avolenzame,Libreville,Nkembo,Route Atong Abè,065 29 10 02,0.403421,9.463254,07h-20h,Générale
+LBV007,Pharmacie d'Avorbam,Libreville,Akanda,Rond-point Avorbam,065 50 54 54,0.485124,9.421458,24h/24,Garde
+LBV008,Pharmacie de l'Aéroport,Libreville,Aéroport,Aéroport Léon Mba,077 77 77 77,0.457317,9.412406,08h-21h,Générale
+LBV009,Pharmacie Nouo Cécile,Libreville,IAI,Échangeur IAI,066 28 35 22,0.395214,9.485124,24h/24,Garde
+LBV010,Pharmacie des Acaé,Libreville,Acaé,Carrefour Acaé,011 70 49 49,0.365412,9.481245,24h/24,Garde
+LBV011,Pharmacie de la Poste,Libreville,Bord de Mer,Galerie Hollando,011 72 83 30,0.391245,9.441258,08h-19h,Générale
+LBV012,Pharmacie d'Oloumi,Libreville,Oloumi,Zone Industrielle,011 72 15 82,0.384512,9.461245,07h30-20h30,Générale
+LBV013,Pharmacie du Commissariat Central,Libreville,Centre-Ville,Près de la Préfecture,074 64 22 22,0.390541,9.453214,08h-21h,Générale
+LBV014,Pharmacie Jeanne et Léo,Libreville,Owendo,Carrefour SNI,011 70 47 60,0.312458,9.501245,08h-20h,Générale
+LBV015,Pharmacie de Bikélé,Libreville,Bikélé,Près Prix Import,065 19 03 36,0.371245,9.581245,24h/24,Garde
+LBV016,Pharmacie Rapha-Ël,Libreville,PK12,Immeuble City Star,011 46 45 54,0.385214,9.541258,24h/24,Garde
+LBV017,Pharmacie des Gué-Gué,Libreville,Gué-Gué,Rond-point Gué-Gué,011 44 41 36,0.435412,9.421245,08h-20h,Générale
+LBV018,Pharmacie de Glass,Libreville,Glass,Avenue G. Damas,011 77 23 99,0.375412,9.451245,07h30-21h,Générale
+LBV019,Pharmacie Saint André,Libreville,Okala,Route du Dispensaire,066 25 56 67,0.471245,9.401245,08h-20h,Générale
+LBV020,Pharmacie Le Bon Samaritain,Libreville,Angondjé,Carrefour Sherko,065 19 03 40,0.501245,9.412458,24h/24,Garde
